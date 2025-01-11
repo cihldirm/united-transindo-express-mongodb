@@ -17,9 +17,11 @@ const { client_email, private_key } = secretKey;
 const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 var dbo;
-app.set('views', __dirname + '/views');
+// app.set('views', __dirname + '/views');
+app.set('views', './views');
 app.set('view engine', 'ejs');
-app.use(express.static(`${__dirname}/assets`));
+// app.use(express.static(`${__dirname}/assets`));
+app.use(express.static(`./assets`));
 
 // support parsing of application/x-www-form-urlencoded post data
 // app.use(bodyParser.urlencoded({ extended: true }));
