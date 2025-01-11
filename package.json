@@ -1,0 +1,29 @@
+{
+  "name": "united-transindo-express-mongodb",
+  "version": "1.0.0",
+  "description": "Create Rest Server express mongodb",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cihldirm/united-transindo-express-mongodb"
+  },
+  "keywords": [
+    "express",
+    "rest",
+    "server",
+    "api"
+  ],
+  "author": "cihldirm",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^7.3.2",
+    "nodemon": "^3.0.1"
+  }
+}
