@@ -1,5 +1,6 @@
 const express = require("express")
 const app = express()
+const path = require("path")
 const bodyParser = require("body-parser");
 const cors = require("cors")
 const port = process.env.PORT || 3000
@@ -18,16 +19,26 @@ const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 var dbo;
 // app.set('views', __dirname + '/views');
-app.set('views', './views');
-app.set('view engine', 'ejs');
+// // app.set('views', './views');
+// app.set('view engine', 'ejs');
+// app.engine('html', require('ejs').renderFile);
+// app.set('view engine', 'html');
+// app.set('views', __dirname + '/views');
 // app.use(express.static(`${__dirname}/assets`));
-app.use(express.static(`./assets`));
+app.use(express.static(`${__dirname}/views`));
+// app.use(express.static(`./assets`));
+app.use("/assets", express.static(path.join(__dirname, 'assets')));
 
 // support parsing of application/x-www-form-urlencoded post data
 // app.use(bodyParser.urlencoded({ extended: true }));
 
 // support parsing of application/json type post data
 // app.use(bodyParser.json());
+
+// app.use(function(req, res) {
+// 	res.status(404);
+// 	return res.send('<h1>404 Error: Resource not found</h1>');
+// });
 
 const mongooseConfig = {
 	useNewUrlParser: true,
@@ -41,7 +52,9 @@ db.mongoose.connect(db.url, mongooseConfig)
 		console.log("Connected to MongoDB");
 		await client.connect();         
 		console.log('Connected successfully to server');
+		console.log("client is = ", client);
 		dbo = client.db("united-transindo");
+		console.log("dbo is = ", dbo);
 		let server = app.listen(port, (err) => {
 			if (err) {
 				return console.log("ERROR", err);
@@ -55,6 +68,8 @@ db.mongoose.connect(db.url, mongooseConfig)
 	}).finally(() => client.close());
 
 db.mongoose.connection.on("error", console.error.bind(console, "MongoDB Connection Error"));
+
+// console.log("dbo is = ", dbo);
 
 async function readGoogleSheet(sheet) {
 	// let secretKey = require("./ut-database-center-c0e311032c53.json"), 
@@ -401,14 +416,23 @@ app.get("/", (req, res) => res.type('html').send(`
 	</html>
 `));
 
-app.get("/dashboard", async(req, res) => {
-	// res.render("index", {
-	res.render("dashboard", {
-	  message:"",
-	  errorMessage:"",
-	  resultArr:[]
-	});
-  });
+// app.get("/dashboard", async(req, res) => {
+// 	// res.render("index", {
+// 	res.render("dashboard", {
+// 	  message:"",
+// 	  errorMessage:"",	
+// 	  resultArr:[]
+// 	});
+//   });
+  
+app.get("/dashboard", (req, res) => {
+	// console.log("dashboard here")
+  res.sendFile(path.join(__dirname, './views/dashboard.html'));
+// 	res.type('html').send(
+
+//   )
+	
+});
 
 // Pemanggilan routing (utama)
 run(app)
