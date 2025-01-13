@@ -82,291 +82,291 @@ db.mongoose.connection.on("error", console.error.bind(console, "MongoDB Connecti
 
 // console.log("dbo is = ", dbo);
 
-async function readGoogleSheet(sheet) {
-	// let secretKey = require("./ut-database-center-c0e311032c53.json"), 
-	let jwtClient = new google.auth.JWT(
-		   client_email,
-		   null,
-		   private_key,
-		   ['https://www.googleapis.com/auth/spreadsheets']);
-	//authenticate request
-	jwtClient.authorize((err, tokens) => {
-	 if (err) {
-	   console.log(err);
-	   return;
-	 } else {
-	   console.log("Successfully connected!");
-	 }
-	});
-	//Google Sheets API
-	let spreadsheetId = '1h5_afIl-tH4faCNGnRO-JjE6_r_e2iCnDfb7lb6Ng-U',
-		// sheetRange =  sheet === "database" ? 'DATABASE 2024!A1:AQ' : 'Kode Rute!A1:Z',
-		sheetRange,
-		sheets = google.sheets('v4');
+// async function readGoogleSheet(sheet) {
+// 	// let secretKey = require("./ut-database-center-c0e311032c53.json"), 
+// 	let jwtClient = new google.auth.JWT(
+// 		   client_email,
+// 		   null,
+// 		   private_key,
+// 		   ['https://www.googleapis.com/auth/spreadsheets']);
+// 	//authenticate request
+// 	jwtClient.authorize((err, tokens) => {
+// 	 if (err) {
+// 	   console.log(err);
+// 	   return;
+// 	 } else {
+// 	   console.log("Successfully connected!");
+// 	 }
+// 	});
+// 	//Google Sheets API
+// 	let spreadsheetId = '1h5_afIl-tH4faCNGnRO-JjE6_r_e2iCnDfb7lb6Ng-U',
+// 		// sheetRange =  sheet === "database" ? 'DATABASE 2024!A1:AQ' : 'Kode Rute!A1:Z',
+// 		sheetRange,
+// 		sheets = google.sheets('v4');
   
-	if (sheet === "database") {
-	  sheetRange = 'DATABASE 2024!A:AQ';
-	} else if (sheet === "nama pengirim") {
-	  sheetRange = 'Nama Pengirim!A:A';
-	} else if (sheet === "alamat pengirim") {
-	  sheetRange = 'Alamat Pengirim!A:A';
-	} else if (sheet === "kontak pengirim") {
-	  sheetRange = 'Kontak Pengirim!A:A';
-	} else if (sheet === "nama penerima") {
-	  sheetRange = 'Nama Penerima!A:A';
-	} else if (sheet === "alamat penerima") {
-	  sheetRange = 'Alamat Penerima!A:A';
-	} else if (sheet === "kontak penerima") {
-	  sheetRange = 'Kontak Penerima!A:A';
-	} else if (sheet === "merk") {
-	  sheetRange = 'Merk!A:A';
-	} else if (sheet === "type") {
-	  sheetRange = 'Type!A:A';
-	} else if (sheet === "warna") {
-	  sheetRange = 'Warna!A:A';
-	} else if (sheet === "nopol noka") {
-	  sheetRange = 'Nopol Noka!A:A';
-	} else {
-	  // Kode Rute
-	  sheetRange = 'Kode Rute!A:B';
-	}
-	return await sheets.spreadsheets.values.get({
-	  auth: jwtClient,
-	  spreadsheetId: spreadsheetId,
-	  range: sheetRange
-	}).then((response) => {
-	  if (sheet === "database") {
-		let results = response.data.values, 
-			headerIndex = getIndexOfItem(results, "NO. JOJ")[0], 
-			headerTable = results.slice(headerIndex).shift(), 
-			contentTable = [];
+// 	if (sheet === "database") {
+// 	  sheetRange = 'DATABASE 2024!A:AQ';
+// 	} else if (sheet === "nama pengirim") {
+// 	  sheetRange = 'Nama Pengirim!A:A';
+// 	} else if (sheet === "alamat pengirim") {
+// 	  sheetRange = 'Alamat Pengirim!A:A';
+// 	} else if (sheet === "kontak pengirim") {
+// 	  sheetRange = 'Kontak Pengirim!A:A';
+// 	} else if (sheet === "nama penerima") {
+// 	  sheetRange = 'Nama Penerima!A:A';
+// 	} else if (sheet === "alamat penerima") {
+// 	  sheetRange = 'Alamat Penerima!A:A';
+// 	} else if (sheet === "kontak penerima") {
+// 	  sheetRange = 'Kontak Penerima!A:A';
+// 	} else if (sheet === "merk") {
+// 	  sheetRange = 'Merk!A:A';
+// 	} else if (sheet === "type") {
+// 	  sheetRange = 'Type!A:A';
+// 	} else if (sheet === "warna") {
+// 	  sheetRange = 'Warna!A:A';
+// 	} else if (sheet === "nopol noka") {
+// 	  sheetRange = 'Nopol Noka!A:A';
+// 	} else {
+// 	  // Kode Rute
+// 	  sheetRange = 'Kode Rute!A:B';
+// 	}
+// 	return await sheets.spreadsheets.values.get({
+// 	  auth: jwtClient,
+// 	  spreadsheetId: spreadsheetId,
+// 	  range: sheetRange
+// 	}).then((response) => {
+// 	  if (sheet === "database") {
+// 		let results = response.data.values, 
+// 			headerIndex = getIndexOfItem(results, "NO. JOJ")[0], 
+// 			headerTable = results.slice(headerIndex).shift(), 
+// 			contentTable = [];
   
-		// console.log(results[2]);
+// 		// console.log(results[2]);
   
-		// console.log(getIndexOfItem(results, "NO. SJ")[0]);
-		// console.log(getIndexOfItem(results, "NO. SJ")[1]);
+// 		// console.log(getIndexOfItem(results, "NO. SJ")[0]);
+// 		// console.log(getIndexOfItem(results, "NO. SJ")[1]);
   
-		// method 1
-		// const [header, ...rows] = results.slice(headerIndex);
-		// for (let vals = 0; vals < rows.length; vals++) {
-		//   let row = rows[vals]
-		//   let tableObj = {};
-		//   for (let key = 0; key < header.length; key++) {
-		//     tableObj[header[key]] = row[key]
-		//   }
-		//   contentTable.push(tableObj);
-		// }
+// 		// method 1
+// 		// const [header, ...rows] = results.slice(headerIndex);
+// 		// for (let vals = 0; vals < rows.length; vals++) {
+// 		//   let row = rows[vals]
+// 		//   let tableObj = {};
+// 		//   for (let key = 0; key < header.length; key++) {
+// 		//     tableObj[header[key]] = row[key]
+// 		//   }
+// 		//   contentTable.push(tableObj);
+// 		// }
   
-		// method 2
-		contentTable = results.slice(headerIndex + 1).reduce((agg, arr) => {
-		  agg.push(arr.reduce((obj, item, index) => {
-			obj[headerTable[index]] = item;
-			return obj;
-		  }, {}));
-		  return agg;
-		}, []);
+// 		// method 2
+// 		contentTable = results.slice(headerIndex + 1).reduce((agg, arr) => {
+// 		  agg.push(arr.reduce((obj, item, index) => {
+// 			obj[headerTable[index]] = item;
+// 			return obj;
+// 		  }, {}));
+// 		  return agg;
+// 		}, []);
   
-		return { headerTable, contentTable };
-	  }
-	  else if (sheet === "route code") {
-		let results = response.data.values, 
-			headerTable = results.slice(0).shift(), 
-			// routeCode = [];
-			routeCode = results.slice(1).map(column => column[1]);
+// 		return { headerTable, contentTable };
+// 	  }
+// 	  else if (sheet === "route code") {
+// 		let results = response.data.values, 
+// 			headerTable = results.slice(0).shift(), 
+// 			// routeCode = [];
+// 			routeCode = results.slice(1).map(column => column[1]);
   
-		console.log("results is = ", results);
-		console.log("headerTable is = ", headerTable);
-		console.log("routeCode is = ", routeCode);
+// 		console.log("results is = ", results);
+// 		console.log("headerTable is = ", headerTable);
+// 		console.log("routeCode is = ", routeCode);
   
-		return { routeCode };
-	  }
-	  else {
-		let results = response.data.values;
-		let data = results.map(column => column[0]);
-		// console.log("results nama pengirim is = ", results.map(column => column[0]));
+// 		return { routeCode };
+// 	  }
+// 	  else {
+// 		let results = response.data.values;
+// 		let data = results.map(column => column[0]);
+// 		// console.log("results nama pengirim is = ", results.map(column => column[0]));
 		
-		console.log("results is = ", results);
-		console.log("data is = ", data);
-		// return { listNamaPengirim };
-		return data;
-	  }
+// 		console.log("results is = ", results);
+// 		console.log("data is = ", data);
+// 		// return { listNamaPengirim };
+// 		return data;
+// 	  }
 	  
-	}).catch((error) => {
-	  return console.log('The API returned an error: ' + error);
-	});
-  }
+// 	}).catch((error) => {
+// 	  return console.log('The API returned an error: ' + error);
+// 	});
+//   }
   
-  async function writeGoogleSheet(sheetName, cellRange, sheetResource) {
-	let jwtClient = new google.auth.JWT(
-		   client_email,
-		   null,
-		   private_key,
-		   ['https://www.googleapis.com/auth/spreadsheets']);
-	//authenticate request
-	jwtClient.authorize((err, tokens) => {
-	 if (err) {
-	   console.log(err);
-	   return;
-	 } else {
-	   console.log("Successfully connected!");
-	 }
-	});
+//   async function writeGoogleSheet(sheetName, cellRange, sheetResource) {
+// 	let jwtClient = new google.auth.JWT(
+// 		   client_email,
+// 		   null,
+// 		   private_key,
+// 		   ['https://www.googleapis.com/auth/spreadsheets']);
+// 	//authenticate request
+// 	jwtClient.authorize((err, tokens) => {
+// 	 if (err) {
+// 	   console.log(err);
+// 	   return;
+// 	 } else {
+// 	   console.log("Successfully connected!");
+// 	 }
+// 	});
   
-	//Google Sheets API
-	let spreadsheetId = '1h5_afIl-tH4faCNGnRO-JjE6_r_e2iCnDfb7lb6Ng-U',
-		// sheetRange = 'DATABASE 2024!A1:AQ',
-		sheetRange = `${sheetName}!${cellRange}`,
-		sheets = google.sheets('v4');
-	return await sheets.spreadsheets.values.update({
-	  auth: jwtClient,
-	  spreadsheetId: spreadsheetId,
-	  range: sheetRange,
-	  resource: sheetResource
-	}).then((response) => {
-	  let results = response.data.values, 
-		  headerIndex = getIndexOfItem(results, "NO. JOJ")[0], 
-		  headerTable = results.slice(headerIndex).shift(), 
-		  contentTable = [];
+// 	//Google Sheets API
+// 	let spreadsheetId = '1h5_afIl-tH4faCNGnRO-JjE6_r_e2iCnDfb7lb6Ng-U',
+// 		// sheetRange = 'DATABASE 2024!A1:AQ',
+// 		sheetRange = `${sheetName}!${cellRange}`,
+// 		sheets = google.sheets('v4');
+// 	return await sheets.spreadsheets.values.update({
+// 	  auth: jwtClient,
+// 	  spreadsheetId: spreadsheetId,
+// 	  range: sheetRange,
+// 	  resource: sheetResource
+// 	}).then((response) => {
+// 	  let results = response.data.values, 
+// 		  headerIndex = getIndexOfItem(results, "NO. JOJ")[0], 
+// 		  headerTable = results.slice(headerIndex).shift(), 
+// 		  contentTable = [];
   
-	  // method 1
-	  // const [header, ...rows] = results.slice(headerIndex);
-	  // for (let vals = 0; vals < rows.length; vals++) {
-	  //   let row = rows[vals]
-	  //   let tableObj = {};
-	  //   for (let key = 0; key < header.length; key++) {
-	  //     tableObj[header[key]] = row[key]
-	  //   }
-	  //   contentTable.push(tableObj);
-	  // }
+// 	  // method 1
+// 	  // const [header, ...rows] = results.slice(headerIndex);
+// 	  // for (let vals = 0; vals < rows.length; vals++) {
+// 	  //   let row = rows[vals]
+// 	  //   let tableObj = {};
+// 	  //   for (let key = 0; key < header.length; key++) {
+// 	  //     tableObj[header[key]] = row[key]
+// 	  //   }
+// 	  //   contentTable.push(tableObj);
+// 	  // }
   
-	  // method 2
-	  contentTable = results.slice(headerIndex + 1).reduce((agg, arr) => {
-		agg.push(arr.reduce((obj, item, index) => {
-		  obj[headerTable[index]] = item;
-		  return obj;
-		}, {}));
-		return agg;
-	  }, []);
+// 	  // method 2
+// 	  contentTable = results.slice(headerIndex + 1).reduce((agg, arr) => {
+// 		agg.push(arr.reduce((obj, item, index) => {
+// 		  obj[headerTable[index]] = item;
+// 		  return obj;
+// 		}, {}));
+// 		return agg;
+// 	  }, []);
   
-	  return { headerTable, contentTable };
-	}).catch((error) => {
-	  return console.log('The API returned an error: ' + error);
-	});
-  }
+// 	  return { headerTable, contentTable };
+// 	}).catch((error) => {
+// 	  return console.log('The API returned an error: ' + error);
+// 	});
+//   }
 
-  function getIndexOfItem(arr, item) {
-	for (let i = 0; i < arr.length; i++) {
-	  let index = arr[i].indexOf(item);
-	  if (index > -1) {
-		return [i, index];
-	  }
-	}
-  }
+//   function getIndexOfItem(arr, item) {
+// 	for (let i = 0; i < arr.length; i++) {
+// 	  let index = arr[i].indexOf(item);
+// 	  if (index > -1) {
+// 		return [i, index];
+// 	  }
+// 	}
+//   }
   
-  function getRowColIndex(twoDArr, value) {
-	// console.log("twoDArr = ",twoDArr);
-	let colIndex = -1;
-	const rowIndex = twoDArr.findIndex((row) => {
-	  const foundColIndex = row.indexOf(value);
-	  if (foundColIndex !== -1) {
-		colIndex = foundColIndex;
-		return true;
-	  }
-	});
-	return [rowIndex, colIndex];
-  }
+//   function getRowColIndex(twoDArr, value) {
+// 	// console.log("twoDArr = ",twoDArr);
+// 	let colIndex = -1;
+// 	const rowIndex = twoDArr.findIndex((row) => {
+// 	  const foundColIndex = row.indexOf(value);
+// 	  if (foundColIndex !== -1) {
+// 		colIndex = foundColIndex;
+// 		return true;
+// 	  }
+// 	});
+// 	return [rowIndex, colIndex];
+//   }
 
-//   const databaseSchema = new mongoose.Schema({
-// 	// field: String
+// //   const databaseSchema = new mongoose.Schema({
+// // 	// field: String
+// //   }, {
+// // 	collection: "database"
+// //   });
+  
+// //   const databaseModel = mongoose.model("database", databaseSchema);
+  
+//   const namaPengirimSchema = new mongoose.Schema({
+// 	field: String
 //   }, {
-// 	collection: "database"
+// 	collection: "nama-pengirim"
 //   });
   
-//   const databaseModel = mongoose.model("database", databaseSchema);
+//   const namaPengirimModel = mongoose.model("nama-pengirim", namaPengirimSchema);
   
-  const namaPengirimSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "nama-pengirim"
-  });
+//   // console.log("namaPengirimSchema is = ", namaPengirimSchema);
   
-  const namaPengirimModel = mongoose.model("nama-pengirim", namaPengirimSchema);
+//   // console.log("namaPengirimModel is = ", namaPengirimModel);
   
-  // console.log("namaPengirimSchema is = ", namaPengirimSchema);
+//   const alamatPengirimSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "alamat-pengirim"
+//   });
   
-  // console.log("namaPengirimModel is = ", namaPengirimModel);
+//   const alamatPengirimModel = mongoose.model("alamat-pengirim", alamatPengirimSchema);
   
-  const alamatPengirimSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "alamat-pengirim"
-  });
+//   const kontakPengirimSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "kontak-pengirim"
+//   });
   
-  const alamatPengirimModel = mongoose.model("alamat-pengirim", alamatPengirimSchema);
+//   const kontakPengirimModel = mongoose.model("kontak-pengirim", kontakPengirimSchema);
   
-  const kontakPengirimSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "kontak-pengirim"
-  });
+//   const namaPenerimaSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "nama-penerima"
+//   });
   
-  const kontakPengirimModel = mongoose.model("kontak-pengirim", kontakPengirimSchema);
+//   const namaPenerimaModel = mongoose.model("nama-penerima", namaPenerimaSchema);
   
-  const namaPenerimaSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "nama-penerima"
-  });
+//   const alamatPenerimaSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "alamat-penerima"
+//   });
   
-  const namaPenerimaModel = mongoose.model("nama-penerima", namaPenerimaSchema);
+//   const alamatPenerimaModel = mongoose.model("alamat-penerima", alamatPenerimaSchema);
   
-  const alamatPenerimaSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "alamat-penerima"
-  });
+//   const kontakPenerimaSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "kontak-penerima"
+//   });
   
-  const alamatPenerimaModel = mongoose.model("alamat-penerima", alamatPenerimaSchema);
+//   const kontakPenerimaModel = mongoose.model("kontak-penerima", kontakPenerimaSchema);
   
-  const kontakPenerimaSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "kontak-penerima"
-  });
+//   const merkUnitSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "merk-unit"
+//   });
   
-  const kontakPenerimaModel = mongoose.model("kontak-penerima", kontakPenerimaSchema);
+//   const merkUnitModel = mongoose.model("merk-unit", merkUnitSchema);
   
-  const merkUnitSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "merk-unit"
-  });
+//   const typeUnitSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "type-unit"
+//   });
   
-  const merkUnitModel = mongoose.model("merk-unit", merkUnitSchema);
+//   const typeUnitModel = mongoose.model("type-unit", typeUnitSchema);
   
-  const typeUnitSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "type-unit"
-  });
+//   const nopolNokaUnitSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "nopol-noka-unit"
+//   });
   
-  const typeUnitModel = mongoose.model("type-unit", typeUnitSchema);
+//   const nopolNokaUnitModel = mongoose.model("nopol-noka-unit", nopolNokaUnitSchema);
   
-  const nopolNokaUnitSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "nopol-noka-unit"
-  });
+//   const warnaUnitSchema = new mongoose.Schema({
+// 	field: String
+//   }, {
+// 	collection: "warna-unit"
+//   });
   
-  const nopolNokaUnitModel = mongoose.model("nopol-noka-unit", nopolNokaUnitSchema);
-  
-  const warnaUnitSchema = new mongoose.Schema({
-	field: String
-  }, {
-	collection: "warna-unit"
-  });
-  
-  const warnaUnitModel = mongoose.model("warna-unit", warnaUnitSchema);
+//   const warnaUnitModel = mongoose.model("warna-unit", warnaUnitSchema);
   
 //   const jobOrderSchema = new mongoose.Schema({
 // 	// field: String
