@@ -125,11 +125,11 @@ dist
 .vercel
 .env*.local
 
-/views/**/*.ejs
+views/**/*.ejs
 
-/views/navbar.ejs
-/views/sidebar.ejs
-/views/footer.ejs
+views/navbar.ejs
+views/sidebar.ejs
+views/footer.ejs
 
 assets/
 demo_1/
