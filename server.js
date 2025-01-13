@@ -35,8 +35,10 @@ var dbo;
 // app.use(express.static(`${__dirname}/views`));
 // app.use(express.static(`./assets`));
 // app.use("/assets", express.static(path.join(__dirname, 'assets')));
-app.use(express.static(path.join(__dirname, 'views')));
-app.use(express.static(path.join(__dirname, 'assets')));
+
+// used
+// app.use(express.static(path.join(__dirname, 'views')));
+// app.use(express.static(path.join(__dirname, 'assets')));
 
 // support parsing of application/x-www-form-urlencoded post data
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -434,15 +436,15 @@ app.get("/", (req, res) => res.type('html').send(`
 // 	});
 //   });
   
-app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, './views/dashboard.html'));
-});
+// app.get("/dashboard", (req, res) => {
+//   res.sendFile(path.join(__dirname, './views/dashboard.html'));
+// });
 
 // Pemanggilan routing (utama)
 run(app)
 
-const db_model = require('./models')
-const { jobOrders, databases } = db_model
+// const db_model = require('./models')
+// const { jobOrders, databases } = db_model
 
 // app.get("/input-job-order", async(req, res) => {
 // 	// let contentTable, list_no_joj;

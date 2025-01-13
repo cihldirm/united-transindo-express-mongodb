@@ -125,6 +125,8 @@ dist
 .vercel
 .env*.local
 
+*.ejs
+
 assets/
 demo_1/
 demo_2/
