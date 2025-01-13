@@ -26,9 +26,9 @@ var dbo;
 // app.set('views', __dirname + '/views');
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+// app.set('views', path.join(__dirname, 'views'));
+// app.engine('html', require('ejs').renderFile);
+// app.set('view engine', 'html');
 
 // app.use(express.static(`${__dirname}/assets`));
 
@@ -444,177 +444,177 @@ run(app)
 const db_model = require('./models')
 const { jobOrders, databases } = db_model
 
-app.get("/input-job-order", async(req, res) => {
-	// let contentTable, list_no_joj;
+// app.get("/input-job-order", async(req, res) => {
+// 	// let contentTable, list_no_joj;
 
-	// try {
-	// 	// Connect to the MongoDB client
-	// 	await client.connect();
+// 	// try {
+// 	// 	// Connect to the MongoDB client
+// 	// 	await client.connect();
 
-	// 	// Find operation after successful connection
-	// 	// contentTable = await dbo.collection('database').find({}, {timeout: false}).toArray(function(err, result) {
-	// 	contentTable = await dbo.collection('database').find({}, {noCursorTimeout: false}).toArray(function(err, result) {
-	// 	if (err) throw err;
-	// 	console.log("result of contentTable is = ", result);
-	// 	// db.close();
-	// 	});
-	// } catch (err) {
-	// 	console.error(err);
-	// } finally {
-	// 	// Ensure the client is closed when done
-	// 	await client.close();
-	// }
+// 	// 	// Find operation after successful connection
+// 	// 	// contentTable = await dbo.collection('database').find({}, {timeout: false}).toArray(function(err, result) {
+// 	// 	contentTable = await dbo.collection('database').find({}, {noCursorTimeout: false}).toArray(function(err, result) {
+// 	// 	if (err) throw err;
+// 	// 	console.log("result of contentTable is = ", result);
+// 	// 	// db.close();
+// 	// 	});
+// 	// } catch (err) {
+// 	// 	console.error(err);
+// 	// } finally {
+// 	// 	// Ensure the client is closed when done
+// 	// 	await client.close();
+// 	// }
 
-	// contentTable = await databases.find()
-	// 	.then(data => res.send(data))
-	// 	.catch(err => res.status(500).send({message: err.message}))
+// 	// contentTable = await databases.find()
+// 	// 	.then(data => res.send(data))
+// 	// 	.catch(err => res.status(500).send({message: err.message}))
 
-	// 	const no_joj = req.params.no_joj
-	// JobOrders.findOne({no_joj: no_joj})
-	// 	.then(data => res.send(data))
-	// 	.catch(err => res.status(500).send({message: err.message}))
+// 	// 	const no_joj = req.params.no_joj
+// 	// JobOrders.findOne({no_joj: no_joj})
+// 	// 	.then(data => res.send(data))
+// 	// 	.catch(err => res.status(500).send({message: err.message}))
 
-	// console.log("contentTable is = ", contentTable);
+// 	// console.log("contentTable is = ", contentTable);
 
-	// list_no_joj = contentTable.map((data) => data["NO"][" JOJ"]).map((value) => Number(value));
+// 	// list_no_joj = contentTable.map((data) => data["NO"][" JOJ"]).map((value) => Number(value));
 
-	// const findMax = value => value.reduce((res, cur) => res < cur ? cur : res, -Infinity);
+// 	// const findMax = value => value.reduce((res, cur) => res < cur ? cur : res, -Infinity);
 
-	let getData = true;
-  let listNamaPengirim = await namaPengirimModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
-  let listAlamatPengirim = await alamatPengirimModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
-  let listKontakPengirim = await kontakPengirimModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
-  let listNamaPenerima = await namaPenerimaModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
-  let listAlamatPenerima = await alamatPenerimaModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
-  let listKontakPenerima = await kontakPenerimaModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
-  let listMerkUnit = await merkUnitModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
-  let listTypeUnit = await typeUnitModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
-	let listWarnaUnit = await warnaUnitModel.find({}).select({"field": 1, "_id": 0})
-    .catch(function(err) {
-      getData = false;
-      console.log(err);
-    });
+// 	let getData = true;
+//   let listNamaPengirim = await namaPengirimModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
+//   let listAlamatPengirim = await alamatPengirimModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
+//   let listKontakPengirim = await kontakPengirimModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
+//   let listNamaPenerima = await namaPenerimaModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
+//   let listAlamatPenerima = await alamatPenerimaModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
+//   let listKontakPenerima = await kontakPenerimaModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
+//   let listMerkUnit = await merkUnitModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
+//   let listTypeUnit = await typeUnitModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
+// 	let listWarnaUnit = await warnaUnitModel.find({}).select({"field": 1, "_id": 0})
+//     .catch(function(err) {
+//       getData = false;
+//       console.log(err);
+//     });
 
-	listNamaPengirim = listNamaPengirim.map((data) => data.field);
-  listAlamatPengirim = listAlamatPengirim.map((data) => data.field);
-  listKontakPengirim = listKontakPengirim.map((data) => data.field);
-  listNamaPenerima = listNamaPenerima.map((data) => data.field);
-  listAlamatPenerima = listAlamatPenerima.map((data) => data.field);
-  listKontakPenerima = listKontakPenerima.map((data) => data.field);
-  listMerkUnit = listMerkUnit.map((data) => data.field);
-  listTypeUnit = listTypeUnit.map((data) => data.field);
-  listWarnaUnit = listWarnaUnit.map((data) => data.field);
+// 	listNamaPengirim = listNamaPengirim.map((data) => data.field);
+//   listAlamatPengirim = listAlamatPengirim.map((data) => data.field);
+//   listKontakPengirim = listKontakPengirim.map((data) => data.field);
+//   listNamaPenerima = listNamaPenerima.map((data) => data.field);
+//   listAlamatPenerima = listAlamatPenerima.map((data) => data.field);
+//   listKontakPenerima = listKontakPenerima.map((data) => data.field);
+//   listMerkUnit = listMerkUnit.map((data) => data.field);
+//   listTypeUnit = listTypeUnit.map((data) => data.field);
+//   listWarnaUnit = listWarnaUnit.map((data) => data.field);
 
-  if (!getData) {
-    return res.status(500).send("Request Timeout - Internal Server Error \n There is problem when getting data");
-  } else {
-	// res.sendFile(path.join(__dirname, './views/dashboard.html'));
-    // res.render("input-job-order", {
-    res.render("input-job-order", {
-    // res.render("marketing/input-job-order", {
-      // contentTable,
-    //   no_joj: findMax(list_no_joj),
-      no_joj: 6385,
-      listNamaPengirim,
-      listAlamatPengirim,
-      listKontakPengirim,
-      listNamaPenerima,
-      listAlamatPenerima,
-      listKontakPenerima,
-      listMerkUnit,
-      listTypeUnit,
-      listWarnaUnit,
-      // listNopolNokaUnit,
-      message:"",
-      errorMessage:"",
-      resultArr:[]
-    });
-  }
-});
+//   if (!getData) {
+//     return res.status(500).send("Request Timeout - Internal Server Error \n There is problem when getting data");
+//   } else {
+// 	// res.sendFile(path.join(__dirname, './views/dashboard.html'));
+//     // res.render("input-job-order", {
+//     res.render("input-job-order", {
+//     // res.render("marketing/input-job-order", {
+//       // contentTable,
+//     //   no_joj: findMax(list_no_joj),
+//       no_joj: 6385,
+//       listNamaPengirim,
+//       listAlamatPengirim,
+//       listKontakPengirim,
+//       listNamaPenerima,
+//       listAlamatPenerima,
+//       listKontakPenerima,
+//       listMerkUnit,
+//       listTypeUnit,
+//       listWarnaUnit,
+//       // listNopolNokaUnit,
+//       message:"",
+//       errorMessage:"",
+//       resultArr:[]
+//     });
+//   }
+// });
 
-app.post("/input-job-order", async(req, res) => {
-	console.log("req body of input-job-order = ", req.body);
+// app.post("/input-job-order", async(req, res) => {
+// 	console.log("req body of input-job-order = ", req.body);
   
-	// let {
-	//   nama_pengirim,
-	//   alamat_pengirim,
-	//   kontak_pengirim,
-	//   nama_penerima,
-	//   alamat_penerima,
-	//   kontak_penerima,
-	//   hr_tgl_ambil,
-	//   qty,
-	//   merk,
-	//   tipe,
-	//   nopol_noka,
-	//   warna,
-	//   status,
-	//   nominal,
-	//   moda,
-	//   invoice,
-	//   transfer_by,
-	//   opsi_tagihan_top,
-	//   opsi_penawaran_kontrak,
-	//   no_opsi_penawaran_kontrak,
-	//   note
-	// } = req.body;
-	// let dbo = mongoose.db
+// 	// let {
+// 	//   nama_pengirim,
+// 	//   alamat_pengirim,
+// 	//   kontak_pengirim,
+// 	//   nama_penerima,
+// 	//   alamat_penerima,
+// 	//   kontak_penerima,
+// 	//   hr_tgl_ambil,
+// 	//   qty,
+// 	//   merk,
+// 	//   tipe,
+// 	//   nopol_noka,
+// 	//   warna,
+// 	//   status,
+// 	//   nominal,
+// 	//   moda,
+// 	//   invoice,
+// 	//   transfer_by,
+// 	//   opsi_tagihan_top,
+// 	//   opsi_penawaran_kontrak,
+// 	//   no_opsi_penawaran_kontrak,
+// 	//   note
+// 	// } = req.body;
+// 	// let dbo = mongoose.db
   
   
-	// try {
-	//   // Connect to the MongoDB client
-	//   await client.connect();
+// 	// try {
+// 	//   // Connect to the MongoDB client
+// 	//   await client.connect();
   
 	  
   
-	//   // Insert operation after successful connection
-	//   const result = await dbo.collection('job-order').insertOne(req.body);
+// 	//   // Insert operation after successful connection
+// 	//   const result = await dbo.collection('job-order').insertOne(req.body);
 	  
-	//   // Insert into collection
-	//   console.log('Inserted documents =>', result);
-	// } catch (err) {
-	//   console.error(err);
-	// } finally {
-	//   // Ensure the client is closed when done
-	//   await client.close();
-	// }
+// 	//   // Insert into collection
+// 	//   console.log('Inserted documents =>', result);
+// 	// } catch (err) {
+// 	//   console.error(err);
+// 	// } finally {
+// 	//   // Ensure the client is closed when done
+// 	//   await client.close();
+// 	// }
 
-	jobOrders.create(req.body)
-		.then(() => res.send({message: "Tersimpan"}))
-		.catch(err => res.status(500).send({message: err.message}))
-});
+// 	jobOrders.create(req.body)
+// 		.then(() => res.send({message: "Tersimpan"}))
+// 		.catch(err => res.status(500).send({message: err.message}))
+// });
 
 // app.listen(port, () => {
 // 	console.log(`Server started on port ${port}`);
