@@ -24,10 +24,19 @@ var dbo;
 // app.engine('html', require('ejs').renderFile);
 // app.set('view engine', 'html');
 // app.set('views', __dirname + '/views');
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+
 // app.use(express.static(`${__dirname}/assets`));
-app.use(express.static(`${__dirname}/views`));
+
+// app.use(express.static(`${__dirname}/views`));
 // app.use(express.static(`./assets`));
-app.use("/assets", express.static(path.join(__dirname, 'assets')));
+// app.use("/assets", express.static(path.join(__dirname, 'assets')));
+app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, 'assets')));
 
 // support parsing of application/x-www-form-urlencoded post data
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -426,12 +435,7 @@ app.get("/", (req, res) => res.type('html').send(`
 //   });
   
 app.get("/dashboard", (req, res) => {
-	// console.log("dashboard here")
   res.sendFile(path.join(__dirname, './views/dashboard.html'));
-// 	res.type('html').send(
-
-//   )
-	
 });
 
 // Pemanggilan routing (utama)
@@ -536,6 +540,8 @@ app.get("/input-job-order", async(req, res) => {
   if (!getData) {
     return res.status(500).send("Request Timeout - Internal Server Error \n There is problem when getting data");
   } else {
+	// res.sendFile(path.join(__dirname, './views/dashboard.html'));
+    // res.render("input-job-order", {
     res.render("input-job-order", {
     // res.render("marketing/input-job-order", {
       // contentTable,
