@@ -127,6 +127,10 @@ dist
 
 /views/**/*.ejs
 
+/views/navbar.ejs
+/views/sidebar.ejs
+/views/footer.ejs
+
 assets/
 demo_1/
 demo_2/
