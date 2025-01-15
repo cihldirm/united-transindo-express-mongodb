@@ -19,12 +19,9 @@ const { client_email, private_key } = secretKey;
 const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 var dbo;
-app.set('views', __dirname + '/views');
-// // app.set('views', './views');
+
 app.set('view engine', 'ejs');
-// app.engine('html', require('ejs').renderFile);
-// app.set('view engine', 'html');
-// app.set('views', __dirname + '/views');
+app.set('views', path.join(__dirname, 'views'));
 
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
@@ -67,9 +64,6 @@ db.mongoose.connect(db.url, mongooseConfig)
 		console.log("client is = ", client);
 		dbo = client.db("united-transindo");
 		console.log("dbo is = ", dbo);
-		// let http_server = http.createServer((req, res) => {
-
-		// })
 		// let server = app.listen(port, (err) => {
 		// 	if (err) {
 		// 		return console.log("ERROR", err);
@@ -302,10 +296,6 @@ async function readGoogleSheet(sheet) {
   
   const namaPengirimModel = mongoose.model("nama-pengirim", namaPengirimSchema);
   
-  // console.log("namaPengirimSchema is = ", namaPengirimSchema);
-  
-  // console.log("namaPengirimModel is = ", namaPengirimModel);
-  
   const alamatPengirimSchema = new mongoose.Schema({
 	field: String
   }, {
@@ -377,14 +367,6 @@ async function readGoogleSheet(sheet) {
   });
   
   const warnaUnitModel = mongoose.model("warna-unit", warnaUnitSchema);
-  
-//   const jobOrderSchema = new mongoose.Schema({
-// 	// field: String
-//   }, {
-// 	collection: "job-order"
-//   });
-  
-//   const jobOrderModel = mongoose.model("job-order", jobOrderSchema);
 
 app.get("/", (req, res) => res.type('html').send(`
 	<!DOCTYPE html>
@@ -437,18 +419,17 @@ app.get("/", (req, res) => res.type('html').send(`
 	</html>
 `));
 
-// app.get("/dashboard", async(req, res) => {
-// 	// res.render("index", {
-// 	res.render("dashboard", {
-// 	  message:"",
-// 	  errorMessage:"",	
-// 	  resultArr:[]
-// 	});
-//   });
-  
-app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, './views/dashboard.html'));
+app.get("/dashboard", async(req, res) => {
+	res.render("dashboard", {
+	  message:"",
+	  errorMessage:"",	
+	  resultArr:[]
+	});
 });
+  
+// app.get("/dashboard", (req, res) => {
+//   res.sendFile(path.join(__dirname, './views/dashboard.html'));
+// });
 
 // Pemanggilan routing (utama)
 run(app)
