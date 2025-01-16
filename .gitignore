@@ -133,11 +133,11 @@ dist
 # views/footer.ejs
 
 # assets/
-demo_1/
-demo_2/
-demo_3/
-demo_4/
-demo_5/
+/demo_1/
+/demo_2/
+/demo_3/
+/demo_4/
+/demo_5/
 ut-database-center-c0e311032c53.json
 .gitignore
 .DS_Store
