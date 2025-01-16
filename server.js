@@ -14,11 +14,16 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 const { google } = require("googleapis");
-const secretKey = require("./ut-database-center-c0e311032c53.json");
-const { client_email, private_key } = secretKey;
+// const secretKey = require("./ut-database-center-c0e311032c53.json");
+// const { client_email, private_key } = secretKey;
+const client_email = process.env.CLIENT_EMAIL
+const private_key = process.env.PRIVATE_KEY
 const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 var dbo;
+// console.log("secretKey is = ", secretKey);
+console.log("client_email is = ", client_email);
+console.log("private_key is = ", private_key);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
