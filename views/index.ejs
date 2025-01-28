@@ -1,88 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE  html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="PT UNITED TRANSINDO" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>United Transindo Company Profile</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/images/icons/Logo United Transindo.ico">
+    <!-- core:css -->
+	<link rel="stylesheet" href="/vendors/core/core.css">
+	<!-- endinject -->
+    <style type="text/css">
+        /* * { margin:0; padding:0; text-indent:0; } */
+        body {
+            position: relative;
+        }
+        nav.navbar {
+            width: 100%;
+            height: auto;
+            left: 0;
+            padding: 8px 25px;
+            gap: 8px;
+            /* background-color: #ececec !important;
+            border-bottom: 1px solid #f2f4f9; */
+            /* position: relative; */
+
+            .navbar-brand span {
+                font-weight: 700;
+                font-size: 17px;
+                text-wrap: nowrap;
+            }
+        }
+        body > div.content {
+            max-width: unset !important;
+            margin: 0;
+            padding: 0;
+            text-indent: 0;
+            /* margin-top: 60px; */
+
+            p {
+                margin: 0;
+            }
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    </style>
 </head>
-<body>
+<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="50" tabindex="0">
 
-<!-- <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="#">WebSiteName</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Page 1-1</a></li>
-            <li><a href="#">Page 1-2</a></li>
-            <li><a href="#">Page 1-3</a></li>
-          </ul>
-        </li>
-        <li><a href="#">Page 2</a></li>
-        <li><a href="#">Page 3</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      </ul>
-    </div>
-  </div>
-</nav> -->
+<!-- <div class="container-fluid fixed-top"> -->
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img
+                    src="/images/icons/Logo United Transindo.png"
+                    alt=""
+                    width="30"
+                    height="30"
+                />
+                <span>United Transindo</span>
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#home-navbar" aria-controls="home-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="home-navbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#history">History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#vision-mission">Vision & Mission</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#customers">Customers</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav navbar-right ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Sign In</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- </div> -->
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+    <div class="container-fluid content">
+        <p id="home"><span><img width="709" height="1012" alt="image" src="/images/home_1.jpg"/></span></p>
+        <p id="about"><span><img width="707" height="1011" alt="image" src="/images/home_2.jpg"/></span></p>
+        <p id="services"><span><img width="709" height="1012" alt="image" src="/images/home_3.jpg"/></span></p>
+        <p id="history"><span><img width="707" height="1011" alt="image" src="/images/home_4.jpg"/></span></p>
+        <p id="vision-mission"><span><img width="707" height="1011" alt="image" src="/images/home_5.jpg"/></span></p>
+        <p id="customers"><span><img width="707" height="1011" alt="image" src="/images/home_6.jpg"/></span></p>
     </div>
-  </nav>
 
-  <div class="container">
-    <h3>Collapsible Navbar</h3>
-    <p>In this example, the navigation bar is hidden on small screens and replaced by a button in the top right corner (try to re-size this window).
-    <p>Only when the button is clicked, the navigation bar will be displayed.</p>
-  </div>
+<!-- core:js -->
+<script src="/vendors/core/core.js"></script>
+<!-- endinject -->
+
+<script>
+    $(document).ready(function() {
+        // $(window).scroll(function (event) {
+        //     let scroll = $(window).scrollTop();
+        //     console.log("scroll is = ", scroll);
+        // });
+
+        // var scrollSpy = new bootstrap.ScrollSpy(document.body, {
+        //     target: '#navbar-example'
+        // })
+
+        // Add scrollspy to <body>
+        $('body').scrollspy({target: ".navbar", offset: 50});
+
+        // Add smooth scrolling on all links inside the navbar
+        $('#home-navbar .navbar-nav').on('click', '.nav-link', function(e) {
+            // console.log("type nav link is = ", e.currentTarget.hash.slice(1));
+            // let hash_target = e.currentTarget.hash.slice(1);
+            // if (hash_target === "home") {
+            //     $("html, body").animate({ scrollTop: "0px" });
+            // } else if (hash_target === "about") {
+            //     // $("html, body").animate({ scrollTop: "1866px" });
+            //     console.log("");
+            //     $(".container").animate({ scrollTop: "500px" });
+            // } else if (hash_target === "services") {
+            //     $("html, body").animate({ scrollTop: "3005px" });
+            // } else if (hash_target === "history") {
+            //     $("html, body").animate({ scrollTop: "3793px" });
+            // } else if (hash_target === "vision-mission") {
+            //     $("html, body").animate({ scrollTop: "6491px" });
+            // } else if (hash_target === "customers") {
+            //     $("html, body").animate({ scrollTop: "6948px" });
+            // }
+
+            // Store hash
+            let hash = this.hash;
+            // Make sure this.hash has a value before overriding default behavior
+            if (hash) {
+                // Prevent default anchor click behavior
+                event.preventDefault();
+
+                // Using jQuery's animate() method to add smooth page scroll
+                // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+                // $('html, body').animate({
+                //     scrollTop: $(hash).offset().top
+                // }, 800, function(){
+            
+                //     // Add hash (#) to URL when done scrolling (default click behavior)
+                //     window.location.hash = hash;
+                // });
+
+                $("html, body").animate({ scrollTop: $(hash).offset().top });
+            }
+        }); 
+    });
+</script>
 
 </body>
 </html>
+
+

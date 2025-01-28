@@ -378,8 +378,10 @@
           }
           & span.form-label {
             margin: 0;
-            min-width: 80px;
-            width: 80px;
+            /* min-width: 80px;
+            width: 80px; */
+            min-width: 90px;
+            width: 90px;
             line-height: 1;
             /* vertical-align: unset; */
             /* min-width: 120px;
@@ -916,7 +918,8 @@
                                   <td><input type="text" name="nopol_noka[0]" id="nopol_noka-1" class="form-control form-group" style="min-width: max-content;" placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." disabled /></td>
                                   <td><select name="warna[0]" id="warna-1" class="warna form-control form-group" disabled></select></td>
                                   <td>
-                                    <div class="form-group" style="display: flex; margin: 0;">
+                                    <fieldset>
+                                    <div class="form-group" id="status-1" style="display: flex; margin: 0;">
                                       <div class="form-check form-check-inline" 
                                         style="
                                           margin: 0;
@@ -957,6 +960,7 @@
                                     <span class="text-danger" style="display: none;">
                                       <label for="status[0]" class="error" style="display: none;">Mohon Pilih Status Unit</label>
                                     </span>
+                                  </fieldset>
                                   </td>
                                   <td>
                                     <div class="form-group" style="display: flex; margin: 0;">
@@ -1104,6 +1108,7 @@
                         <br/>
                         <!-- <span style="font-weight: bold;"> <span>4.</span> &emsp; &emsp; <span style="text-decoration: underline;">Pembayaran</span> </span> -->
                         <div id="detail-pembayaran-1">
+                          <hr />
                           <div class="form-group form-row">
                             <span style="min-width: 50px; width: 50px;">1.</span>
                             <span class="form-label">Transfer By</span> :
@@ -1118,10 +1123,11 @@
                               />
                             </div>
                           </div>
+                          <hr />
                           <div class="form-group form-row">
                             <span style="min-width: 50px; width: 50px;">2.</span>
                             <span class="form-label">Tagihan</span> : 
-                            <div class="space" style="margin-right: 20px;"></div>
+                            <div class="space" style="margin-right: 10px;"></div>
                             <div class="form-group" style="display: flex; margin: 0; white-space: nowrap; width: 100%; justify-content: space-evenly;">
                               <!-- <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;"> -->
                               <div class="col-3 form-check form-check-inline" 
@@ -1132,7 +1138,6 @@
                                   justify-content: center;
                                   display: flex;
                                 ">
-                                <!-- <label class="form-check-label" style="margin-bottom: 0;"> -->
                                 <!-- <label class="form-check-label" style="margin-bottom: 0; display: flex;"> -->
                                 <label for="tagihan-jakarta" class="form-check-label" style="width: 5.5rem;">
                                   <input
@@ -1228,6 +1233,329 @@
                               </div>
                             </div>
                           </div>
+                          <hr />
+                          <div class="form-group form-row">
+                            <span style="min-width: 50px; width: 50px;">3.</span>
+                            <span class="form-label">Penawaran / Kontrak</span> : 
+                            <div class="space" style="margin-right: 10px;"></div>
+                            <div class="form-group" style="display: flex; margin: 0; white-space: nowrap; width: 100%; justify-content: space-evenly;">
+                              <div class="col-3 form-check form-check-inline" 
+                                style="
+                                  margin: 0;
+                                  padding: 0;
+                                  align-self: center;
+                                  justify-content: center;
+                                  display: flex;
+                                ">
+                                <label class="form-check-label" style="width: 5.5rem;">
+                                  <input
+                                    type="radio"
+                                    class="form-check-input"
+                                    name="penawaran_kontrak"
+                                    id=""
+                                    value="tidak_ada"
+                                    style="position: relative;"
+                                  />
+                                  Tidak Ada
+                                </label>
+                              </div>
+                              <div class="col-3 form-check form-check-inline" 
+                                style="
+                                  margin: 0;
+                                  padding: 0;
+                                  align-self: center;
+                                  justify-content: center;
+                                  display: flex;
+                                ">
+                                <label class="form-check-label" style="width: 5.5rem;">
+                                  <input
+                                    type="radio"
+                                    class="form-check-input"
+                                    name="penawaran_kontrak"
+                                    id=""
+                                    value="ada"
+                                    style="position: relative;"
+                                  />
+                                  Ada
+                                </label>
+                                <!-- <div id="opsi_penawaran_kontrak" style="display: none; margin-left: 1rem;">
+                                  <div class="form-group" style="display: grid; margin: 0; white-space: nowrap; gap: 0.5rem;">
+                                    <div class="form-check form-check-inline" 
+                                      style="
+                                        margin: 0;
+                                        padding: 0;
+                                    ">
+                                      <label class="form-check-label" style="margin-bottom: 0;">
+                                        <input
+                                          type="radio"
+                                          class="form-check-input"
+                                          name="opsi_penawaran_kontrak"
+                                          id="penawaran"
+                                          value="hari_kerja"
+                                          checked
+                                        />
+                                        Surat Penawaran
+                                      </label>
+                                    </div>
+                                    <div class="form-check form-check-inline" 
+                                      style="
+                                        margin: 0;
+                                        padding: 0;
+                                    ">
+                                      <label class="form-check-label" style="margin-bottom: 0;">
+                                        <input
+                                          type="radio"
+                                          class="form-check-input"
+                                          name="opsi_penawaran_kontrak"
+                                          id="kontrak"
+                                          value="kontrak"
+                                        />
+                                        Kontrak
+                                      </label>
+                                    </div>
+                                    <div class="form-check form-check-inline" 
+                                      style="
+                                        margin: 0;
+                                        padding: 0;
+                                    ">
+                                      <label class="form-check-label" style="margin-bottom: 0;">
+                                        <input
+                                          type="radio"
+                                          class="form-check-input"
+                                          name="opsi_penawaran_kontrak"
+                                          id="ban"
+                                          value="ban"
+                                        />
+                                        BAN (Berita Acara Negosiasi)
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div id="field_opsi_penawaran_kontrak" style="display: none; margin-left: 1rem;">
+                                  <div class="form-check form-check-inline" 
+                                    style="
+                                      margin: 0;
+                                      padding: 0;
+                                      padding-left: 1rem;
+                                      align-self: center;
+                                      justify-content: center;
+                                      display: flex;
+                                    ">
+                                    <label for="no_opsi_penawaran_kontrak" class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
+                                      No.
+                                    </label>
+                                    <input
+                                      type="text"
+                                      class="form-control"
+                                      name="no_opsi_penawaran_kontrak"
+                                      id="no_opsi_penawaran_kontrak"
+                                      placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                                      disabled
+                                    />
+                                  </div>
+                                </div> -->
+                              </div>
+                              <!-- <div class="col-6 form-check form-check-inline"></div> -->
+                              <div class="col-6 form-group" 
+                                style="
+                                  /* display: grid;  */
+                                  margin: 0; 
+                                  padding: 0;
+                                  /* margin-left: 1rem; 
+                                  white-space: nowrap; 
+                                  gap: 0.5rem; */
+                                ">
+                                <div id="opsi_penawaran_kontrak" 
+                                  style="
+                                    display: none;
+                                    /* display: grid;
+                                    gap: 0.5rem;
+                                    margin: 0;
+                                    margin-left: 1rem;
+                                    margin-top: 0.5rem; */
+                                    /* display: none; 
+                                    height: unset; */
+                                  ">
+                                  <div class="form-check form-check-inline" 
+                                    style="
+                                      margin: 0;
+                                      padding: 0;
+                                    ">
+                                    <label class="form-check-label" style="width: 5.5rem;">
+                                      <input
+                                        type="radio"
+                                        class="form-check-input"
+                                        name="opsi_penawaran_kontrak"
+                                        id="penawaran"
+                                        value="penawaran"
+                                        checked
+                                        style="position: relative;"
+                                      />
+                                      Surat Penawaran
+                                    </label>
+                                  </div>
+                                  <div class="form-check form-check-inline" 
+                                    style="
+                                      margin: 0;
+                                      padding: 0;
+                                    ">
+                                    <label class="form-check-label" style="width: 5.5rem;">
+                                      <input
+                                        type="radio"
+                                        class="form-check-input"
+                                        name="opsi_penawaran_kontrak"
+                                        id="kontrak"
+                                        value="kontrak"
+                                        style="position: relative;"
+                                      />
+                                      Kontrak
+                                    </label>
+                                  </div>
+                                  <div class="form-check form-check-inline" 
+                                    style="
+                                      margin: 0;
+                                      padding: 0;
+                                  ">
+                                    <label class="form-check-label" style="width: 5.5rem;">
+                                      <input
+                                        type="radio"
+                                        class="form-check-input"
+                                        name="opsi_penawaran_kontrak"
+                                        id="ban"
+                                        value="ban"
+                                        style="position: relative;"
+                                      />
+                                      BAN (Berita Acara Negosiasi)
+                                    </label>
+                                  </div>
+                                  <div class="form-check form-check-inline" 
+                                    style="
+                                      margin: 0;
+                                      padding: 0;
+                                      /* margin-left: 1rem;
+                                      padding-left: 1rem;
+                                      align-self: center;
+                                      justify-content: center;
+                                      display: flex; */
+                                    ">
+                                    <label for="no_opsi_penawaran_kontrak" class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
+                                      No.
+                                    </label>
+                                    <input
+                                      type="text"
+                                      class="form-control"
+                                      name="no_opsi_penawaran_kontrak"
+                                      id="no_opsi_penawaran_kontrak"
+                                      placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <hr />
+                          <div class="form-group form-row">
+                            <span style="min-width: 50px; width: 50px;">4.</span>
+                            <span class="form-label">Handling</span> :
+                            <div class="space" style="margin-right: 10px;"></div>
+                            <div class="form-group" style="display: flex; margin: 0; white-space: nowrap; width: 100%; justify-content: space-evenly;">
+                              <div class="col-3 form-check form-check-inline" 
+                                style="
+                                  margin: 0;
+                                  padding: 0;
+                                  align-self: center;
+                                  justify-content: center;
+                                  display: flex;
+                                ">
+                                <label class="form-check-label" style="width: 5.5rem;">
+                                  <input
+                                    type="radio"
+                                    class="form-check-input"
+                                    name="handling"
+                                    id=""
+                                    value="tidak_ada"
+                                    style="position: relative;"
+                                  />
+                                  Tidak Ada
+                                </label>
+                              </div>
+                              <div class="col-3 form-check form-check-inline" 
+                                style="
+                                  margin: 0;
+                                  padding: 0;
+                                  align-self: center;
+                                  justify-content: center;
+                                  display: flex;
+                                ">
+                                <label class="form-check-label" style="width: 5.5rem;">
+                                  <input
+                                    type="radio"
+                                    class="form-check-input"
+                                    name="handling"
+                                    id=""
+                                    value="ada"
+                                    style="position: relative;"
+                                  />
+                                  Ada
+                                </label>
+                              </div>
+                              <div class="col-6 form-check form-check-inline" 
+                                style="
+                                  /* display: grid;  */
+                                  margin: 0; 
+                                  padding: 0;
+                                  /* margin-left: 1rem; 
+                                  white-space: nowrap; 
+                                  gap: 0.5rem; */
+                                ">
+                                <div id="form_handling" 
+                                  style="
+                                    display: none;
+                                    /* display: grid;
+                                    gap: 0.5rem;
+                                    margin: 0;
+                                    margin-left: 1rem;
+                                    margin-top: 0.5rem; */
+                                    /* display: none; 
+                                    height: unset; */
+                                  ">
+                                  <div class="form-check form-check-inline" 
+                                    style="
+                                      margin: 0;
+                                      padding: 0;
+                                    ">
+                                    <label for="nominal_handling" class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
+                                      Nominal :
+                                    </label>
+                                    <input
+                                      type="text"
+                                      class="form-control"
+                                      name="nominal_handling"
+                                      id="nominal_handling"
+                                      placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                                    />
+                                  </div>
+                                  <div class="form-check form-check-inline" 
+                                    style="
+                                      margin: 0;
+                                      padding: 0;
+                                    ">
+                                    <label for="nama_penerima_handling" class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
+                                      Nama Penerima :
+                                    </label>
+                                    <input
+                                      type="text"
+                                      class="form-control"
+                                      name="nama_penerima_handling"
+                                      id="nama_penerima_handling"
+                                      placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <hr />
                         </div>
                         <!-- <label for="" style="display: flex; align-items: center;">1. Transfer By : 
                           <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
@@ -1551,245 +1879,6 @@
                               </div>
                             </div>
                           </div>
-                          <div class="form-group form-row">
-                            <span class="form-label">Penawaran / Kontrak</span> :
-                            <div class="form-group" style="display: flex; margin: 0; white-space: nowrap; width: 100%; justify-content: space-evenly;">
-                              <div class="col-3 form-check form-check-inline" 
-                                style="
-                                  margin: 0;
-                                  padding: 0;
-                                  align-self: center;
-                                  justify-content: center;
-                                  display: flex;
-                                ">
-                                <!-- <label class="form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="penawaran"
-                                    id=""
-                                    value="ada"
-                                    style="position: relative;"
-                                  />
-                                  Ada
-                                </label> -->
-                                <label class="form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="penawaran_kontrak"
-                                    id=""
-                                    value="tidak_ada"
-                                    style="position: relative;"
-                                  />
-                                  Tidak Ada
-                                </label>
-                              </div>
-                              <div class="col-3 form-check form-check-inline" 
-                                style="
-                                  margin: 0;
-                                  padding: 0;
-                                  align-self: center;
-                                  justify-content: center;
-                                  display: flex;
-                                ">
-                                <!-- <label class="form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="penawaran"
-                                    id=""
-                                    value="tidak_ada"
-                                    style="position: relative;"
-                                  />
-                                  Tidak Ada
-                                </label> -->
-                                <label class="form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="penawaran_kontrak"
-                                    id=""
-                                    value="ada"
-                                    style="position: relative;"
-                                  />
-                                  Ada
-                                </label>
-                                <!-- <div id="opsi_penawaran_kontrak" style="display: none; margin-left: 1rem;">
-                                  <div class="form-group" style="display: grid; margin: 0; white-space: nowrap; gap: 0.5rem;">
-                                    <div class="form-check form-check-inline" 
-                                      style="
-                                        margin: 0;
-                                        padding: 0;
-                                    ">
-                                      <label class="form-check-label" style="margin-bottom: 0;">
-                                        <input
-                                          type="radio"
-                                          class="form-check-input"
-                                          name="opsi_penawaran_kontrak"
-                                          id="penawaran"
-                                          value="hari_kerja"
-                                          checked
-                                        />
-                                        Surat Penawaran
-                                      </label>
-                                    </div>
-                                    <div class="form-check form-check-inline" 
-                                      style="
-                                        margin: 0;
-                                        padding: 0;
-                                    ">
-                                      <label class="form-check-label" style="margin-bottom: 0;">
-                                        <input
-                                          type="radio"
-                                          class="form-check-input"
-                                          name="opsi_penawaran_kontrak"
-                                          id="kontrak"
-                                          value="kontrak"
-                                        />
-                                        Kontrak
-                                      </label>
-                                    </div>
-                                    <div class="form-check form-check-inline" 
-                                      style="
-                                        margin: 0;
-                                        padding: 0;
-                                    ">
-                                      <label class="form-check-label" style="margin-bottom: 0;">
-                                        <input
-                                          type="radio"
-                                          class="form-check-input"
-                                          name="opsi_penawaran_kontrak"
-                                          id="ban"
-                                          value="ban"
-                                        />
-                                        BAN (Berita Acara Negosiasi)
-                                      </label>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div id="field_opsi_penawaran_kontrak" style="display: none; margin-left: 1rem;">
-                                  <div class="form-check form-check-inline" 
-                                    style="
-                                      margin: 0;
-                                      padding: 0;
-                                      padding-left: 1rem;
-                                      align-self: center;
-                                      justify-content: center;
-                                      display: flex;
-                                    ">
-                                    <label for="no_opsi_penawaran_kontrak" class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
-                                      No.
-                                    </label>
-                                    <input
-                                      type="text"
-                                      class="form-control"
-                                      name="no_opsi_penawaran_kontrak"
-                                      id="no_opsi_penawaran_kontrak"
-                                      placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                      disabled
-                                    />
-                                  </div>
-                                </div> -->
-                              </div>
-                              <!-- <div class="col-6 form-check form-check-inline"></div> -->
-                              <div class="col-6 form-group" 
-                                style="
-                                  /* display: grid;  */
-                                  margin: 0; 
-                                  padding: 0;
-                                  /* margin-left: 1rem; 
-                                  white-space: nowrap; 
-                                  gap: 0.5rem; */
-                                ">
-                                <div id="opsi_penawaran_kontrak" 
-                                  style="
-                                    display: none;
-                                    /* display: grid;
-                                    gap: 0.5rem;
-                                    margin: 0;
-                                    margin-left: 1rem;
-                                    margin-top: 0.5rem; */
-                                    /* display: none; 
-                                    height: unset; */
-                                  ">
-                                  <div class="form-check form-check-inline" 
-                                    style="
-                                      margin: 0;
-                                      padding: 0;
-                                    ">
-                                    <label class="form-check-label" style="width: 5.5rem;">
-                                      <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="opsi_penawaran_kontrak"
-                                        id="penawaran"
-                                        value="penawaran"
-                                        checked
-                                        style="position: relative;"
-                                      />
-                                      Surat Penawaran
-                                    </label>
-                                  </div>
-                                  <div class="form-check form-check-inline" 
-                                    style="
-                                      margin: 0;
-                                      padding: 0;
-                                    ">
-                                    <label class="form-check-label" style="width: 5.5rem;">
-                                      <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="opsi_penawaran_kontrak"
-                                        id="kontrak"
-                                        value="kontrak"
-                                        style="position: relative;"
-                                      />
-                                      Kontrak
-                                    </label>
-                                  </div>
-                                  <div class="form-check form-check-inline" 
-                                    style="
-                                      margin: 0;
-                                      padding: 0;
-                                  ">
-                                    <label class="form-check-label" style="width: 5.5rem;">
-                                      <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="opsi_penawaran_kontrak"
-                                        id="ban"
-                                        value="ban"
-                                        style="position: relative;"
-                                      />
-                                      BAN (Berita Acara Negosiasi)
-                                    </label>
-                                  </div>
-                                  <div class="form-check form-check-inline" 
-                                    style="
-                                      margin: 0;
-                                      padding: 0;
-                                      /* margin-left: 1rem;
-                                      padding-left: 1rem;
-                                      align-self: center;
-                                      justify-content: center;
-                                      display: flex; */
-                                    ">
-                                    <label for="no_opsi_penawaran_kontrak" class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
-                                      No.
-                                    </label>
-                                    <input
-                                      type="text"
-                                      class="form-control"
-                                      name="no_opsi_penawaran_kontrak"
-                                      id="no_opsi_penawaran_kontrak"
-                                      placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
                           
                           <!-- <div id="opsi_penawaran_kontrak" class="form-group form-row" style="display: none; height: unset;">
                             <span class="form-label"></span> &nbsp;
@@ -2061,13 +2150,6 @@
                           </div>
                         </div>
                         
-                        <!-- <label for="">Asuransi : <input type="checkbox" name="" id=""> Ada <input type="checkbox" name="" id=""> Tidak Ada  &nbsp; Perincian <input type="text" name="" id=""></label>
-                        <br/>
-                        <label for="">Biaya Koord / Kawal : <input type="checkbox" name="" id=""> Ada <input type="checkbox" name="" id=""> Tidak Ada  &nbsp; Ket. <input type="text" name="" id=""></label>
-                        <br/>
-                        <label for="">Penawaran / Kontrak : <input type="checkbox" name="" id=""> Ada <input type="checkbox" name="" id=""> Tidak Ada </label>
-                        <br/>
-                        <label for=""><b>Note : </b><input type="text" name="" id=""></label> -->
                         <!-- <br/> -->
                         <br/>
                         <br/>
@@ -2550,10 +2632,6 @@
 
             $(`#nama_pengirim`).select2({
                 placeholder: "PILIH SALAH SATU",
-                // placeholder: {
-                //   id: '-1', // the value of the option
-                //   text: 'PILIH SALAH SATU'
-                // },
                 allowClear: true,
                 width: "style",
                 tags: true,
@@ -2721,23 +2799,21 @@
 
             $(`#alamat_pengirim`).select2({
                 // theme: "bootstrap-5",
+                // minimumResultsForSearch: 3,
+                // matcher: function(term, data) {
+                //   // If less than 3 characters are typed return all of the data
+                //   if (term.length < 3) {
+                //     return data;
+                //   }
+                //   // 3 or more characters typed so perform filter
+                //   return data.toUpperCase().indexOf(term.toUpperCase()) == 0;
+                // },
                 placeholder: "PILIH SALAH SATU",
                 allowClear: true,
                 width: "style",
                 tags: true,
                 closeOnSelect: true,
-                minimumInputLength: 5,
-                // language: {
-                //     noResults: () => {
-                //         // let val;
-                //         // $('.alamat_pengirim').on('keyup', (event) => {
-                //         //     val
-                //         // });
-                //         // return "No Results were Found :( <a href='#' class='btn btn-danger'>Use it anyway</a>";
-                //         return $(`.alamat_pengirim`).val();
-                //     }
-                // },
-                // val: "",
+                minimumInputLength: 3,
             }).on("change", function(event) {
               console.log("on change this value alamat pengirim = ", this.value);
 
@@ -2788,7 +2864,6 @@
                 width: "style",
                 tags: true,
                 closeOnSelect: true,
-                minimumInputLength: 5,
             }).on("change", function(event) {
               console.log("on change this value kontak pengirim = ", this.value);
 
@@ -2888,7 +2963,7 @@
                 width: "style",
                 tags: true,
                 closeOnSelect: true,
-                minimumInputLength: 5,
+                minimumInputLength: 3,
             }).on("change", function(event) {
               $(this).trigger('blur');
 
@@ -2937,7 +3012,6 @@
                 width: "style",
                 tags: true,
                 closeOnSelect: true,
-                minimumInputLength: 5,
             }).on("change", function(event) {
               $(this).trigger('blur');
 
@@ -3886,11 +3960,12 @@
           // moment('18/01/2016', 'DD/MM/YYYY').format("DD MMM YYYY") 18 Jan 2016
           
 
-          $("#nominal").inputmask({
+          $("#nominal, #nominal_handling").inputmask({
             alias: "currency",
             prefix: "Rp",
             groupSeparator: ".",
             radixPoint: ",",
+            digits: '0',
             rightAlign: false,
             allowPlus: false,
             allowMinus: false,
@@ -3899,6 +3974,22 @@
           $("#nominal").on("input", function() {
             console.log("nominal value is = ", this.value);
           });
+
+          function fitInputToVal(input) {
+            let el = $('<span>').hide().appendTo(document.body);
+            el.text(input.val() || input.text() || input.attr('placeholder')).css('font', input.css('font'));
+            // let inputWidth = el.width();
+            // input.css({
+            //     width: inputWidth
+            // })
+            input.width(el.width());
+          }
+
+          $('#moda').on('input', function() {
+            console.log("moda this = ", $(this));
+            fitInputToVal($(this));
+          }).trigger('input');
+          
           // console.log("init length of tagihan_top value is = ",$("#tagihan_top").val().length);
 
           // let tagihan_top= $("#tagihan_top").val().replace(/,|\Rp/g, '');
@@ -4391,7 +4482,7 @@
                 gap: "0.5rem",
                 margin: 0,
                 marginLeft: "1rem",
-                marginTop: "0.5rem",
+                // marginTop: "0.5rem",
               });
             } else {
               $(this).parents("div.form-group.form-row").css("height", "2.1875rem");
@@ -4399,6 +4490,26 @@
               $("div#opsi_penawaran_kontrak").css({
                 display: "none",
               });
+            }
+          });
+
+          $("input:radio[name='handling']").on("click", function() {
+            console.log("handling value = ", $(this).val());
+            // $("#tagihan_top").removeAttr("disabled");
+            if ($(this).val() === "ada") {
+              $(this).parents("div.form-group.form-row").css("height", "unset");
+              $("#nominal_handling").val("");
+              $("#nama_penerima_handling").val("");
+              $("#form_handling").show();
+              $("#form_handling").css({
+                display: "grid",
+                gap: "0.5rem",
+                margin: 0,
+                marginLeft: "1rem",
+                // marginTop: "0.5rem",
+              });
+            } else {
+              $("#form_handling").hide();
             }
           });
 
