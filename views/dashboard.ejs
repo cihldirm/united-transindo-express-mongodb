@@ -1070,6 +1070,14 @@
   <!-- custom js for this page -->
   <script src="./js/dashboard.js"></script>
   <script src="./js/datepicker.js"></script>
+  <script src="./js/ejs.min.js"></script>
 	<!-- end custom js for this page -->
+
+  <script>
+    // console.log("session in dashboard = ", JSON.stringify(session, null, '\t'));
+
+    var user = <%- JSON.stringify(user) %>;
+    console.log("user in dashboard = ", JSON.stringify(user, null, '\t'));
+  </script>
 </body>
 </html>

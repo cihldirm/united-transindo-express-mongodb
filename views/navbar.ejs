@@ -321,32 +321,31 @@
                 <img src="/images/empty-profile.png" class="rounded-circle wd-80 ht-80" alt="user">
               </div>
               <div class="info text-center">
-                <p class="name font-weight-bold mb-0">Amiah Burton</p>
-                <p class="email text-muted mb-3">amiahburton@gmail.com</p>
+                <!-- <p class="name font-weight-bold mb-0">Amiah Burton</p>
+                <p class="email text-muted mb-3">amiahburton@gmail.com</p> -->
+                <!-- <p class="email text-muted mb-3"><%= user.email %></p> -->
+                <% if (typeof user != 'undefined' && user) { %>
+                  <p class="name font-weight-bold mb-0"><%= user.name %></p>
+                  <p class="email text-muted mb-3"><%= user.email %></p>
+                <% } %>
               </div>
             </div>
             <div class="dropdown-body">
               <ul class="profile-nav p-0 pt-3">
                 <li class="nav-item">
-                  <a href="pages/general/profile.html" class="nav-link">
+                  <a href="/profile" class="nav-link">
                     <i data-feather="user"></i>
                     <span>Profile</span>
                   </a>
                 </li>
-                <li class="nav-item">
-                  <a href="javascript:;" class="nav-link">
+                <!-- <li class="nav-item">
+                  <a href="/edit-profile" class="nav-link">
                     <i data-feather="edit"></i>
                     <span>Edit Profile</span>
                   </a>
-                </li>
+                </li> -->
                 <li class="nav-item">
-                  <a href="javascript:;" class="nav-link">
-                    <i data-feather="repeat"></i>
-                    <span>Switch User</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="javascript:;" class="nav-link">
+                  <a href="/sign-out" class="nav-link">
                     <i data-feather="log-out"></i>
                     <span>Log Out</span>
                   </a>
@@ -358,3 +357,16 @@
       </ul>
     </div>
   </nav>
+  <script>
+    // console.log("session in dashboard = ", JSON.stringify(session, null, '\t'));
+
+    var user = <%- JSON.stringify(user) %>;
+    console.log("user in navbar = ", JSON.stringify(user, null, '\t'));
+
+    // if (user) {
+    //   document.querySelector('nav.navbar .nav-profile .info.text-center').innerHTML = `
+    //     <p class="name font-weight-bold mb-0">${user.name}</p>
+    //     <p class="email text-muted mb-3">${user.email}</p>
+    //   `;
+    // }
+  </script>

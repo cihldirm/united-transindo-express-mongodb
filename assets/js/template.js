@@ -23,7 +23,7 @@
       $('.btn-clipboard').attr('data-toggle', 'tooltip').attr('title', 'Copy to clipboard');
 
       // initializing bootstrap tooltip
-      $('[data-toggle="tooltip"]').tooltip();
+      $('[data-toggle="tooltip"]').toolTip();
 
       // initially hide btn-clipboard and show after copy
       clipboard.on('success', function(e) {

@@ -20869,7 +20869,7 @@ address p {
           align-items: center;
           padding: 0;
           height: 32px;
-          white-space: nowrap;
+          /* white-space: nowrap; */
           color: #000; }
           .sidebar .sidebar-body .nav .nav-item .nav-link .link-icon {
             width: 16px;
@@ -20938,7 +20938,9 @@ address p {
             color: #000;
             font-size: 13px;
             -webkit-transition: all .3s ease-in-out;
-            transition: all .3s ease-in-out; }
+            transition: all .3s ease-in-out;
+            height: auto;
+            margin-top: 8px; }
             .sidebar .sidebar-body .nav.sub-menu .nav-item .nav-link::before {
               content: '';
               width: 6px;
@@ -20948,7 +20950,7 @@ address p {
               border: 1px solid #a9b4ca;
               position: absolute;
               left: -29px;
-              top: 10px;
+              /* top: 10px; */
               -webkit-transition: all .7s ease-in-out;
               -webkit-transition: all .4s ease-in-out;
               transition: all .4s ease-in-out; }

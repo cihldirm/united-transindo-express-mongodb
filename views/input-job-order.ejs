@@ -45,7 +45,7 @@
     <script type="text/javascript" src="/vendors/jSignature/libs/flashcanvas.js"></script>
     <![endif]-->
     <style>
-      #choose-jo-city {
+      /* #choose-jo-city {
         background-color: #fff;
         height: 450px;
         border: 1px solid;
@@ -65,10 +65,13 @@
             height: 50px;
           }
         }
-      }
+      } */
       .page-content {
         padding-bottom: 0 !important;
         display: grid;
+      }
+      .datepicker.datepicker-dropdown.dropdown-menu {
+        z-index: 1000 !important;
       }
       .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
         color: #999 !important;
@@ -113,7 +116,6 @@
       }
       #jo-template #content > #header {
         display: flex;
-        /* justify-content: space-around; */
         justify-content: space-between;
         align-items: center;
         border: 1px solid;
@@ -124,8 +126,15 @@
             font-weight: bold;
             line-height: 0;
         } */
-        & h6 {
+        & div:nth-child(1) > h6 {
           font-weight: 800;
+        }
+        & div:nth-child(2) > span {
+          & #no_joj {
+            &:empty:before {
+              content: "\feff"; /* ZERO WIDTH NO-BREAK SPACE */
+            }
+          }
         }
       }
       #jo-template #content > #container {
@@ -313,7 +322,20 @@
           & .table tbody td.has-danger .select2-container .select2-selection--single {
             border-color: #ff3366 !important;
           }
-          /* & label[for="form-label"] { */
+          & .table tbody :nth-child(6) {
+            & .text-danger {
+              .error {
+                margin: 0;
+                margin-top: 0.5rem;
+                display: flex;
+                justify-content: center;
+              }
+            }
+
+            & .form-group:has(+ .text-danger .error:not([style*="display: none"])) .form-check .input-frame::before {
+              border: solid #ff3366;
+            }
+          }
           & label.form-label {
             margin: 0;
             width: 60px;
@@ -360,7 +382,14 @@
             line-height: 1;
             /* vertical-align: unset; */
           }
+          & .form-check.form-check-inline {
+            margin: 0;
+            display: flex;
+            align-items: center;
+          }
           & input.form-control {
+            width: 192px;
+            min-width: 192px;
             /* margin: 0 0.625rem; */
             margin-left: 0.75rem;
             border-color: rgb(118,118,118);
@@ -438,18 +467,26 @@
           & i.input-frame {
             position: absolute;
           }
-          /* & label.biaya_koord.form-check-label {
-            display: flex;
-            margin: 0;
-            gap: 0.5rem;
-
-            & i.input-frame {
-              position: absolute;
-            }
-          } */
-          /* & input[name="biaya_koord"] { */
           & input[name="asuransi"], input[name="biaya_koord"] {
             position: relative;
+          }
+          #note {
+            color: black;
+            border-color: rgb(118, 118, 118);
+            min-width: 192px;
+            line-height: normal;
+            height: auto;
+            min-height: 2.1875rem;
+
+            &[placeholder]:empty:before {
+              cursor: text;
+              content: attr(placeholder);
+              color: #555; 
+            }
+
+            &[placeholder]:empty:focus:before {
+              content: "";
+            }
           }
         }
         & .form-check .form-check-label {
@@ -466,6 +503,9 @@
           & span.input-group-addon {
             border-left: 1px solid;
           }
+        }
+        .datepicker.datepicker-dropdown.dropdown-menu {
+          z-index: 1000;
         }
         & #qty {
           padding: 0;
@@ -506,6 +546,7 @@
           #signature-received-by-1,
           #signature-received-by-2 {
             height: 100px;
+            position: relative;
             /* border: 1px solid; */
 
 
@@ -518,10 +559,12 @@
 
             & span {
               position: absolute;
-              bottom: 2px;
+              /* bottom: 2px; */
+              top: 2px;
               right: 2px;
               font-size: 11px;
               line-height: 1;
+              text-align: right;
             }
         }
       }
@@ -630,169 +673,25 @@
             </ol>
           </nav>
 
-          <!-- <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-body">
-                  <div class="container-fluid d-flex justify-content-between">
-                    <div class="col-lg-3 pl-0">
-                      <a href="#" class="noble-ui-logo d-block mt-3"
-                        >Noble<span>UI</span></a
-                      >
-                      <p class="mt-1 mb-1"><b>NobleUI Themes</b></p>
-                      <p>
-                        108,<br />
-                        Great Russell St,<br />London, WC1B 3NA.
-                      </p>
-                      <h5 class="mt-5 mb-2 text-muted">Invoice to :</h5>
-                      <p>
-                        Joseph E Carr,<br />
-                        102, 102 Crown Street,<br />
-                        London, W3 3PR.
-                      </p>
-                    </div>
-                    <div class="col-lg-3 pr-0">
-                      <h4
-                        class="font-weight-medium text-uppercase text-right mt-4 mb-2"
-                      >
-                        invoice
-                      </h4>
-                      <h6 class="text-right mb-5 pb-4"># INV-002308</h6>
-                      <p class="text-right mb-1">Balance Due</p>
-                      <h4 class="text-right font-weight-normal">$ 72,420.00</h4>
-                      <h6 class="mb-0 mt-3 text-right font-weight-normal mb-2">
-                        <span class="text-muted">Invoice Date :</span> 25rd Jan
-                        2020
-                      </h6>
-                      <h6 class="text-right font-weight-normal">
-                        <span class="text-muted">Due Date :</span> 12th Jul 2020
-                      </h6>
-                    </div>
-                  </div>
-                  <div
-                    class="container-fluid mt-5 d-flex justify-content-center w-100"
-                  >
-                    <div class="table-responsive w-100">
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Description</th>
-                            <th class="text-right">Quantity</th>
-                            <th class="text-right">Unit cost</th>
-                            <th class="text-right">Total</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr class="text-right">
-                            <td class="text-left">1</td>
-                            <td class="text-left">PSD to html conversion</td>
-                            <td>02</td>
-                            <td>$55</td>
-                            <td>$110</td>
-                          </tr>
-                          <tr class="text-right">
-                            <td class="text-left">2</td>
-                            <td class="text-left">Package design</td>
-                            <td>08</td>
-                            <td>$34</td>
-                            <td>$272</td>
-                          </tr>
-                          <tr class="text-right">
-                            <td class="text-left">3</td>
-                            <td class="text-left">Html template development</td>
-                            <td>03</td>
-                            <td>$500</td>
-                            <td>$1500</td>
-                          </tr>
-                          <tr class="text-right">
-                            <td class="text-left">4</td>
-                            <td class="text-left">Redesign</td>
-                            <td>01</td>
-                            <td>$30</td>
-                            <td>$30</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="container-fluid mt-5 w-100">
-                    <div class="row">
-                      <div class="col-md-6 ml-auto">
-                        <div class="table-responsive">
-                          <table class="table">
-                            <tbody>
-                              <tr>
-                                <td>Sub Total</td>
-                                <td class="text-right">$ 14,900.00</td>
-                              </tr>
-                              <tr>
-                                <td>TAX (12%)</td>
-                                <td class="text-right">$ 1,788.00</td>
-                              </tr>
-                              <tr>
-                                <td class="text-bold-800">Total</td>
-                                <td class="text-bold-800 text-right">
-                                  $ 16,688.00
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Payment Made</td>
-                                <td class="text-danger text-right">
-                                  (-) $ 4,688.00
-                                </td>
-                              </tr>
-                              <tr class="bg-light">
-                                <td class="text-bold-800">Balance Due</td>
-                                <td class="text-bold-800 text-right">
-                                  $ 12,000.00
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="container-fluid w-100">
-                    <a href="#" class="btn btn-primary float-right mt-4 ml-2"
-                      ><i data-feather="send" class="mr-3 icon-md"></i>Send
-                      Invoice</a
-                    >
-                    <a href="#" class="btn btn-outline-primary float-right mt-4"
-                      ><i data-feather="printer" class="mr-2 icon-md"></i
-                      >Print</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
-          <div id="choose-jo-city">
+          <!-- <div id="choose-jo-city">
             <h4>Pilih Kota :</h4>
             <div id="container">
               <button class="city" id="Sidoarjo">Sidoarjo</button>
               <button class="city" id="Jakarta">Jakarta</button>
               <button class="city" id="Makassar">Makassar</button>
             </div>
-          </div>
-          <div class="spinner-border" role="status" style="display: none;">
+          </div> -->
+          <div class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
           </div>
           <div id="jo-template" style="display: none;">
             <div id="header">
-            <!-- <div class="col-md-12 grid-margin stretch-card" style="display: block;"> -->
-              <!-- <div class="spinner-border" role="status"> -->
-              <!-- <div class="spinner-border" role="status" style="display: none;">
-                <span class="sr-only">Loading...</span>
-              </div> -->
               <div class="">
                 Jl. Raya Bulevar Barat Komp. Ruko Plaza </br>
                 Pasifik Blok A 3 No. 58 Jakarta </br>
                 Telp. (021) 4535007-8, Fax. (021) 45865813
               </div>
               <div class="">
-                <!-- <img width="400" height="70" src="/images/Logo Header PT UT.png" alt="logo-header-job-order" /> -->
                 <img width="270" height="50" src="/images/Logo Header PT UT.jpeg" alt="logo-header-job-order" />
               </div>
               <div class="">
@@ -800,14 +699,11 @@
                 Jl. Lingkar Timur Prasung, Buduran - Sidoarjo </br>
                 Telp. (031) 99708669, Fax. (031) 9970879
               </div>
-
-
             </div>
             <form method="post" action="/input-job-order" id="jo-form" name="jo-form">
                 <div id="content">
                     <div id="header">
                         <div class="">
-                            <!-- <h5>JAKARTA,</h5> -->
                             <h6></h6>
                         </div>
                         <div class="">
@@ -840,25 +736,14 @@
                             <label for="nama_penerima">Nama Penerima</label> <span style="margin-right: .75rem;">:</span>
                             <select name="nama_penerima" id="nama_penerima" class="form-control"></select>
                           </div>
-                          <!-- <label for="">Nama Penerima : 
-                            <select name="nama_penerima" class="nama_penerima form-control"></select>
-                          </label>
-                          <br/> -->
                           <div class="form-group form-row">
                             <label for="alamat_penerima">Alamat Penerima</label> <span style="margin-right: .75rem;">:</span>
                             <select name="alamat_penerima" id="alamat_penerima" class="alamat_penerima form-control" disabled></select>
                           </div>
-                          <!-- <label for="">Alamat Penerima : 
-                            <select name="alamat_penerima" class="alamat_penerima form-control"></select>
-                          </label>
-                          <br/> -->
                           <div class="form-group form-row">
                             <label for="kontak_penerima">Telp.</label> <span style="margin-right: .75rem;">:</span>
                             <select name="kontak_penerima" id="kontak_penerima" class="kontak_penerima form-control" disabled></select>
                           </div>
-                          <!-- <label for="">Telp. : 
-                            <select name="kontak_penerima" class="kontak_penerima form-control"></select>
-                          </label> -->
                           <!-- <select id="my-select" name="my-select" class="my-select form-control"></select> -->
                           <!-- <select id="my-select" class="example"  style="width: 300px">
                             <option value="JAN">January</option>
@@ -878,7 +763,7 @@
                         <!-- <br/> -->
                         <br/>
                         <span style="font-weight: bold;"> <span>2.</span> &emsp; &emsp; <span style="text-decoration: underline;">Hari / Tanggal Pengambilan</span> : <div class="hr_tgl_ambil input-group date datepicker">
-                          <input type="text" name="hr_tgl_ambil" class="form-control"><span class="input-group-addon"><i data-feather="calendar"></i></span>
+                          <input type="text" id="hr_tgl_ambil" name="hr_tgl_ambil" class="form-control"><span class="input-group-addon"><i data-feather="calendar"></i></span>
                         </div> </span>
                         <br/>
                         <br/>
@@ -888,7 +773,6 @@
                         <div id="data-kendaraan">
                           <div class="form-group form-row">
                             <label for="qty" class="form-label">Jumlah</label> :
-                            <!-- <input type="text" name="qty" class="form-control" id="qty" value="1" />Unit -->
                             <div class="quantity">
                               <button type="button" class="btn-danger minus" aria-label="Decrease" disabled>&minus;</button>
                               <input type="number" id="qty" name="qty" class="input-box" value="1" min="1">
@@ -911,7 +795,7 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr>
+                                <!-- <tr>
                                   <th>1</th>
                                   <td><select name="merk[0]" id="merk-1" class="merk form-control form-group"></select></td>
                                   <td><select name="tipe[0]" id="tipe-1" class="tipe form-control form-group" disabled></select></td>
@@ -926,7 +810,6 @@
                                           margin-right: 0.75rem;
                                         ">
                                         <label class="form-check-label">
-                                          <!-- id="status-1" -->
                                           <input
                                             type="radio"
                                             class="form-check-input"
@@ -966,7 +849,6 @@
                                     <div class="form-group" style="display: flex; margin: 0;">
                                       <div class="form-check form-check-inline" style="margin: 0; margin-right: 0.75rem;">
                                         <label class="form-check-label">
-                                          <!-- id="kondisi-1" -->
                                           <input
                                             type="radio"
                                             class="form-check-input"
@@ -1002,7 +884,7 @@
                                       </div>
                                     </div>
                                   </td>
-                                </tr>
+                                </tr> -->
                               </tbody>
                             </table>
                           </div>
@@ -1013,99 +895,48 @@
                         <span style="font-weight: bold;"> <span>4.</span> &emsp; &emsp; <span style="text-decoration: underline;">Pembayaran</span> </span>
                         <br/>
                         <br/>
-                        <!-- <label for="">Nominal : <input
-                            id="nominal"
-                            class="form-control"
-                            data-inputmask="'alias': 'currency'"
-                          /></label>
-                        <br/>
-                        <label for="">Moda : <input type="text" name="" id=""></label>
-                        <br/>
-                        <label for="">Invoice A.N : <input type="text" name="" id=""></label>
-                        <br/>
-                        <br/>
-                        <label for="">1. Transfer By : <input type="text" name="" id=""></label>
-                        <br/>
-                        <label for="">2. Tunai : <input type="checkbox" name="" id=""> Jakarta <input type="checkbox" name="" id="">Sidoarjo <input type="checkbox" name="" id="">Makassar</label>
-                        <br/>
-                        <label for="">3. Tagihan : <input type="checkbox" name="" id=""> Jakarta <input type="checkbox" name="" id="">Sidoarjo  &nbsp; TOP : <input type="text" name="" id=""></label> -->
-
                         <div id="pembayaran">
-                          <div class="form-group form-row">
+                          <div id="nominal-row" class="form-group form-row">
                             <label for="nominal">Nominal</label> :
-                            <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
+                            <div class="form-check form-check-inline">
                               <input
                                 id="nominal"
                                 class="form-control"
                                 name="nominal"
                                 placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                                data-autosize-input='{ "space": 0 }'
                               />
                             </div>
                           </div>
                           <div class="form-group form-row">
                             <label for="moda">Moda</label> :
-                            <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
+                            <div class="form-check form-check-inline">
                               <input
                                 type="text"
                                 class="form-control"
                                 name="moda"
                                 id="moda"
                                 placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                                data-autosize-input='{ "space": 0 }'
                               />
                             </div>
                           </div>
-                          <div class="form-group form-row">
+                          <div id="invoice-row" class="form-group form-row">
                             <label for="invoice">Invoice a.n.</label> :
-                            <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
+                            <div class="form-check form-check-inline">
                               <input
                                 type="text"
                                 class="form-control"
                                 name="invoice"
                                 id="invoice"
                                 placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                                data-autosize-input='{ "space": 0 }'
                               />
                             </div>
+                            <br/>
                           </div>
                         </div>
-
-
-                        <!-- <label for="" style="display: flex; align-items: center;">Nominal : 
-                          <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
-                            <input
-                              id="nominal"
-                              class="form-control"
-                              name="nominal"
-                              placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                              style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                              />
-                            </div>
-                          </label> -->
-                          <!-- data-inputmask="'alias': 'currency'" -->
-                        <!-- <label for="" style="display: flex; align-items: center;">Moda : 
-                          <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
-                            <input
-                              type="text"
-                              class="form-control"
-                              name="moda"
-                              id=""
-                              placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                              style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                            />
-                          </div>
-                        </label>
-                        <label for="" style="display: flex; align-items: center;">Invoice a.n. : 
-                          <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
-                            <input
-                              type="text"
-                              class="form-control"
-                              name="invoice"
-                              id=""
-                              placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                              style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                            />
-                          </div>
-                        </label> -->
-                        <br/>
+                        <!-- <br/> -->
                         <!-- <span style="font-weight: bold;"> <span>4.</span> &emsp; &emsp; <span style="text-decoration: underline;">Pembayaran</span> </span> -->
                         <div id="detail-pembayaran-1">
                           <hr />
@@ -1556,136 +1387,13 @@
                             </div>
                           </div>
                           <hr />
+                          <br/>
+                          <br/>
                         </div>
-                        <!-- <label for="" style="display: flex; align-items: center;">1. Transfer By : 
-                          <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
-                            <input
-                              type="text"
-                              class="form-control"
-                              name="transfer_by"
-                              id=""
-                              placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                              style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                            />
-                          </div>
-                        </label> -->
-                        <!-- <label for="" style="display: flex; align-items: center;">2. Tunai : 
-                          <div class="form-group" style="display: flex; margin: 0;">
-                            <div class="form-check" style="margin: 0 0.75rem 0 1.5rem;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="tunai"
-                                  id=""
-                                  value="jakarta"
-                                />
-                                Jakarta
-                              </label>
-                            </div>
-                            <div class="form-check" style="margin: 0 0.75rem;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="tunai"
-                                  id=""
-                                  value="sidoarjo"
-                                />
-                                Sidoarjo
-                              </label>
-                            </div>
-                            <div class="form-check" style="margin: 0 0.75rem;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="tunai"
-                                  id=""
-                                  value="makassar"
-                                />
-                                Makassar
-                              </label>
-                            </div>
-                          </div>
-                        </label> -->
-                        <!-- <label for="" style="display: flex; align-items: center; white-space: nowrap;">2. Tagihan :
-                          <div class="form-group" style="display: flex; margin: 0; white-space: nowrap;">
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="tagihan"
-                                  id=""
-                                  value="jakarta"
-                                />
-                                Jakarta
-                              </label>
-                            </div>
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem; align-self: center;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="tagihan"
-                                  id=""
-                                  value="sidoarjo"
-                                />
-                                Sidoarjo
-                              </label>
-                            </div>
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem; display: flex; align-items: center;">
-                              <label class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
-                                TOP :
-                              </label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                name="tagihan_top"
-                                id="tagihan_top"
-                                placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                              />
-                              <div id="opsi_tagihan_top" style="display: none;">
-                                <div class="form-group" style="display: grid; margin: 0; white-space: nowrap; gap: 0.5rem;">
-                                  <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;">
-                                    <label class="form-check-label" style="margin-bottom: 0;">
-                                      <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="opsi_tagihan_top"
-                                        id=""
-                                        value="hari_kerja"
-                                      />
-                                      Hari Kerja
-                                    </label>
-                                  </div>
-                                  <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;">
-                                    <label class="form-check-label" style="margin-bottom: 0;">
-                                      <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="opsi_tagihan_top"
-                                        id=""
-                                        value="kalender"
-                                      />
-                                      Kalender
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </label> -->
-                        <br/>
-                        <br/>
                         <div id="detail-pembayaran-2">
                           <div class="form-group form-row">
                             <span class="form-label">Asuransi</span> :
                             <div class="form-group" style="display: flex; margin: 0; white-space: nowrap; width: 100%; justify-content: space-evenly;">
-                              <!-- <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;"> -->
-                                <!-- <div class="col-9 form-check form-check-inline"  -->
                               <div class="col-3 form-check form-check-inline" 
                                 style="
                                   margin: 0;
@@ -1694,17 +1402,6 @@
                                   justify-content: center;
                                   display: flex;
                                 ">
-                                <!-- <label class="form-check-label" style="margin-bottom: 0; display: flex;"> -->
-                                <!-- <label class="form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="asuransi"
-                                    id="asuransi-ada"
-                                    value="ada"
-                                  />
-                                  Ada
-                                </label> -->
                                 <label class="form-check-label" style="margin-bottom: 0; display: flex; width: 5.5rem;">
                                   <input
                                     type="radio"
@@ -1715,31 +1412,7 @@
                                   />
                                   Tidak Ada
                                 </label>
-                                <!-- <div class="form-check form-check-inline" 
-                                  style="
-                                    margin: 0;
-                                    padding: 0;
-                                    /* padding-left: 1rem; */
-                                    margin-left: 0.625rem;
-                                    align-self: center;
-                                    justify-content: center;
-                                    display: flex;
-                                  ">
-                                  <label for="perincian_asuransi" class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
-                                    Perincian
-                                  </label>
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    name="perincian_asuransi"
-                                    id="perincian_asuransi"
-                                    placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                  />
-                                </div> -->
                               </div>
-                              
-                              
-                              <!-- <div class="form-check form-check-inline" style="margin: 0 0.75rem; align-self: center;"> -->
                               <div class="col-3 form-check form-check-inline" 
                                 style="
                                   margin: 0;
@@ -1748,16 +1421,6 @@
                                   justify-content: center;
                                   display: flex;
                                 ">
-                                <!-- <label class="form-check-label" style="margin-bottom: 0; display: flex; width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="asuransi"
-                                    id="asuransi-tidak_ada"
-                                    value="tidak_ada"
-                                  />
-                                  Tidak Ada
-                                </label> -->
                                 <label class="form-check-label" style="width: 5.5rem;">
                                   <input
                                     type="radio"
@@ -1769,8 +1432,6 @@
                                   Ada
                                 </label>
                               </div>
-
-                              <!-- <div class="form-check form-check-inline" style="margin: 0 0.75rem; display: flex; align-items: center;"> -->
                               <div class="col-6 form-check form-check-inline" 
                                 style="
                                   margin: 0;
@@ -1805,16 +1466,6 @@
                                   justify-content: center;
                                   display: flex;
                                 ">
-                                <!-- <label class="biaya_koord form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="biaya_koord"
-                                    id="biaya_koord-ada"
-                                    value="ada"
-                                  />
-                                  Ada
-                                </label> -->
                                 <label class="biaya_koord form-check-label" style="width: 5.5rem;">
                                   <input
                                     type="radio"
@@ -1834,17 +1485,6 @@
                                   justify-content: center;
                                   display: flex;
                                 ">
-                                <!-- <label class="form-check-label"> -->
-                                <!-- <label class="biaya_koord form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="biaya_koord"
-                                    id="biaya_koord-tidak_ada"
-                                    value="tidak_ada"
-                                  />
-                                  Tidak Ada
-                                </label> -->
                                 <label class="biaya_koord form-check-label" style="width: 5.5rem;">
                                   <input
                                     type="radio"
@@ -1879,277 +1519,19 @@
                               </div>
                             </div>
                           </div>
-                          
-                          <!-- <div id="opsi_penawaran_kontrak" class="form-group form-row" style="display: none; height: unset;">
-                            <span class="form-label"></span> &nbsp;
-
-                            <div class="form-group" style="display: flex; margin: 0; white-space: nowrap; width: 100%; justify-content: space-evenly;">
-                              <div class="col-3 form-check form-check-inline" 
-                                style="
-                                  margin: 0;
-                                  padding: 0;
-                                  align-self: center;
-                                  justify-content: center;
-                                  display: flex;
-                                ">
-                                <label class="form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="opsi_penawaran_kontrak"
-                                    id="penawaran"
-                                    value="hari_kerja"
-                                    checked
-                                    style="position: relative;"
-                                  />
-                                  Surat Penawaran
-                                </label>
-                              </div>
-                              <div class="col-3 form-check form-check-inline" 
-                                style="
-                                  margin: 0;
-                                  padding: 0;
-                                  align-self: center;
-                                  justify-content: center;
-                                  display: flex;
-                                ">
-                                <label class="form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="opsi_penawaran_kontrak"
-                                    id="kontrak"
-                                    value="kontrak"
-                                    style="position: relative;"
-                                  />
-                                  Kontrak
-                                </label>
-                              </div>
-                              <div class="col-3 form-check form-check-inline" 
-                                style="
-                                  margin: 0;
-                                  padding: 0;
-                                  align-self: center;
-                                  justify-content: center;
-                                  display: flex;
-                                ">
-                                <label class="form-check-label" style="width: 5.5rem;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="opsi_penawaran_kontrak"
-                                    id="ban"
-                                    value="ban"
-                                    style="position: relative;"
-                                  />
-                                  BAN (Berita Acara Negosiasi)
-                                </label>
-                              </div>
-                              <div class="col-3 form-check form-check-inline" 
-                                style="
-                                  margin: 0;
-                                  padding: 0;
-                                  margin-left: 1rem;
-                                  padding-left: 1rem;
-                                  align-self: center;
-                                  justify-content: center;
-                                  display: flex;
-                                ">
-                                <label for="no_opsi_penawaran_kontrak" class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
-                                  No.
-                                </label>
-                                <input
-                                  type="text"
-                                  class="form-control"
-                                  name="no_opsi_penawaran_kontrak"
-                                  id="no_opsi_penawaran_kontrak"
-                                  placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                />
-                              </div>
-                            </div>
-                          </div> -->
-
-
-                          <!-- <div class="form-row">
-                            <label for="form-label">Asuransi</label> :
-                            <div class="form-group" style="display: flex; margin: 0; white-space: nowrap;">
-                              <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;">
-                                <label class="form-check-label" style="margin-bottom: 0;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="asuransi"
-                                    id=""
-                                    value="ada"
-                                  />
-                                  Ada
-                                </label>
-                              </div>
-                              <div class="form-check form-check-inline" style="margin: 0 0.75rem; align-self: center;">
-                                <label class="form-check-label" style="margin-bottom: 0;">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="asuransi"
-                                    id=""
-                                    value="tidak_ada"
-                                  />
-                                  Tidak Ada
-                                </label>
-                              </div>
-                              <div class="form-check form-check-inline" style="margin: 0 0.75rem; display: flex; align-items: center;">
-                                <label class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
-                                  Perincian
-                                </label>
-                                <input
-                                  type="text"
-                                  class="form-control"
-                                  name="perincian_asuransi"
-                                  id=""
-                                  placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                  style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div> -->
-                        <!-- <label for="" style="display: flex; align-items: center;">Asuransi :
-                          <div class="form-group" style="display: flex; margin: 0; white-space: nowrap;">
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="asuransi"
-                                  id=""
-                                  value="ada"
-                                />
-                                Ada
-                              </label>
-                            </div>
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem; align-self: center;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="asuransi"
-                                  id=""
-                                  value="tidak_ada"
-                                />
-                                Tidak Ada
-                              </label>
-                            </div>
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem; display: flex; align-items: center;">
-                              <label class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
-                                Perincian
-                              </label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                name="perincian_asuransi"
-                                id=""
-                                placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                              />
-                            </div>
-                          </div>
-                        </label> -->
-                        <!-- <label for="" style="display: flex; align-items: center;">Biaya Koord / Kawal :
-                          <div class="form-group" style="display: flex; margin: 0; white-space: nowrap;">
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="biaya_koord"
-                                  id=""
-                                  value="ada"
-                                />
-                                Ada
-                              </label>
-                            </div>
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem; align-self: center;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="biaya_koord"
-                                  id=""
-                                  value="tidak_ada"
-                                />
-                                Tidak Ada
-                              </label>
-                            </div>
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem; display: flex; align-items: center;">
-                              <label class="form-check-label" style="margin: 0; position: relative; display: flex; align-items: center;">
-                                Ket.
-                              </label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                name="keterangan_biaya_koord"
-                                id=""
-                                placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                              />
-                            </div>
-                          </div>
-                        </label>
-                        <label for="" style="display: flex; align-items: center;">Penawaran / Kontrak :
-                          <div class="form-group" style="display: flex; margin: 0; white-space: nowrap;">
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem 0 1.5rem; align-self: center;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="penawaran"
-                                  id=""
-                                  value="ada"
-                                />
-                                Ada
-                              </label>
-                            </div>
-                            <div class="form-check form-check-inline" style="margin: 0 0.75rem; align-self: center;">
-                              <label class="form-check-label" style="margin-bottom: 0;">
-                                <input
-                                  type="radio"
-                                  class="form-check-input"
-                                  name="penawaran"
-                                  id=""
-                                  value="tidak_ada"
-                                />
-                                Tidak Ada
-                              </label>
-                            </div>
-                          </div>
-                        </label> -->
-                        <!-- <div class="form-row">
-                          <label for="" style="display: flex; align-items: center;"><b>Note : </b>
-                            <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
-                              <input
-                                type="text"
+                          <div class="form-group form-row" style="height: auto;">
+                            <label for="note" style="margin: 0; width: 110px; min-width: 110px;"><b>Note</b></label><b style="font-weight: 400;">:</b>
+                            <div class="form-check form-check-inline" style="margin: 0; max-width: calc(100% - 113px); display: flex; align-items: center; padding-left: 0.75rem;">
+                              <div
+                                role="textbox"
                                 class="form-control"
                                 name="note"
-                                id=""
-                                placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                                style="margin: 0 0.625rem; border-color: rgb(118,118,118);"
-                              />
+                                id="note"
+                                contenteditable
+                                placeholder=". . . . . . . . . . . . . . . . . . . . . . . . ."
+                              ></div>
                             </div>
-                          </label>
-                        </div> -->
-                        <div class="form-group form-row">
-                          <label for="note" style="margin: 0; width: 110px;"><b>Note</b></label><b style="font-weight: 400;">:</b>
-                          <div class="form-check form-check-inline" style="margin: 0; display: flex; align-items: center;">
-                            <input
-                              type="text"
-                              class="form-control"
-                              name="note"
-                              id="note"
-                              placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                            />
                           </div>
-                        </div>
-                        
                         <!-- <br/> -->
                         <br/>
                         <br/>
@@ -2194,7 +1576,7 @@
                           <input type="text" name="" id="">
                           <input type="button" value="Submit">
                       </div> -->
-                      <div id="signature-made-by">
+                      <div id="signature-made-by" name="signature_made_by">
                         <span></span>
                       </div>
 
@@ -2213,12 +1595,10 @@
                   </div>
               </div>
               <div style="margin-top: 4rem; text-align: center;">
-                <!-- <input name="" type="submit" value="Submit Form"> -->
                 <input class="btn btn-primary" type="submit" value="Submit Form">
               </div>
             </form>
           </div>
-
         </div>
 
         <!-- partial:partials/_footer.html -->
@@ -2234,8 +1614,9 @@
     <!-- jQuery -->
     <script src="/vendors/jSignature/libs/jquery.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+    <script src="/vendors/jquery.autosize.input/jquery.autosize.input.js"></script>
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
     <!-- Bootsrap Msg Js -->
     <!-- <script src="/js/bootstrap-msg.js"></script> -->
     <script src="/vendors/chartjs/Chart.min.js"></script>
@@ -2254,57 +1635,14 @@
     <script src="/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js"></script>
     <script src="/vendors/inputmask/jquery.inputmask.min.js"></script>
     <script src="/vendors/jquery-validation/jquery.validate.min.js"></script>
-    
-    <script>
-      /*  @preserve
-      jQuery pub/sub plugin by Peter Higgins (dante@dojotoolkit.org)
-      Loosely based on Dojo publish/subscribe API, limited in scope. Rewritten blindly.
-      Original is (c) Dojo Foundation 2004-2010. Released under either AFL or new BSD, see:
-      http://dojofoundation.org/license for more information.
-      */
-      (function($) {
-        var topics = {};
-        $.publish = function(topic, args) {
-            if (topics[topic]) {
-                var currentTopic = topics[topic],
-                args = args || {};
-        
-                for (var i = 0, j = currentTopic.length; i < j; i++) {
-                    currentTopic[i].call($, args);
-                }
-            }
-        };
-        $.subscribe = function(topic, callback) {
-            if (!topics[topic]) {
-                topics[topic] = [];
-            }
-            topics[topic].push(callback);
-            return {
-                "topic": topic,
-                "callback": callback
-            };
-        };
-        $.unsubscribe = function(handle) {
-            var topic = handle.topic;
-            if (topics[topic]) {
-                var currentTopic = topics[topic];
-        
-                for (var i = 0, j = currentTopic.length; i < j; i++) {
-                    if (currentTopic[i] === handle.callback) {
-                        currentTopic.splice(i, 1);
-                    }
-                }
-            }
-        };
-      })(jQuery);
-      
-    </script>
     <script src="/vendors/jSignature/src/jSignature.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.CompressorBase30.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.CompressorSVG.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.UndoButton.js"></script> 
     <script src="/vendors/jSignature/src/plugins/signhere/jSignature.SignHere.js"></script> 
     <script src="https://willowsystems.github.io/jSignature/js/libs/jSignature.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
     <!-- end plugin js for this page -->
     <!-- inject:js -->
     <script src="/vendors/feather-icons/feather.min.js"></script>
@@ -2318,104 +1656,21 @@
     <!-- end custom js for this page -->
 
     <script>
-        // import moment from 'moment';
-        // import 'moment/locale/id'; 
-        // $( function() {
-        //     $('#datepicker').datepicker( $.datepicker.regional[ "hi" ] );
-        // });
-        // console.log(window.location.href);
-        // console.log("window.location.pathname is = ", window.location.pathname);
-        
-
         $(document).ready(function() {
-          // This is the part where jSignature is initialized.
-          // var $sigMadeByDiv = $("#signature-made-by").jSignature({'UndoButton':false});
-          // var $sigApprovedByDiv = $("#signature-approved-by").jSignature({'UndoButton':false});
-          // var $sigReceivedByDiv1 = $("#signature-received-by-1").jSignature({'UndoButton':false});
-          // var $sigReceivedByDiv2 = $("#signature-received-by-2").jSignature({'UndoButton':false});
-
-          // $sigMadeByDiv.jSignature("reset");
-          // $sigApprovedByDiv.jSignature("reset");
-          // $sigReceivedByDiv1.jSignature("reset");
-          // $sigReceivedByDiv2.jSignature("reset");
-
+          var user = <%- JSON.stringify(user) %>;
+			    console.log("user in input job order = ", JSON.stringify(user, null, '\t'));
           
-
-          // let showTimeInterval = setInterval(() => { $("#signature-made-by span").show(); }, 250);
-
-          //   function showTime() {
-          //     let currentDateTime = moment().format('DD-MMM-YYYY HH:mm:ss');
-          //     console.log(currentDateTime);
-          //     if ($("#signature-made-by").jSignature('getData', 'native').length != 0) {
-          //       // console.log("ada");
-          //       // $("#signature-made-by").append(`<span>${currentDateTime}</span>`);
-          //       $("#signature-made-by span").text(currentDateTime);
-          //       // $("#signature-made-by span").show();
-          //       if (timeInterval !== null) return;
-          //       timeInterval = setInterval(function() {
-          //         $("#input").val(++value);
-          //       }, 250);
-          //     } else {
-          //       // console.log("nothing");
-          //       // $("#signature-made-by span").remove();
-          //       $("#signature-made-by span").text("");
-          //       // $("#signature-made-by span").hide();
-          //       clearInterval(timeInterval);
-          //       timeInterval = null;
-          //     }
-          //   }
-
-          //   function showTime() {
-          //     if ($("#signature-made-by").jSignature('getData', 'native').length != 0) {
-          //       $("#signature-made-by span").show();
-          //     } else {
-          //       $("#signature-made-by span").hide();
-          //       // clearInterval(showTimeInterval);
-          //     }
-          //   }
-
-          //   setInterval(showTime, 1);
-          //   setInterval(showTime, 100);
-          //   setInterval(checkTime, 1);
-
-          //   setInterval(showTime, 1000);
-
+          
           // var timeInterval = null;
           var timeInterval = 
             setInterval(function() {
-              $("#signature-made-by span").text(moment().format('DD-MMM-YYYY HH:mm'));
+              // $("#signature-made-by span").text(moment().format('DD-MMM-YYYY HH:mm'));
+              $("#signature-made-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
             }, 1000);
-
-          $("#signature-made-by").bind('change', function(event) { 
-            /* 'event.target' will refer to div with "#signature-made-by" */ 
-
-            // let currentDateTime = moment().format('DD-MMM-YYYY HH:mm:ss');
-            if ($("#signature-made-by").jSignature('getData', 'native').length != 0) {
-              // $("#signature-made-by span").text(currentDateTime);
-              // if (timeInterval !== null) return;
-              // timeInterval = 
-              // if (timeInterval === null) {
-              //   timeInterval = 
-              //     setInterval(function() {
-              //       $("#signature-made-by span").text(moment().format('DD-MMM-YYYY HH:mm:ss'));
-              //     }, 1000);
-              // }
-              $("#signature-made-by span").show();
-            } else {
-              $("#signature-made-by span").hide();
-              // $("#signature-made-by span").text("");
-              // clearInterval(timeInterval);
-              // timeInterval = null;
-            }
-          });
-          // $("#signature-approved-by").bind('change', function(e){ /* 'e.target' will refer to div with "#signature" */ });
-          // $("#signature-received-by-1").bind('change', function(e){ /* 'e.target' will refer to div with "#signature" */ });
-          // $("#signature-received-by-2").bind('change', function(e){ /* 'e.target' will refer to div with "#signature" */ });
-          
 
           var date = new Date(),
               today = new Date(date.getFullYear(), date.getMonth(), date.getDate()),
-              city,
+              // city,
               city_code,
               // database,
               list_nama_pengirim,
@@ -2428,19 +1683,12 @@
               list_type_unit,
               // list_nopol_noka_unit,
               list_warna_unit,
-              // tempOptTag,
-              rowIndex,
-              select2_invalid_nama_pengirim,
-              select2_invalid_alamat_pengirim,
-              select2_invalid_kontak_pengirim,
-              select2_invalid_nama_penerima,
-              select2_invalid_alamat_penerima,
-              select2_invalid_kontak_penerima
+              rowIndex
           ;
 
           // console.log("contentTable in job order = ", JSON.stringify(database, null, '\t'));
 
-          const no_joj = <%- JSON.stringify(no_joj) %>;
+          const init_no_joj = <%- JSON.stringify(no_joj) %>;
           // console.log("no_joj in job order = ", no_joj);
 
           var list_nama_pengirim = <%- JSON.stringify(listNamaPengirim) %>;
@@ -2470,27 +1718,6 @@
           var list_warna_unit = <%- JSON.stringify(listWarnaUnit) %>;
           // console.log("list_warna_unit in job order = ", JSON.stringify(list_warna_unit, null, '\t'));
 
-          // var filteredData = [];
-          // var modalData = [];
-          // var modalAction;
-          // console.log("main of modalAction = ", modalAction);
-
-          // var arr_no_joj = [];
-          // var arr_tgl_joj = [];
-          // var arr_nama_pengirim = [];
-          // var arr_alamat_pengirim = [];
-          // var arr_kontak_pengirim = [];
-          // var arr_nama_penerima = [];
-          // var arr_alamat_penerima = [];
-          // var arr_kontak_penerima = [];
-          // // var arr_pengambilan = [];
-          // var arr_jumlah = [];
-          // var arr_status = [];
-          // var arr_merk = [];
-          // var arr_type = [];
-          // var arr_nopol_noka = [];
-          // var arr_warna = [];
-
           var new_list_nama_pengirim = [];
           var new_list_alamat_pengirim = [];
           var new_list_kontak_pengirim = [];
@@ -2500,6 +1727,11 @@
           var new_list_merk_unit = [];
           var new_list_type_unit = [];
           var new_list_warna_unit = [];
+
+          // var list_kondisi = [{index: 1, value: ""}];
+          // var list_lainnya = [{index: 1, value: ""}];
+          var list_kondisi = [];
+          var list_lainnya = [];
 
           var shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
           var phoneExp = /(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/img;
@@ -2517,105 +1749,448 @@
             weekStart: 0
           };
 
-          var headTable = [
-            "No.",
-            "Nomor JO",
-            "Tanggal JO",
-            "Nama Pengirim",
-            "Alamat Pengirim",
-            "Kontak Pengirim",
-            "Nama Penerima",
-            "Alamat Penerima",
-            "Kontak Penerima",
-            "Merk",
-            "Tipe",
-            "Nopol / Noka",
-            "Warna",
-          ];
+          // if (user.role === "Operational") {
+          //   $("#nominal-row").hide();
+          //   $("#invoice-row").hide();
+          //   $("#detail-pembayaran-1").hide();
+          // } else {
+          //   $("#nominal-row").show();
+          //   $("#invoice-row").show();
+          //   $("#detail-pembayaran-1").show();
+          // }
 
-          // if (window.location.pathname === "/marketing/choose-jo-city") {
-            // console.log("Yep that's true");
+          if (user.location === "Sidoarjo") {
+            city_code = "01";
+          } else if (user.location === "Cikarang") {
+            city_code = "02";
+          } else if (user.location === "Jakarta") {
+            city_code = "03";
+          } else if (user.location === "Makassar") {
+            city_code = "04";
+          }
 
-          $("#choose-jo-city > #container > button.city").on('click', async function () {
-            city = this.id;
-            console.log("city is = ", city);
+          $("#signature-made-by").bind('change', function(event) {
+            $("#signature-made-by canvas").css({
+              border: "none",
+            });
+            $("#sig-error").hide();
+            if ($("#signature-made-by").jSignature('getData', 'native').length != 0) {
+              $("#signature-made-by span").show();
+            } else {
+              $("#signature-made-by span").hide();
+            }
+          });
 
-            if (city === "Sidoarjo") {
-              city_code = "01";
-            } else if (city === "Cikarang") {
-              city_code = "02";
-            } else if (city === "Jakarta") {
-              city_code = "03";
-            } else if (city === "Makassar") {
-              city_code = "04";
+          const generateTable = async () => {
+            // list_kondisi = [{index: 1, value: ""}];
+            // list_lainnya = [{index: 1, value: ""}];
+            list_kondisi = [];
+            list_lainnya = [];
+            $("#jo-template #data-kendaraan table tbody").empty();
+            for (let index = 1; index <= Number($('#qty').val()); index++) {
+              list_kondisi.push({index, value: ""})
+              list_lainnya.push({index, value: ""})
+              $("#jo-template #data-kendaraan table tbody").append(`
+                <tr>
+                  <th>${index}</th>
+                  <td><select name="merk[${index - 1}]" id="merk-${index}" class="merk form-control"></select></td>
+                  <td><select name="tipe[${index - 1}]" id="tipe-${index}" class="tipe form-control" disabled></select></td>
+                  <td><input type="text" name="nopol_noka[${index - 1}]" id="nopol_noka-${index}" class="form-control" style="min-width: max-content;" placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." disabled /></td>
+                  <td><select name="warna[${index - 1}]" id="warna-${index}" class="warna form-control" disabled></select></td>
+                  <td>
+                    <div class="form-group" style="display: flex; margin: 0;">
+                      <div class="form-check form-check-inline" 
+                        style="
+                          margin: 0;
+                          margin-right: 0.75rem;
+                        ">
+                        <label for="status-profit-${index}" class="form-check-label">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="status[${index - 1}]"
+                            id="status-profit-${index}"
+                            value="profit"
+                            required
+                            disabled
+                          />
+                          Profit
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline" 
+                        style="
+                          margin: 0;
+                          margin-left: 0.75rem;
+                        ">
+                        <label for="status-second-${index}" class="form-check-label">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="status[${index - 1}]"
+                            id="status-second-${index}"
+                            value="second"
+                            disabled
+                          />
+                          Second
+                        </label>
+                      </div>
+                    </div>
+                    <span class="text-danger" style="display: none;">
+                      <label for="status[${index - 1}]" class="error" style="display: none;">Mohon Pilih Status Unit</label>
+                    </span>
+                    <!-- <label for="status[${index - 1}]" class="error">Mohon Pilih Status Unit</label> -->
+                  </td>
+                  <td>
+                    <div class="form-group" style="display: flex; margin: 0;">
+                      <div class="form-check form-check-inline" style="margin: 0; margin-right: 0.75rem;">
+                        <label for="kondisi-ada-${index}" class="form-check-label">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="kondisi[${index - 1}]"
+                            id="kondisi-ada-${index}"
+                            value="ada"
+                            disabled
+                          />
+                          Ada
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline" style="margin: 0; margin-left: 0.75rem; display: flex; align-items: center; min-width: max-content;">
+                        <label for="kondisi-lainnya-${index}" class="form-check-label">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="kondisi[${index - 1}]"
+                            id="kondisi-lainnya-${index}"
+                            value="lainnya"
+                            disabled
+                          />
+                          Lainnya
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="lainnya[${index - 1}]"
+                          id="lainnya-${index}"
+                          placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+                          style="margin-left: 0.625rem;"
+                          disabled
+                        />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              `);
             }
 
-            console.log("city_code is = ", city_code);
+            console.log("list_kondisi after init = ", list_kondisi);
+            console.log("list_lainnya after init = ", list_lainnya);
 
-            // window.location.href = "/marketing/input-job-order";
-            // window.history.pushState({}, "United Transindo Admin Dashboard", "/marketing/input-job-order");
+            generateFieldTable();
 
-            $("#choose-jo-city").hide();
-
-            $(".spinner-border").show();
-
-            
-            // const loadData = async () => {
-            //   try {
-            //     const response = await fetch("/generate-no-job-order");
-            //     console.log("response of loadData = ", response);
-                
-            //     if (response.ok) {
-            //       console.log('Promise resolved and HTTP status is successful');
-            //       const data = await response.json();
-            //       console.log("data json from response of loadData = ", data);
-                  
-            //       no_joj = data.no_joj;
-            //       console.log("no_joj in job order = ", no_joj);
-            //     } else {
-            //       console.log('error: ', response.status, response.statusText);
-            //       console.error('Promise resolved but HTTP status failed');
-            //       /* Handle the error returned by the HTTP request */
-            //       return {error: {status: response.status, statusText: response.statusText}};
-            //     }
-            //   } catch (err) {
-            //     console.log("Promise rejected");
-            //     console.error(err)
+            // $(".form-check-label").each(function(e) {
+            //   console.log(".form-check-label each");
+            //   // console.log("child is = ", $(this).children());
+            //   // console.log($(this).children().eq(0).attr("type"));
+            //   if ($(this).children().eq(0).attr("type") === "radio") {
+            //     console.log("is truuee");
+            //     console.log($(this).children());
+            //     console.log($(this).children().eq(0));
+            //     $(this).append('<i class="input-frame"></i>');
             //   }
-            //   // await $.ajax({
-            //   //   url: "/job-order-data",
-            //   //   type: "GET",
-            //   //   dataType: "json",
-            //   //   success: async (res) => {
-            //   //     console.log("results = ", res);
-            //   //   },
-            //   //   error: function (err) {
-            //   //     console.log("error = ", err);
-            //   //   },
-            //   // });
-            // };
+            // });
 
-            // await loadData();
+            $(".form-check label").append('<i class="input-frame"></i>');
 
-            // const findMax = value => value.reduce((res, cur) => res < cur ? cur : res, -Infinity);
+            // checkbox and radios
+            // $(".form-check label, .form-radio label").append('<i class="input-frame"></i>');
+          };
+
+          const generateFieldTable = async () => {
+            $(`[name^="merk"]`).append(`<option></option>`);
+            list_merk_unit.forEach(merk => {
+                $(`[name^="merk"]`).append(`<option value="${merk}">${merk}</option>`);
+            });
+
+            $(`[name^="merk"]`).val(null);
+
+            $(`[name^="merk"]`).select2({
+                placeholder: "PILIH SALAH SATU",
+                allowClear: true,
+                width: "style",
+                tags: true,
+                closeOnSelect: true,
+                minimumInputLength: 3,
+            });
+
+            $('[name^="merk"]').on("change", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              
+              // console.log("rowIndex merk is = ", rowIndex);
+
+              // console.log(`[name="merk[]"] at index ${rowIndex} change value is = `, this.value);
+              
+              $(`[name="tipe[${rowIndex}]"]`).prop('disabled', !this.value);
+
+              $(this).trigger('blur');
+            }).on("blur", function(event) {
+              console.log(`on blur this value merk at ${rowIndex} = `, this.value);
+            }).on("select2:opening", function(e) {
+              if ($(this).data('unselecting')) {
+                $(this).removeData('unselecting');
+                $(`[name="tipe[${rowIndex}]"]`).val(null).trigger('change');
+                $(`[name="nopol_noka[${rowIndex}]"]`).val(null).trigger('change');
+                $(`[name="warna[${rowIndex}]"]`).val(null).trigger('change');
+                $(`[name="status[${rowIndex}]"]`).prop('checked', false);
+                $(`[name="kondisi[${rowIndex}]"]`).prop('checked', false);
+                $(`[name="lainnya[${rowIndex}]"]`).val(null).trigger('change');
+
+                $(`[name="tipe[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="nopol_noka[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="warna[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="status[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', true);
+
+                $(`[name="status[${rowIndex}]"]`).parents(".form-group").siblings(".text-danger").children().css({
+                  display: "none",
+                });
+                e.preventDefault();
+              }
+            }).on("select2:unselecting", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              $(this).data('unselecting', true);
+            }).on("select2:select", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              // console.log(`[name="merk[]"] at index ${rowIndex} select value is = `, this.value);
+
+              if (list_merk_unit.findIndex(merk => String(this.value).toLowerCase() === String(merk).toLowerCase()) === -1) {
+                console.log(`merk at ${rowIndex} with ${this.value} is added`);
+                new_list_merk_unit.push(this.value);
+                list_merk_unit.push(this.value);
+                $(this).append(new Option(this.value, this.value, true, true));
+              }
+            });
+
+            $('[name^="merk"]').each(function(e) {
+              $(this).rules('add', {
+                required: true,
+                messages: {
+                  required: "Mohon Isi Field Merk Unit",
+                },
+              });
+            });
+
+            $(`[name^="tipe"]`).append(`<option></option>`);
+            list_type_unit.forEach(type => {
+                $(`[name^="tipe"]`).append(`<option value="${type}">${type}</option>`);
+            });
+
+            $(`[name^="tipe"]`).val(null);
+
+            $(`[name^="tipe"]`).select2({
+                placeholder: "PILIH SALAH SATU",
+                allowClear: true,
+                width: "style",
+                tags: true,
+                closeOnSelect: true,
+                minimumInputLength: 3,
+            });
+
+            $('[name^="tipe"]').on("change", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              
+              // console.log("rowIndex tipe is = ", rowIndex);
+
+              // console.log(`[name="tipe[]"] at index ${rowIndex} change value is = `, this.value);
+
+              // console.log("merk in tipe event = ", $(`[name="merk[${rowIndex}]"]`).val());
+
+              $(`[name="status[${rowIndex}]"]`).prop('disabled', !$(`[name="merk[${rowIndex}]"]`).val() || !this.value);
+
+              $(this).trigger('blur');
+            }).on("blur", function(event) {
+              console.log(`on blur this value type at ${rowIndex} = `, this.value);
+            }).on("select2:opening", function(e) {
+              if ($(this).data('unselecting')) {
+                $(this).removeData('unselecting');
+                $(`[name="nopol_noka[${rowIndex}]"]`).val(null).trigger('change');
+                $(`[name="warna[${rowIndex}]"]`).val(null).trigger('change');
+                $(`[name="status[${rowIndex}]"]`).prop('checked', false);
+                $(`[name="kondisi[${rowIndex}]"]`).prop('checked', false);
+                $(`[name="lainnya[${rowIndex}]"]`).val(null).trigger('change');
+
+                $(`[name="nopol_noka[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="warna[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="status[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', true);
+                $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', true);
+
+                $(`[name="status[${rowIndex}]"]`).parents(".form-group").siblings(".text-danger").children().css({
+                  display: "none",
+                });
+                e.preventDefault();
+              }
+            }).on("select2:unselecting", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              $(this).data('unselecting', true);
+            }).on("select2:select", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              // console.log(`[name="tipe[]"] at index ${rowIndex} select value is = `, this.value);
+
+              if (list_type_unit.findIndex(tipe => String(this.value).toLowerCase() === String(tipe).toLowerCase()) === -1) {
+                console.log(`tipe at ${rowIndex} with ${this.value} is added`);
+                new_list_type_unit.push(this.value);
+                list_type_unit.push(this.value);
+                $(this).append(new Option(this.value, this.value, true, true));
+              }
+            });
+
+            $('[name^="tipe"]').each(function(e) {
+              $(this).rules('add', {
+                required: true,
+                messages: {
+                  required: "Mohon Isi Field Type Unit",
+                  
+                },
+              });
+            });
+
+            $(`[name^="warna"]`).append(`<option></option>`);
+            list_warna_unit.forEach(warna => {
+                $(`[name^="warna"]`).append(`<option value="${warna}">${warna}</option>`);
+            });
+
+            $(`[name^="warna"]`).val(null);
+
+            $(`[name^="warna"]`).select2({
+                placeholder: "PILIH SALAH SATU",
+                allowClear: true,
+                width: "style",
+                tags: true,
+            });
+
+            $('[name^="warna"]').on("change", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+
+              $(this).trigger('blur');
+            }).on("blur", function(event) {
+              console.log(`on blur this value warna at ${rowIndex} = `, this.value);
+            }).on("select2:opening", function(e) {
+              if ($(this).data('unselecting')) {
+                $(this).removeData('unselecting');
+                e.preventDefault();
+              }
+            }).on("select2:unselecting", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              $(this).data('unselecting', true);
+            }).on("select2:select", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              
+              if (list_warna_unit.findIndex(warna => String(this.value).toLowerCase() === String(warna).toLowerCase()) === -1) {
+                console.log(`warna at ${rowIndex} with ${this.value} is added`);
+                new_list_warna_unit.push(this.value);
+                list_warna_unit.push(this.value);
+                $(this).append(new Option(this.value, this.value, true, true));
+              }
+            });
+
+            $("[name^='status']").on("click", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+
+              $(`[name="nopol_noka[${rowIndex}]"]`).prop('disabled', false);
+              $(`[name="warna[${rowIndex}]"]`).prop('disabled', false);
+              $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', false);
+            });
+
+            $('[name^="status"]').each(function(e) {
+              console.log("each status = ", $(this));
+              $(this).rules('add', {
+                required: true,
+                messages: {
+                  required: "Mohon Pilih Status Unit",
+                },
+              });
+            });
+
+            $("[name^='kondisi']").on("click", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              list_kondisi[list_kondisi.findIndex(obj => obj.index - 1 == rowIndex)].value = this.value
+              if (this.value !== "lainnya") {
+                $(`[name="lainnya[${rowIndex}]"]`).val("");
+                list_lainnya[list_lainnya.findIndex(obj => obj.index - 1 == rowIndex)].value = ""
+              }
+              $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', !(this.value === "lainnya"));
+              // console.log("list_kondisi after choose kondisi = ", JSON.stringify(list_kondisi, null, '\t'));
+              // console.log("list_lainnya after input lainnya = ", JSON.stringify(list_lainnya, null, '\t'));
+            });
             
-            let label_no_joj = city_code + String(moment(new Date()).format('YY')) + String(moment(new Date()).format('MM')) + String(no_joj).padStart(6, '0');
+            $("[name^='lainnya']").on("input", function(e) {
+              rowIndex = $(this).attr("name").match(/\d+/)[0];
+              list_lainnya[list_lainnya.findIndex(obj => obj.index - 1 == rowIndex)].value = this.value
+              // console.log("list_lainnya after input lainnya = ", JSON.stringify(list_lainnya, null, '\t'));
+            });
+          };
 
-            $("#jo-template #content > #header div:nth-child(2) span").text(`No. JO : ${label_no_joj}`);
+          // $('#hr_tgl_ambil').datepicker('option', 'onSelect', function(dateText, inst) { 
+          //     alert( $(this).datepicker('getDate'))
+          //     alert( dateText)
+          //       alert( inst)
+          //    });
 
-            $(`.hr_tgl_ambil`).datepicker({
+          const loadData = async () => {
+            $("#jo-template #content > #header div:nth-child(1) h6").text(`${user.location}, ${moment(new Date()).format('DD MMMM YYYY')}`.toUpperCase());
+
+            $("#jo-template #content > #header div:nth-child(2) span").html(`No. JO : ${city_code + String(moment(new Date()).format('YY'))}<span id="no_joj" contenteditable="true">${String(init_no_joj).padStart(6, '0')}</span>`);
+
+            $("#no_joj").inputmask({
+              mask: "999999",
+              autoUnmask: false,
+              showMaskOnHover: false,
+              rightAlign: true,
+              placeholder: "000000",
+            });
+
+            $('#no_joj').on("blur", function() {
+              if (!this.value) {
+                this.value = 0;
+              }
+            });
+
+            $(`#hr_tgl_ambil`).datepicker({
               format: "DD / dd MM yyyy",
               language: "id",
               startDate: today,
               todayHighlight: true,
-              autoclose: true
-            });
+              autoclose: true,
+            })
+//             .on("changeDate", function (e) {
+//               alert( $(this).datepicker('getDate'))
+// });
 
-            $(".hr_tgl_ambil").datepicker('setDate', new Date());
+            // $(`#hr_tgl_ambil`).datepicker({
+            //   onSelect: function(dateText, inst) {
+            //     alert( $(this).datepicker('getDate'))
+            //     alert( dateText)
+            //     alert( inst)
+            //   }
+            // });
 
-            // console.log("tempOptTag = ", tempOptTag);
+            // $('#hr_tgl_ambil').on("change", function(e) {
+            //   alert( $(this).datepicker('getDate'))
+            // });
 
-            // console.log("select2label_nama_pengirim outside = ", select2label_nama_pengirim);
+            // $('#hr_tgl_ambil').datepicker('option', 'onSelect', function(dateText, inst) { 
+            //   alert( $(this).datepicker('getDate'))
+            //   alert( dateText)
+            //     alert( inst)
+            //  });
+
+            // console.log($.datepicker.formatDate('DD / dd MM yyyy',  $("#hr_tgl_ambil").datepicker('getDate')));
+
+            $("#hr_tgl_ambil").datepicker('setDate', new Date());
+
+            // console.log($('#hr_tgl_ambil').val());
 
             $(`#nama_pengirim`).append(`<option></option>`);
             list_nama_pengirim.forEach(nama_pengirim => {
@@ -2636,110 +2211,11 @@
                 width: "style",
                 tags: true,
                 minimumInputLength: 3,
-                // language: {
-                //   inputTooShort: function() {
-                //       return 'Please Add More Text';
-                //   },
-                // },
-
-                // createTag: function (params) {
-                //   let term = $.trim(params.term);
-
-                //   console.log("params is = ", params);
-
-                //   console.log("term is = ", term);
-
-                //   console.log("this createTag = ", $(this));
-
-                //   console.log("this element createTag = ", $(this)[0]["$element"][0]);
-
-                //   console.log($(".nama_pengirim option").length);
-
-                //   let isExist = false;
-
-                //   console.log("find muller = ", $(".nama_pengirim").find(`option[value="${}"]`).length);
-
-                //   // if ($('.nama_pengirim option').length > 0) {
-                //     $('.nama_pengirim option').each(function() {
-
-                //       if ($(this).text().toUpperCase() == term.toUpperCase()) {
-                //         isExist = true;
-                //         console.log("isExist = ", isExist);
-                //         return null;
-                //       }
-                //     });
-                //   // }
-
-                //   console.log("isExist = ", isExist);
-                //   return {  
-                //     id: params.term,
-                //     text: params.term,
-                //     newTag: true
-                //   }
-                // },
-                // insertTag: function (data, tag) {
-                //   // Insert the tag at the end of the results
-                //   console.log("data = ", data);
-                //   console.log("push tag = ", tag);
-                //   data.push(tag);
-                // },
-                // createTag: function (params) {
-                //   return {
-                //     id: params.term,
-                //     text: params.term,
-                //     newOption: true
-                //   }
-                // },
-                // templateResult: function (data) {
-                //   let $result = $("<span></span>");
-
-                //   $result.text(data.text);
-
-                //   if (data.newOption) {
-                //     $result.append("<em>(new)</em>");
-                //   }
-
-                //   return $result;
-                // },
                 closeOnSelect: true,
             }).on("change", function(event) {
               console.log("on change this value nama pengirim = ", this.value);
 
-              // console.log("is #nama_pengirim valid = ", $(this).valid());
-
-              // $(this).valid();
-
-              // console.log("select2label_nama_pengirim before = ", select2label_nama_pengirim);
-              
-              // select2label_nama_pengirim.remove();
-
-              // select2label_nama_pengirim = undefined;
-
-              // $("#nama_pengirim-error").remove();
-
               $(this).trigger('blur');
-
-              // if (select2_invalid_nama_pengirim && $(this).valid()) {
-              //   select2_invalid_nama_pengirim.remove();
-              //   select2_invalid_nama_pengirim = undefined;
-              // }
-
-              // console.log("select2label_nama_pengirim after = ", select2label_nama_pengirim);
-
-
-              // console.log('np chg');
-              // $("#nama_pengirim").rules('add', {
-              //       required: true,
-              //       minlength: 5,
-              //       messages: {
-              //           required: "Mohon Isi Field Nama Pengirim",
-              //           minlength: "Field Nama Pengirim harus terdiri dari minimal {0} karakter",
-              //       },
-              //   })
-
-              // console.log($('.nama_pengirim option').text().toUpperCase());
-
-              // console.log($('.nama_pengirim option').text().toUpperCase().indexOf(this.value.toUpperCase()));
 
               $('#alamat_pengirim').prop('disabled', !this.value);
 
@@ -2783,13 +2259,6 @@
             //     $('.nama_pengirim.fix').val(null).trigger('change');
             // }
 
-            // $(".nama_pengirim select2-nama_pengirim-container .select2-selection__clear").on("click", function(event) {
-            //     // $(`.nama_pengirim`).val("");
-            //     console.log(1);
-            //     // $(".nama_pengirim").val(null).trigger('change');
-            //     $(".nama_pengirim").val(null);
-            // });
-
             $(`#alamat_pengirim`).append(`<option></option>`);
             list_alamat_pengirim.forEach(alamat_pengirim => {
                 $(`#alamat_pengirim`).append(`<option value="${alamat_pengirim}">${alamat_pengirim}</option>`);
@@ -2798,16 +2267,6 @@
             $(`#alamat_pengirim`).val(null);
 
             $(`#alamat_pengirim`).select2({
-                // theme: "bootstrap-5",
-                // minimumResultsForSearch: 3,
-                // matcher: function(term, data) {
-                //   // If less than 3 characters are typed return all of the data
-                //   if (term.length < 3) {
-                //     return data;
-                //   }
-                //   // 3 or more characters typed so perform filter
-                //   return data.toUpperCase().indexOf(term.toUpperCase()) == 0;
-                // },
                 placeholder: "PILIH SALAH SATU",
                 allowClear: true,
                 width: "style",
@@ -3040,17 +2499,8 @@
               }
             });
 
-
-            // validate signup form on keyup and submit
-            // var validator = $("#jo-form").validate({
-              $("#jo-form").validate({
-              // showErrors: function(errorMap, errorList) {
-              //     $(".errormsg").html($.map(errorList, function(el) {
-              //         return el.message;
-              //     }).join(", "));
-              // },
+            $("#jo-form").validate({
               wrapper: "span",
-              // ignore: [],
               ignore: 'input[type=hidden], .select2-input, .select2-focusser',
               rules: {
                 nama_pengirim: {
@@ -3117,383 +2567,13 @@
               },
             });
 
-            generateFieldTable();
+            // generateFieldTable();
 
-            // $('#my-select').select2({
-            //     placeholder: 'Select a month',
-            //     allowClear: true,
-            //     width: "style",
-            //     tags: true,
-            // }).on("change", function(event) {
-            //   $('.alamat_pengirim').val(null).trigger('change');
-            // })
+            await generateTable();
 
-//             $('#my-select').select2({
-//               placeholder: 'Input Here',
-// allowClear: true,
-// width: "style",
-// tags: true,
-//               data: [{
-//                 id: 0,
-//                 text: "",
-//               },
-//                 {
-//                 id: 1,
-//                 text: "group1",
-//                 // disabled: true,
-//                 // selected: false,
-//                 children: [{
-//                   id: '1',
-//                   text: 'option 1',
-//                 }, {
-//                   id: '2',
-//     text: 'option 2',
-//     disabled: false,
-//                 }, {
-//                   text: 'option 3',
-//     disabled: true,
-//                 }],
-//               }, {
-//                 text: 'group2',
-//   disabled: true,
-//   children: [{
-//     id: '4',
-//     text: 'option 4',
-//     disabled: true,
-//   }, {
-//     id: '5',
-//     text: 'option 5'
-//   }],
-//               }],
+            // $(".spinner-border").hide();
 
-            // $(`.merk`).append(`<option></option>`);
-            // list_merk_unit.forEach(merk => {
-            //     $(`.merk`).append(`<option value="${merk}">${merk}</option>`);
-            // });
-
-            // $(`.merk`).val(null);
-
-            // $(`.merk`).select2({
-            //     placeholder: "PILIH SALAH SATU",
-            //     allowClear: true,
-            //     width: "style",
-            //     tags: true,
-            // });
-            
-            // div:nth-child(1)
-
-            // $('[name^="merk"]').on("change", function(e) {
-            // // $('[name="merk[]"]').on("change", function(e) {
-            //   // alert($(this).index());
-            //   // rowIndex = $('[name="merk[]"]').index(this);
-            //   rowIndex = $(this).attr("name").match(/\d+/)[0];
-            //   // rowIndex = $('[name="merk[]"]').index(this);
-            //   // let unitIndex = $('[name="merk[]"]').index(this);
-            //   console.log("rowIndex merk is = ", rowIndex);
-
-            //   console.log(`[name="merk[]"] at index ${rowIndex} change value is = `, this.value);
-
-            //   // console.log($(`[name="tipe[]"]`));
-            //   // console.log($(`[name="tipe[]"]`)[rowIndex]);
-            //   // console.log($(`[name="tipe[]"]`).eq(rowIndex));
-              
-              
-            //   $(`[name="tipe[${rowIndex}]"]`).prop('disabled', !this.value);
-            //   // $(`[name="tipe[]"]`).eq(rowIndex).prop('disabled', !this.value);
-            //   // $(`[name="tipe[]"]`)[rowIndex].prop('disabled', !this.value);
-            //   // $('[name="nopol_noka[]').prop('disabled', !this.value);
-            //   // $('[name="warna[]').prop('disabled', !this.value);
-            //   // $('[name="status[]').prop('disabled', !this.value);
-            //   // $('[name="kondisi[]').prop('disabled', !this.value);
-            //   // $('[name="lainnya[]').prop('disabled', !this.value);
-              
-            //   // $(`#kontak_penerima`).parent().removeClass('has-danger');
-            //   // $(`#kontak_penerima`).removeClass('form-control-danger');
-            //   // $("label.error.text-danger").remove();
-            // }).on("select2:opening", function(e) {
-            //   if ($(this).data('unselecting')) {
-            //     $(this).removeData('unselecting');
-            //     // $(`[name="tipe[]"]`).eq(rowIndex).val(null).trigger('change');
-            //     // $(`[name="nopol_noka[]"]`).eq(rowIndex).val(null).trigger('change');
-            //     // $(`[name="warna[]"]`).eq(rowIndex).val(null).trigger('change');
-            //     // // $(`[name="status[]"]`).val(null).trigger('change');
-            //     // $(`[name="status[${rowIndex}]"]`).eq(rowIndex).prop('checked', false);
-            //     // $(`[name="kondisi[${rowIndex}]"]`).eq(rowIndex).prop('checked', false);
-            //     // // $(`[name="kondisi[]"]`).eq(rowIndex).val(null).trigger('change');
-            //     // $(`[name="lainnya[]"]`).eq(rowIndex).val(null).trigger('change');
-            //     $(`[name="tipe[${rowIndex}]"]`).val(null).trigger('change');
-            //     $(`[name="nopol_noka[${rowIndex}]"]`).val(null).trigger('change');
-            //     $(`[name="warna[${rowIndex}]"]`).val(null).trigger('change');
-            //     $(`[name="status[${rowIndex}]"]`).prop('checked', false);
-            //     $(`[name="kondisi[${rowIndex}]"]`).prop('checked', false);
-            //     $(`[name="lainnya[${rowIndex}]"]`).val(null).trigger('change');
-
-            //     // $('[name="tipe[]').eq(rowIndex).prop('disabled', true);
-            //     // $('[name="nopol_noka[]').eq(rowIndex).prop('disabled', true);
-            //     // $('[name="warna[]').eq(rowIndex).prop('disabled', true);
-            //     // $('[name="kondisi[]').eq(rowIndex).prop('disabled', true);
-            //     // $('[name="lainnya[]').eq(rowIndex).prop('disabled', true);
-            //     $(`[name="tipe[${rowIndex}]"]`).prop('disabled', true);
-            //     $(`[name="nopol_noka[${rowIndex}]"]`).prop('disabled', true);
-            //     $(`[name="warna[${rowIndex}]"]`).prop('disabled', true);
-            //     $(`[name="status[${rowIndex}]"]`).prop('disabled', true);
-            //     $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', true);
-            //     $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', true);
-            //     e.preventDefault();
-            //   }
-            // }).on("select2:unselecting", function(e) {
-            //   // rowIndex = $('[name="merk[]"]').index(this);
-            //   rowIndex = $(this).attr("name").match(/\d+/)[0];
-            //   $(this).data('unselecting', true);
-            // }).on("select2:select", function(e) {
-            //   // rowIndex = $('[name="merk[]"]').index(this);
-            //   rowIndex = $(this).attr("name").match(/\d+/)[0];
-            //   console.log(`[name="merk[]"] at index ${rowIndex} select value is = `, this.value);
-
-            //   if (list_merk_unit.findIndex(merk => String(this.value).toLowerCase() === String(merk).toLowerCase()) === -1) {
-            //     console.log(`merk at ${rowIndex} with ${this.value} is added`);
-            //     list_merk_unit.push(this.value);
-            //     $(this).append(new Option(this.value, this.value, true, true));
-            //   }
-            // });
-
-            // $('[name^="merk"]').on("change", function(e) {
-            // // $('[name="merk[]"]').on("change", function(e) {
-            //   // alert($(this).index());
-            //   rowIndex = $('[name="merk[]"]').index(this);
-            //   console.log("rowIndex merk is = ", rowIndex);
-
-            //   console.log(`[name="merk[]"] change value is = `, this.value);
-              
-              
-            //   $(`[name="tipe[]"]`).prop('disabled', !this.value);
-            //   // $('[name="nopol_noka[]').prop('disabled', !this.value);
-            //   // $('[name="warna[]').prop('disabled', !this.value);
-            //   // $('[name="status[]').prop('disabled', !this.value);
-            //   // $('[name="kondisi[]').prop('disabled', !this.value);
-            //   // $('[name="lainnya[]').prop('disabled', !this.value);
-              
-            //   // $(`#kontak_penerima`).parent().removeClass('has-danger');
-            //   // $(`#kontak_penerima`).removeClass('form-control-danger');
-            //   // $("label.error.text-danger").remove();
-            // }).on("select2:opening", function(e) {
-            //   if ($(this).data('unselecting')) {
-            //     $(this).removeData('unselecting');
-            //     $(`[name="tipe[]"]`).val(null).trigger('change');
-            //     $(`[name="nopol_noka[]"]`).val(null).trigger('change');
-            //     $(`[name="warna[]"]`).val(null).trigger('change');
-            //     // $(`[name="status[]"]`).val(null).trigger('change');
-            //     $(`[name="status[0]"]`).prop('checked', false);
-            //     $(`[name="kondisi[]"]`).val(null).trigger('change');
-            //     $(`[name="lainnya[]"]`).val(null).trigger('change');
-
-            //     $('[name="tipe[]').prop('disabled', true);
-            //     $('[name="nopol_noka[]').prop('disabled', true);
-            //     $('[name="warna[]').prop('disabled', true);
-            //     $('[name="status[0]').prop('disabled', true);
-            //     $('[name="kondisi[]').prop('disabled', true);
-            //     $('[name="lainnya[]').prop('disabled', true);
-            //     e.preventDefault();
-            //   }
-            // }).on("select2:unselecting", function(e) {
-            //   $(this).data('unselecting', true);
-            // }).on("select2:select", function(e) {
-            //   console.log(`[name="merk[]"] select value is = `, this.value);
-
-            //   if (list_merk_unit.findIndex(merk => String(this.value).toLowerCase() === String(merk).toLowerCase()) === -1) {
-            //     console.log(`merk at ${rowIndex} with ${this.value} is added`);
-            //     list_merk_unit.push(this.value);
-            //     $(this).append(new Option(this.value, this.value, true, true));
-            //   }
-            // });
-
-            // // $(`#kontak_penerima`).select2({
-            // //     placeholder: "PILIH SALAH SATU",
-            // //     allowClear: true,
-            // //     width: "style",
-            // //     tags: true,
-            // //     closeOnSelect: true,
-            // // }).on("change", function(event) {
-            // //   $(`#kontak_penerima`).parent().removeClass('has-danger');
-            // //   $(`#kontak_penerima`).removeClass('form-control-danger');
-            // //   $("label.error.text-danger").remove();
-            // // }).on("select2:unselecting", function(e) {
-            // //   console.log("select2 unselecting");
-            // //   console.log("select unselecting value kontak penerima = ", this.value);
-              
-            // //   $(this).on("select2:opening", function (evt) {
-            // //     evt.preventDefault();
-            // //     $(this).off("select2:opening");
-            // //   });
-            // // }).on("select2:select", function(e) {
-            // //   console.log("select2 select");
-            // //   console.log("select input value kontak penerima = ", this.value);
-
-            // //   if (list_kontak_penerima.findIndex(kontak_penerima => String(this.value).toLowerCase() === String(kontak_penerima).toLowerCase()) === -1) {
-            // //     console.log(this.value, "added to dataset");
-            // //     list_kontak_penerima.push(this.value);
-            // //     $(this).append(new Option(this.value, this.value, true, true));
-            // //   }
-            // // });
-
-            // $(`.tipe`).append(`<option></option>`);
-            // list_type_unit.forEach(type => {
-            //     $(`.tipe`).append(`<option value="${type}">${type}</option>`);
-            // });
-
-            // $(`.tipe`).val(null);
-
-            // $(`.tipe`).select2({
-            //     placeholder: "PILIH SALAH SATU",
-            //     allowClear: true,
-            //     width: "style",
-            //     tags: true,
-            // });
-
-            // $('[name="tipe[]"]').on("change", function(e) {
-            //   rowIndex = $('[name="tipe[]"]').index(this);
-            //   console.log("rowIndex tipe is = ", rowIndex);
-
-            //   console.log(`[name="merk[]"] change value is = `, $(`[name="merk[]"]`).val());
-            //   console.log(`[name="tipe[]"] change value is = `, this.value);
-              
-            //   $('[name="status[0]').prop('disabled', !$('[name="merk[]"]').val() || !this.value);
-            //   // $('[name="nopol_noka[]').prop('disabled', !$('[name="merk[]"]').val() || !this.value);
-            //   // $('[name="warna[]').prop('disabled', !$('[name="merk[]"]').val() || !this.value);
-            //   // $('[name="kondisi[]').prop('disabled', !$('[name="merk[]"]').val() || !this.value);
-            //   // $('[name="lainnya[]').prop('disabled', !$('[name="merk[]"]').val() || !this.value);
-            // }).on("select2:opening", function(e) {
-            //   if ($(this).data('unselecting')) {
-            //     $(this).removeData('unselecting');
-            //     $(`[name="nopol_noka[]"]`).val(null).trigger('change');
-            //     $(`[name="warna[]"]`).val(null).trigger('change');
-            //     // $(`[name="status[]"]`).val(null).trigger('change');
-            //     $(`[name="status[0]"]`).prop('checked', false);
-            //     $(`[name="kondisi[]"]`).val(null).trigger('change');
-            //     $(`[name="lainnya[]"]`).val(null).trigger('change');
-
-            //     $('[name="nopol_noka[]').prop('disabled', true);
-            //     $('[name="warna[]').prop('disabled', true);
-            //     $('[name="status[0]').prop('disabled', true);
-            //     $('[name="kondisi[]').prop('disabled', true);
-            //     $('[name="lainnya[]').prop('disabled', true);
-            //     e.preventDefault();
-            //   }
-            // }).on("select2:unselecting", function(e) {
-            //   $(this).data('unselecting', true);
-            // }).on("select2:select", function(e) {
-            //   console.log(`[name="merk[]"] select value is = `, $(`[name="merk[]"]`).val());
-            //   console.log(`[name="tipe[]"] select value is = `, this.value);
-              
-            //   if (list_type_unit.findIndex(type => String(this.value).toLowerCase() === String(type).toLowerCase()) === -1) {
-            //     console.log(`tipe at ${rowIndex} with ${this.value} is added`);
-            //     list_type_unit.push(this.value);
-            //     $(this).append(new Option(this.value, this.value, true, true));
-            //   }
-            // });
-
-            // // arr_nopol_noka.forEach(nopol_noka => {
-            // //     $(`.nopol_noka`).append(`<option value="${nopol_noka}">${nopol_noka}</option>`);
-            // // });
-
-            // // list_nopol_noka_unit.forEach(nopol_noka => {
-            // //     $(`.nopol_noka`).append(`<option value="${nopol_noka}">${nopol_noka}</option>`);
-            // // });
-
-            // // $(`.nopol_noka`).val("");
-
-            // // $(`.nopol_noka`).select2({
-            // //     placeholder: "PILIH SALAH SATU",
-            // //     allowClear: true,
-            // //     width: "style",
-            // //     tags: true,
-            // // });
-
-            // $(`.warna`).append(`<option></option>`);
-            // list_warna_unit.forEach(warna => {
-            //     $(`.warna`).append(`<option value="${warna}">${warna}</option>`);
-            // });
-
-            // $(`.warna`).val(null);
-
-            // $(`.warna`).select2({
-            //     placeholder: "PILIH SALAH SATU",
-            //     allowClear: true,
-            //     width: "style",
-            //     tags: true,
-            // });
-
-            // $('[name="warna[]"]').on("change", function(e) {
-            //   rowIndex = $('[name="warna[]"]').index(this);
-            //   console.log("rowIndex warna is = ", rowIndex);
-            //   // $('[name="tipe[]').prop('disabled', !$('.nama_penerima').val() || !this.value);
-            //   if (this.value && list_warna_unit.findIndex(value => String($(`[name="warna[]"]`).val()).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //     console.log(`warna at ${rowIndex} with ${this.value} is added`);
-            //     list_warna_unit.push($(`[name="warna[]"]`).val());
-            //     // $(`[name="warna[]"]`).append(`<option value="${$(`[name="warna[]"]`).val()}">${$(`[name="warna[]"]`).val()}</option>`);
-            //   }
-            //   // $('[name="tipe[]').prop('disabled', !this.value);
-            // });
-
-            // $("input:radio[name^='status']").on("change", function() {
-            //   console.log("status on change");
-            //   console.log("input radio change status value = ", this.value);
-
-            //   // $('[name="nopol_noka[]').prop('disabled', !$('[name="merk[]"]').val() || !$('[name="tipe[]"]').val() || !this.value);
-            //   // $('[name="warna[]').prop('disabled', !$('[name="merk[]"]').val() || !$('[name="tipe[]"]').val() || !this.value);
-            //   // $('[name="kondisi[]').prop('disabled', !$('[name="merk[]"]').val() || !$('[name="tipe[]"]').val() || !this.value);
-            //   // $('[name="lainnya[]').prop('disabled', !$('[name="merk[]"]').val() || !$('[name="tipe[]"]').val() || !this.value);
-
-            //   $('[name="nopol_noka[]').prop('disabled', false);
-            //   $('[name="warna[]').prop('disabled', false);
-            //   $('[name="kondisi[]').prop('disabled', false);
-            //   $('[name="lainnya[]').prop('disabled', false);
-            // });
-
-            // $("input:radio[name^='status']").on("click", function() {
-            //   console.log("status on click");
-            //   // console.log("input radio status value = ", $(this).val());
-            //   console.log("input radio click status value = ", this.value);
-
-            //   // if ($(this).val() === "ada") {
-            //   //   $("#perincian_asuransi").removeAttr("disabled");
-            //   // } else {
-            //   //   $("#perincian_asuransi").val("");
-            //   //   $("#perincian_asuransi").attr("disabled", "disabled");
-            //   // }
-              
-            //   // $(`[name="nopol_noka[]"]`).val(null).trigger('change');
-            //   // $(`[name="warna[]"]`).val(null).trigger('change');
-            //   // $(`[name="kondisi[]"]`).val(null).trigger('change');
-            //   // $(`[name="lainnya[]"]`).val(null).trigger('change');
-
-            //   // console.log("status [] value after is = ", $("input:radio[name='status[]']").val());
-
-            //   // $('[name="nopol_noka[]').prop('disabled', !$('[name="merk[]"]').val() || !$('[name="tipe[]"]').val() || !this.value);
-            //   // $('[name="warna[]').prop('disabled', !$('[name="merk[]"]').val() || !$('[name="tipe[]"]').val() || !this.value);
-            // });
-
-            // console.log("status [] value before is = ", $("input:radio[name='status[]']").val());
-
-            $(".spinner-border").hide();
-
-            $("#jo-template #content > #header div:nth-child(1) h6").text(`${city},  ${moment(new Date()).format('DD MMMM YYYY')}`.toUpperCase());
-
-            // console.log($("#jo-form").width());
-
-            $("#jo-template").show();
-
-            // $(`#signature-made-by, 
-            //       #signature-approved-by,
-            //       #signature-received-by-1,
-            //       #signature-received-by-2`).jSignature({
-            //   'UndoButton': true,
-            //   'decor-color': 'transparent',
-            //   'color': '#000',
-            //   'width': '100%',
-            //   'height': '100',
-            //   'lineWidth': 1,
-            // });
+            // $("#jo-template").show();
 
             $(`#signature-made-by`).jSignature({
               'UndoButton': true,
@@ -3504,1043 +2584,174 @@
               'lineWidth': 1,
             });
 
-            // $("#signature-made-by span").text(moment().format('DD-MMM-YYYY HH:mm:ss'));
+            $("#signature-made-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Dibuat Oleh</p>" );
 
-            // let showTimeInterval = setInterval(() => { $("#signature-made-by span").show(); }, 250);
+            $("#nominal, #nominal_handling, #keterangan_biaya_koord").inputmask({
+              alias: "currency",
+              prefix: "Rp",
+              groupSeparator: ".",
+              radixPoint: ",",
+              digits: '0',
+              rightAlign: false,
+              allowPlus: false,
+              allowMinus: false,
+            });
 
-            // function showTime() {
-            //   let currentDateTime = moment().format('DD-MMM-YYYY HH:mm:ss');
-            //   console.log(currentDateTime);
-            //   if ($("#signature-made-by").jSignature('getData', 'native').length != 0) {
-            //     // console.log("ada");
-            //     // $("#signature-made-by").append(`<span>${currentDateTime}</span>`);
-            //     $("#signature-made-by span").text(currentDateTime);
-            //     // $("#signature-made-by span").show();
-            //   } else {
-            //     // console.log("nothing");
-            //     // $("#signature-made-by span").remove();
-            //     $("#signature-made-by span").text("");
-            //     // $("#signature-made-by span").hide();
-            //   }
-            // }
+            $("#nominal").on("input", function() {
+              console.log("nominal value is = ", this.value);
+            });
 
-            // function showTime() {
-            //   if ($("#signature-made-by").jSignature('getData', 'native').length != 0) {
-            //     $("#signature-made-by span").show();
-            //   } else {
-            //     $("#signature-made-by span").hide();
-            //     // clearInterval(showTimeInterval);
-            //   }
-            // }
-
-            // setInterval(showTime, 1);
-            // setInterval(showTime, 100);
-            // setInterval(checkTime, 1);
-
-            // setInterval(showTime, 1000);
-
-            // console.log($("#jo-form").width());
+            // To change defaults and be used it has to happen before the instance is initialized
+            // Remove the data attribute to test this
+            //Plugins.AutosizeInput.getDefaultOptions().space = 60;
             
-            
-            // $("#jo-form").validate({
-            //     ignore: [],
-            //     rules: {
-            //       nama_pengirim: {
-            //         required: true,
-            //         minNameLength: true,
-            //         minLength: 3,
-            //       },
-            //       alamat_pengirim: {
-            //         required: true,
-            //         minContactAddressLength: true,
-            //       },
-            //       kontak_pengirim: {
-            //         required: true,
-            //         minContactAddressLength: true,
-            //       },
-            //       nama_penerima: {
-            //         required: true,
-            //         minNameLength: true,
-            //       },
-            //       alamat_penerima: {
-            //         required: true,
-            //         minContactAddressLength: true,
-            //       },
-            //       kontak_penerima: {
-            //         required: true,
-            //         minContactAddressLength: true,
-            //       },
-            //       'merk[]': {
-            //         required: true,
-            //         minLength: 5,
-            //       },
-            //       // tipe[]
-            //       // nopol_noka[]
-            //       // warna[]
-            //       // status[]
-            //       // kondisi[]
-            //       // lainnya[]
-            //       // "category[]": "required"
+            $("#nominal").autosizeInput();
+            $("#moda").autosizeInput();
+            $("#invoice").autosizeInput();
 
-                  
-            //       // topic: {
-            //       //   required: "#newsletter:checked",
-            //       //   minlength: 2
-            //       // },
-            //     },
-            //     messages: {
-            //       nama_pengirim: {
-            //         required: "Mohon Isi Field Nama Pengirim",
-            //         minNameLength: "Field Nama Pengirim harus terdiri dari minimal 3 karakter",
-            //         minLength: "Field Nama Pengirim harus terdiri dari minimal {0} karakter",
-            //       },
-            //       alamat_pengirim: {
-            //         required: "Mohon Isi Field Alamat Pengirim",
-            //         minContactAddressLength: "Field Alamat Pengirim harus terdiri dari minimal 5 karakter",
-            //       },
-            //       kontak_pengirim: {
-            //         required: "Mohon Isi Field Kontak Pengirim",
-            //         minContactAddressLength: "Field Kontak Pengirim harus terdiri dari minimal 5 karakter",
-            //       },
-            //       nama_penerima: {
-            //         required: "Mohon Isi Field Nama Penerima",
-            //         minNameLength: "Field Nama Penerima harus terdiri dari minimal 3 karakter",
-            //       },
-            //       alamat_penerima: {
-            //         required: "Mohon Isi Field Alamat Penerima",
-            //         minContactAddressLength: "Field Alamat Penerima harus terdiri dari minimal 5 karakter",
-            //       },
-            //       kontak_penerima: {
-            //         required: "Mohon Isi Field Kontak Penerima",
-            //         minContactAddressLength: "Field Kontak Penerima harus terdiri dari minimal 5 karakter",
-            //       },
-            //       'merk[]': {
-            //         required: "Mohon Isi Field Merk",
-            //         minLength: "Field Merk harus terdiri dari minimal {0} karakter",
-            //       },
-            //     },
-            //     errorPlacement: function(label, element) {
-            //       // if (element.hasClass('web-select2')) {
-            //         label.insertAfter(element.next('.select2-container')).addClass('text-danger');
-            //         // select2label_nama_pengirim = label;
-            //       // } else {
-            //       //   label.addClass('mt-2 text-danger');
-            //       //   label.insertAfter(element);
-            //       // }
-            //     },
-            //     highlight: function(element, errorClass) {
-            //       $(element).parent().addClass('has-danger');
-            //       $(element).addClass('form-control-danger');
-            //     },
-            //     success: function(label, element) {
-            //       $(element).parent().removeClass('has-danger');
-            //       $(element).removeClass('form-control-danger');
-            //       label.remove();
-            //     },
-            //     // checkForm: function() {
-            //     //   this.prepareForm();
-            //     //   for (let i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
-            //     //     if (this.findByName(elements[i].name).length != undefined && this.findByName(elements[i].name).length > 1) {
-            //     //       for (let cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-            //     //         this.check(this.findByName(elements[i].name)[cnt]);
-            //     //       }
-            //     //     } else {
-            //     //       this.check(elements[i]);
-            //     //     }
-            //     //   }
-            //     //   return this.valid();
-            //     // },
-            //     submitHandler: function(form) {
-
-            //     },
-            //   });
-
-            // $("#nama_pengirim").on("change", function(event) {
-            //   console.log("np change = ",$("#nama_pengirim").val());
-            // $("#nama_pengirim").rules('add', {
-            //   required: true,
-            //   minlength: 3,
-            //   // minlength: function (range, input) {
-            //   //       console.log("#nama_pengirim rules value = ", this.value);
-            //   //       return false;
-            //   //       // return "np change = ",$("#nama_pengirim").val()
-            //   //         // return [
-            //   //         //     (minChar - parseInt($('#field1').val().length)) +
-            //   //         //     ' more characters to go.'];
-
-            //   //     },
-
-            //   messages: {
-            //       required: "Mohon Isi Field Nama Pengirim",
-            //       minlength: "Field Nama Pengirim harus terdiri dari minimal {0} karakter",
-            //       // minlength: function (range, input) {
-            //       //   console.log("#nama_pengirim rules value = ", this.value);
-            //       //   return false;
-            //       //   // return "np change = ",$("#nama_pengirim").val()
-            //       //     // return [
-            //       //     //     (minChar - parseInt($('#field1').val().length)) +
-            //       //     //     ' more characters to go.'];
-
-            //       // },
-            //   },
-            // });
-                // })
-
-            // $.validator.addMethod("arr_min_length", function (value, element) {
-            //   let flag = true;
-                   
-            //   $("[name^=merk]").each(function (i, j) {
-            //       $(this).parent('td').find('label.error').remove();
-
-            //       $(this).parent('td').removeClass('has-danger');
-            //       $(this).removeClass('form-control-danger');
-            //       // label.remove();
-
-            //       console.log("arr_min_length name is = ", this.name);
-            //       console.log("arr_min_length value is ", $.trim($(this).val()));
-
-            //       if ($.trim($(this).val()).length < 5) {
-            //           flag = false;
-
-            //           $(this).parent().addClass('has-danger');
-            //           $(this).addClass('form-control-danger');
-            //           // label.insertAfter(this.next('.select2-container')).addClass('text-danger');
-                      
-            //           $(this).parent('td').append('<label for="merk" id="merk-error" class="error text-danger"></label>');
-                      
-            //           // $(this).parent('td').append('<label  id="id_ct'+i+'-error" class="error">This field is required.</label>');
-                      
-            //           // $(`.nama_pengirim`).next(".select2-container").after('<label id="nama_pengirim-error" class="error text-danger" for="nama_pengirim" style="display: block;">Field Alamat Pengirim tidak valid</label>');
-                      
-            //           // ('<label id="nama_pengirim-error" class="error text-danger" for="nama_pengirim">Field Alamat Pengirim tidak valid</label>').insertAfter($(`.nama_pengirim`).next('.select2-container')).addClass('text-danger');
-
-            //           // <label for="nama_pengirim" id="nama_pengirim-error" class="error text-danger"></label>
-            //       }
-            //   });
-            //   return flag;
-              
-            //     // return value.length > 4;
-            // }, "");
-            
-            // $.validator.addMethod("minContactAddressLength", function (value, element) {
-            //     return value.length > 4;
-            // });
-
-            // $.validator.addMethod("minNameLength", function (value, element, params) {
-            //     return value.length > 2;
-            // });
-
-            // $.validator.addMethod("minLength", function (value, element, requiredValue) {
-            //   console.log("value = ", value);
-            //   console.log("element = ", element);
-            //   console.log("element id = ", element.id);
-            //   console.log("requiredValue = ", requiredValue);
-              
-            //   // if (element.id.split("-").length > 1) {
-            //   //   $(`[id^=${element.id.split("-")[0]}-]`).each(function(el, i) {
-            //   //     console.log("in each el = ", el);
-            //   //     console.log("in each i = ", i);
-            //   //     console.log(`element at index value is = ${$(this).val()}`);
-            //   //     return $(this).val().length >= requiredValue;
-            //   //   });
-            //   // } else {
-            //   //   return value.length >= requiredValue;
-            //   // }
-              
-            //   return value.length >= requiredValue;
-            // });
-
-            // $("#jo-form").validate({
-            //   // submitHandler: function(form) {
-            //   //   form.submit();
-            //   // },
-            //   ignore: [],
-            //   rules: {
-            //     // 'merk[]': {
-            //     //   required: true,
-            //     // },
-            //     'merk[]': {
-            //       required: true,
-            //       arr_min_length: true,
-            //     },
-            //   },
-            //   messages: {
-            //     'merk[]': {
-            //       required: "Mohon Isi Field Merk",
-            //     },
-            //   },
-            //   errorPlacement: function(label, element) {
-            //   // if (element.hasClass('web-select2')) {
-            //     label.insertAfter(element.next('.select2-container')).addClass('text-danger');
-            //     // select2label_nama_pengirim = label;
-            //   // } else {
-            //   //   label.addClass('mt-2 text-danger');
-            //   //   label.insertAfter(element);
-            //   // }
-            //   },
-            //   highlight: function(element, errorClass) {
-            //     $(element).parent().addClass('has-danger');
-            //     $(element).addClass('form-control-danger');
-            //   },
-            //   success: function(label, element) {
-            //     $(element).parent().removeClass('has-danger');
-            //     $(element).removeClass('form-control-danger');
-            //     label.remove();
-            //   },
-            //   // checkForm: function() {
-            //   //     this.prepareForm();
-            //   //     for (let i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
-            //   //       if (this.findByName(elements[i].name).length != undefined && this.findByName(elements[i].name).length > 1) {
-            //   //         for (let cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-            //   //           this.check(this.findByName(elements[i].name)[cnt]);
-            //   //         }
-            //   //       } else {
-            //   //         this.check(elements[i]);
-            //   //       }
-            //   //     }
-            //   //     return this.valid();
-            //   //   },
-            // });
-
-              // $("#jo-form").validate({
-              //   ignore: [],
-              //   rules: {
-              //     nama_pengirim: {
-              //       required: true,
-              //       minNameLength: true,
-              //       minLength: 3,
-              //     },
-              //     alamat_pengirim: {
-              //       required: true,
-              //       minContactAddressLength: true,
-              //     },
-              //     kontak_pengirim: {
-              //       required: true,
-              //       minContactAddressLength: true,
-              //     },
-              //     nama_penerima: {
-              //       required: true,
-              //       minNameLength: true,
-              //     },
-              //     alamat_penerima: {
-              //       required: true,
-              //       minContactAddressLength: true,
-              //     },
-              //     kontak_penerima: {
-              //       required: true,
-              //       minContactAddressLength: true,
-              //     },
-              //     'merk[]': {
-              //       required: true,
-              //       minLength: 5,
-              //     },
-              //     // tipe[]
-              //     // nopol_noka[]
-              //     // warna[]
-              //     // status[]
-              //     // kondisi[]
-              //     // lainnya[]
-              //     // "category[]": "required"
-
-                  
-              //     // topic: {
-              //     //   required: "#newsletter:checked",
-              //     //   minlength: 2
-              //     // },
-              //   },
-              //   messages: {
-              //     nama_pengirim: {
-              //       required: "Mohon Isi Field Nama Pengirim",
-              //       minNameLength: "Field Nama Pengirim harus terdiri dari minimal 3 karakter",
-              //       minLength: "Field Nama Pengirim harus terdiri dari minimal {0} karakter",
-              //     },
-              //     alamat_pengirim: {
-              //       required: "Mohon Isi Field Alamat Pengirim",
-              //       minContactAddressLength: "Field Alamat Pengirim harus terdiri dari minimal 5 karakter",
-              //     },
-              //     kontak_pengirim: {
-              //       required: "Mohon Isi Field Kontak Pengirim",
-              //       minContactAddressLength: "Field Kontak Pengirim harus terdiri dari minimal 5 karakter",
-              //     },
-              //     nama_penerima: {
-              //       required: "Mohon Isi Field Nama Penerima",
-              //       minNameLength: "Field Nama Penerima harus terdiri dari minimal 3 karakter",
-              //     },
-              //     alamat_penerima: {
-              //       required: "Mohon Isi Field Alamat Penerima",
-              //       minContactAddressLength: "Field Alamat Penerima harus terdiri dari minimal 5 karakter",
-              //     },
-              //     kontak_penerima: {
-              //       required: "Mohon Isi Field Kontak Penerima",
-              //       minContactAddressLength: "Field Kontak Penerima harus terdiri dari minimal 5 karakter",
-              //     },
-              //     'merk[]': {
-              //       required: "Mohon Isi Field Merk",
-              //       minLength: "Field Merk harus terdiri dari minimal {0} karakter",
-              //     },
-              //   },
-              //   errorPlacement: function(label, element) {
-              //     // if (element.hasClass('web-select2')) {
-              //       label.insertAfter(element.next('.select2-container')).addClass('text-danger');
-              //       // select2label_nama_pengirim = label;
-              //     // } else {
-              //     //   label.addClass('mt-2 text-danger');
-              //     //   label.insertAfter(element);
-              //     // }
-              //   },
-              //   highlight: function(element, errorClass) {
-              //     $(element).parent().addClass('has-danger');
-              //     $(element).addClass('form-control-danger');
-              //   },
-              //   success: function(label, element) {
-              //     $(element).parent().removeClass('has-danger');
-              //     $(element).removeClass('form-control-danger');
-              //     label.remove();
-              //   },
-              //   // checkForm: function() {
-              //   //   this.prepareForm();
-              //   //   for (let i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
-              //   //     if (this.findByName(elements[i].name).length != undefined && this.findByName(elements[i].name).length > 1) {
-              //   //       for (let cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-              //   //         this.check(this.findByName(elements[i].name)[cnt]);
-              //   //       }
-              //   //     } else {
-              //   //       this.check(elements[i]);
-              //   //     }
-              //   //   }
-              //   //   return this.valid();
-              //   // },
-              //   submitHandler: function(form) {
-
-              //   },
-              // });
-          });
+            $("#note").focusout(function(){
+              if (!$(this).text().replace(" ", "").length) {
+                $(this).empty();
+              }
+            });
 
 
-          // initializing inputmask
-          // $(":input").inputmask();
+            $("#tagihan_top").on("input", function() {
+              if (this.value.length === 0) {
+              // if (Number((this.value).replace(/,|\Rp/g, '')) === 0) {
+                $("div#opsi_tagihan_top").hide();
+              } else {
+                $("div#opsi_tagihan_top").show();
+              }
+              $("#detail-pembayaran-1 .form-check:nth-child(3).col-6").css({
+                "padding-left": Number((this.value).replace(/,|\Rp/g, '')) === 0 ? "1rem" : 0,
+              });
+            });
 
-          // function setDateValue(date, value) {
-          //   // $(date).datepicker('setDate', value);
-          //   $(date).datepicker('setDate', new Date(value));
+            $(".minus").on("click", function() {
+              $('#qty').val(Number($('#qty').val()) - 1);
+              if (Number($('#qty').val()) === 1) {
+                $(".minus").prop('disabled', true);
+              }
+              generateTable();
+            });
+
+            $(".plus").on("click", function() {
+              $('#qty').val(Number($('#qty').val()) + 1);
+              if (Number($('#qty').val()) > 1) {
+                $(".minus").prop('disabled', false);
+              }
+              generateTable();
+            });
+
+            $("#qty, #tagihan_top").keypress( function (event) {
+              let charCode = (event.which) ? event.which : event.keyCode;
+              if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                  return false;
+              }
+            });
+
+            $('#qty').on("input", function() {
+              if (Number(this.value) === 0 || !this.value) {
+                // console.log("input qty is not validd");
+                this.value = 1;
+              }
+              this.style.width = 1.2 * this.value.length + "ch";
+              $(".minus").prop('disabled', Number(this.value) === 1);
+              generateTable();
+            });
+
+            $("input:radio[name='tagihan']").on("click", function() {
+              console.log("tagihan value = ", $(this).val());
+              $("#tagihan_top").removeAttr("disabled");
+            });
+
+            $("input:radio[name='asuransi']").on("click", function() {
+              console.log("asuransi value = ", $(this).val());
+              if ($(this).val() === "ada") {
+                $("#perincian_asuransi").removeAttr("disabled");
+              } else {
+                $("#perincian_asuransi").val("");
+                $("#perincian_asuransi").attr("disabled", "disabled");
+              }
+            });
+
+            $("input:radio[name='biaya_koord']").on("click", function() {
+              console.log("biaya_koord value = ", $(this).val());
+              if ($(this).val() === "ada") {
+                $("#keterangan_biaya_koord").removeAttr("disabled");
+              } else {
+                $("#keterangan_biaya_koord").val("");
+                $("#keterangan_biaya_koord").attr("disabled", "disabled");
+              }
+            });
+
+            $("input:radio[name='penawaran_kontrak']").on("click", function() {
+              console.log("penawaran_kontrak value = ", $(this).val());
+              if ($(this).val() === "ada") {
+                $(this).parents("div.form-group.form-row").css("height", "unset");
+                $('input:radio[name="opsi_penawaran_kontrak"][value="penawaran"]').prop('checked', true);
+                $("#no_opsi_penawaran_kontrak").val("");
+                $("div#opsi_penawaran_kontrak").show();
+                $("div#opsi_penawaran_kontrak").css({
+                  display: "grid",
+                  gap: "0.5rem",
+                  margin: 0,
+                  marginLeft: "1rem",
+                  // marginTop: "0.5rem",
+                });
+              } else {
+                $(this).parents("div.form-group.form-row").css("height", "2.1875rem");
+                $("div#opsi_penawaran_kontrak").hide();
+                $("div#opsi_penawaran_kontrak").css({
+                  display: "none",
+                });
+              }
+            });
+
+            $("input:radio[name='handling']").on("click", function() {
+              console.log("handling value = ", $(this).val());
+              // $("#tagihan_top").removeAttr("disabled");
+              if ($(this).val() === "ada") {
+                $(this).parents("div.form-group.form-row").css("height", "unset");
+                $("#nominal_handling").val("");
+                $("#nama_penerima_handling").val("");
+                $("#form_handling").show();
+                $("#form_handling").css({
+                  display: "grid",
+                  gap: "0.5rem",
+                  margin: 0,
+                  marginLeft: "1rem",
+                  // marginTop: "0.5rem",
+                });
+              } else {
+                $("#form_handling").hide();
+              }
+            });
+          };
+
+          loadData();
+          // generateTable();
+
+          $(".spinner-border").hide();
+
+          $("#jo-template").show();
+
+          // function render(templateId, data) {
+          //   // Get the template content
+          //   var template = document.getElementById(templateId).innerHTML;
+
+          //   // Replace placeholders in the template with actual data
+          //   for (var key in data) {
+          //       var regex = new RegExp('{{\\s*' + key + '\\s*}}', 'g');
+          //       template = template.replace(regex, data[key]);
+          //   }
+
+          //   // Render the template
+          //   document.body.innerHTML = template;
           // }
 
-          // setDateValue(`${formName} #modal-form-${index + 1} .tgl_keluar`, modalData[index][
-          //             sp_tgl_keluar.length > 2 && shortMonths.indexOf(sp_tgl_keluar[1]) !== -1 
-          //             ? "TGL KELUAR PDC / GD" : "TGL. JO"]);
-
-              
-
-          // console.log(moment());
-          // console.log(moment().format());
-          // console.log(moment().localeData());
-
-          // console.log(moment.locale());
-
-          // moment.locale('id');
-          // console.log(moment.locale());
-          // moment.lang('id');
-          // console.log(moment.locale());
-          // console.log(moment.lang());
-
-          // console.log(moment(1316116057189).fromNow());
-
-          // console.log(moment().locale("id"));
-          // console.log(moment().lang("de"));
-
-
-          // console.log(moment(new Date()).format('hh:mm A'));
-
-          // moment($(`${formName} #modal-form-${index + 1} .tgl_masuk input[name=tgl_masuk]`).val(), "DD/MM/YYYY").format('DD-MMM-YYYY')
-
-          // console.log(moment("28/05/2024", "DD/MM/YYYY").format('DD MMMM YYYY'));
-
-          // console.log(moment(new Date()).format('DD MMMM YYYY'));
-
-          // moment('18/01/2016', 'DD/MM/YYYY').format("DD MMM YYYY") 18 Jan 2016
-          
-
-          $("#nominal, #nominal_handling").inputmask({
-            alias: "currency",
-            prefix: "Rp",
-            groupSeparator: ".",
-            radixPoint: ",",
-            digits: '0',
-            rightAlign: false,
-            allowPlus: false,
-            allowMinus: false,
-          });
-
-          $("#nominal").on("input", function() {
-            console.log("nominal value is = ", this.value);
-          });
-
-          function fitInputToVal(input) {
-            let el = $('<span>').hide().appendTo(document.body);
-            el.text(input.val() || input.text() || input.attr('placeholder')).css('font', input.css('font'));
-            // let inputWidth = el.width();
-            // input.css({
-            //     width: inputWidth
-            // })
-            input.width(el.width());
-          }
-
-          $('#moda').on('input', function() {
-            console.log("moda this = ", $(this));
-            fitInputToVal($(this));
-          }).trigger('input');
-          
-          // console.log("init length of tagihan_top value is = ",$("#tagihan_top").val().length);
-
-          // let tagihan_top= $("#tagihan_top").val().replace(/,|\Rp/g, '');
-          // console.log("tagihan_top = ", tagihan_top);
-
-          // $("#tagihan_top").on("keypress", function() {
-          //   console.log("tagihan_top keypressed value is = ", this.value);
-          //   // console.log("chg cmpl = ",$("#tagihan_top").inputmask("isComplete"));
-          // });
-          
-          // $("#tagihan_top").on("change", function() {
-          //   console.log("tagihan_top changed value is = ", this.value);
-          //   // console.log("chg cmpl = ",$("#tagihan_top").inputmask("isComplete"));
-          // });
-
-
-          $("#tagihan_top").on("input", function() {
-            // console.log("tagihan_top value is = ", this.value);
-            // console.log("length of tagihan_top value is = ",this.value.length);
-
-            // console.log("inp cmpl = ",$("#tagihan_top").inputmask("isComplete"));
-            if (this.value.length === 0) {
-            // if (Number((this.value).replace(/,|\Rp/g, '')) === 0) {
-              $("div#opsi_tagihan_top").hide();
-            } else {
-              $("div#opsi_tagihan_top").show();
-            }
-            $("#detail-pembayaran-1 .form-check:nth-child(3).col-6").css({
-              "padding-left": Number((this.value).replace(/,|\Rp/g, '')) === 0 ? "1rem" : 0,
-            });
-          });
-
-          const generateTable = () => {
-            $("#data-kendaraan table tbody").empty();
-            for (let index = 1; index <= Number($('#qty').val()); index++) {
-              $("#data-kendaraan table tbody").append(`
-                <tr>
-                  <th>${index}</th>
-                  <td><select name="merk[${index - 1}]" id="merk-${index}" class="merk form-control"></select></td>
-                  <td><select name="tipe[${index - 1}]" id="tipe-${index}" class="tipe form-control" disabled></select></td>
-                  <td><input type="text" name="nopol_noka[${index - 1}]" id="nopol_noka-${index}" class="form-control" style="min-width: max-content;" placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." disabled /></td>
-                  <td><select name="warna[${index - 1}]" id="warna-${index}" class="warna form-control" disabled></select></td>
-                  <td>
-                    <div class="form-group" style="display: flex; margin: 0;">
-                      <div class="form-check form-check-inline" 
-                        style="
-                          margin: 0;
-                          margin-right: 0.75rem;
-                        ">
-                        <label for="status-profit-${index}" class="form-check-label">
-                          <input
-                            type="radio"
-                            class="form-check-input"
-                            name="status[${index - 1}]"
-                            id="status-profit-${index}"
-                            value="profit"
-                            required
-                            disabled
-                          />
-                          Profit
-                        </label>
-                      </div>
-                      <div class="form-check form-check-inline" 
-                        style="
-                          margin: 0;
-                          margin-left: 0.75rem;
-                        ">
-                        <label for="status-second-${index}" class="form-check-label">
-                          <input
-                            type="radio"
-                            class="form-check-input"
-                            name="status[${index - 1}]"
-                            id="status-second-${index}"
-                            value="second"
-                            disabled
-                          />
-                          Second
-                        </label>
-                      </div>
-                    </div>
-                    <span class="text-danger" style="display: none;">
-                      <label for="status[${index - 1}]" class="error" style="display: none;">Mohon Pilih Status Unit</label>
-                    </span>
-                    <!-- <label for="status[${index - 1}]" class="error">Mohon Pilih Status Unit</label> -->
-                  </td>
-                  <td>
-                    <div class="form-group" style="display: flex; margin: 0;">
-                      <div class="form-check form-check-inline" style="margin: 0; margin-right: 0.75rem;">
-                        <label for="kondisi-ada-${index}" class="form-check-label">
-                          <input
-                            type="radio"
-                            class="form-check-input"
-                            name="kondisi[${index - 1}]"
-                            id="kondisi-ada-${index}"
-                            value="ada"
-                            disabled
-                          />
-                          Ada
-                        </label>
-                      </div>
-                      <div class="form-check form-check-inline" style="margin: 0; margin-left: 0.75rem; display: flex; align-items: center; min-width: max-content;">
-                        <label for="kondisi-lainnya-${index}" class="form-check-label">
-                          <input
-                            type="radio"
-                            class="form-check-input"
-                            name="kondisi[${index - 1}]"
-                            id="kondisi-lainnya-${index}"
-                            value="lainnya"
-                            disabled
-                          />
-                          Lainnya
-                        </label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          name="lainnya[${index - 1}]"
-                          id="lainnya-${index}"
-                          placeholder=". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
-                          style="margin-left: 0.625rem;"
-                          disabled
-                        />
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              `);
-            }
-
-            generateFieldTable();
-
-            // $(".form-check-label").each(function(e) {
-            //   console.log(".form-check-label each");
-            //   // console.log("child is = ", $(this).children());
-            //   // console.log($(this).children().eq(0).attr("type"));
-            //   if ($(this).children().eq(0).attr("type") === "radio") {
-            //     console.log("is truuee");
-            //     console.log($(this).children());
-            //     console.log($(this).children().eq(0));
-            //     $(this).append('<i class="input-frame"></i>');
-            //   }
-            // });
-
-            $(".form-check label").append('<i class="input-frame"></i>');
-
-            // checkbox and radios
-            // $(".form-check label, .form-radio label").append('<i class="input-frame"></i>');
-          };
-
-          const generateFieldTable = () => {
-            $(`[name^="merk"]`).append(`<option></option>`);
-            list_merk_unit.forEach(merk => {
-                $(`[name^="merk"]`).append(`<option value="${merk}">${merk}</option>`);
-            });
-
-            $(`[name^="merk"]`).val(null);
-
-            $(`[name^="merk"]`).select2({
-                placeholder: "PILIH SALAH SATU",
-                allowClear: true,
-                width: "style",
-                tags: true,
-                closeOnSelect: true,
-                minimumInputLength: 3,
-            });
-
-            $('[name^="merk"]').on("change", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              
-              // console.log("rowIndex merk is = ", rowIndex);
-
-              // console.log(`[name="merk[]"] at index ${rowIndex} change value is = `, this.value);
-              
-              $(`[name="tipe[${rowIndex}]"]`).prop('disabled', !this.value);
-
-              $(this).trigger('blur');
-            }).on("blur", function(event) {
-              console.log(`on blur this value merk at ${rowIndex} = `, this.value);
-            }).on("select2:opening", function(e) {
-              if ($(this).data('unselecting')) {
-                $(this).removeData('unselecting');
-                $(`[name="tipe[${rowIndex}]"]`).val(null).trigger('change');
-                $(`[name="nopol_noka[${rowIndex}]"]`).val(null).trigger('change');
-                $(`[name="warna[${rowIndex}]"]`).val(null).trigger('change');
-                $(`[name="status[${rowIndex}]"]`).prop('checked', false);
-                $(`[name="kondisi[${rowIndex}]"]`).prop('checked', false);
-                $(`[name="lainnya[${rowIndex}]"]`).val(null).trigger('change');
-
-                $(`[name="tipe[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="nopol_noka[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="warna[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="status[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', true);
-                e.preventDefault();
-              }
-            }).on("select2:unselecting", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              $(this).data('unselecting', true);
-            }).on("select2:select", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              // console.log(`[name="merk[]"] at index ${rowIndex} select value is = `, this.value);
-
-              if (list_merk_unit.findIndex(merk => String(this.value).toLowerCase() === String(merk).toLowerCase()) === -1) {
-                console.log(`merk at ${rowIndex} with ${this.value} is added`);
-                new_list_merk_unit.push(this.value);
-                list_merk_unit.push(this.value);
-                $(this).append(new Option(this.value, this.value, true, true));
-              }
-            });
-
-            $('[name^="merk"]').each(function(e) {
-              $(this).rules('add', {
-                required: true,
-                messages: {
-                  required: "Mohon Isi Field Merk Unit",
-                },
-              });
-            });
-
-            $(`[name^="tipe"]`).append(`<option></option>`);
-            list_type_unit.forEach(type => {
-                $(`[name^="tipe"]`).append(`<option value="${type}">${type}</option>`);
-            });
-
-            $(`[name^="tipe"]`).val(null);
-
-            $(`[name^="tipe"]`).select2({
-                placeholder: "PILIH SALAH SATU",
-                allowClear: true,
-                width: "style",
-                tags: true,
-                closeOnSelect: true,
-                minimumInputLength: 3,
-            });
-
-            $('[name^="tipe"]').on("change", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              
-              // console.log("rowIndex tipe is = ", rowIndex);
-
-              // console.log(`[name="tipe[]"] at index ${rowIndex} change value is = `, this.value);
-
-              // console.log("merk in tipe event = ", $(`[name="merk[${rowIndex}]"]`).val());
-
-              $(`[name="status[${rowIndex}]"]`).prop('disabled', !$(`[name="merk[${rowIndex}]"]`).val() || !this.value);
-
-              $(this).trigger('blur');
-            }).on("blur", function(event) {
-              console.log(`on blur this value type at ${rowIndex} = `, this.value);
-            }).on("select2:opening", function(e) {
-              if ($(this).data('unselecting')) {
-                $(this).removeData('unselecting');
-                $(`[name="nopol_noka[${rowIndex}]"]`).val(null).trigger('change');
-                $(`[name="warna[${rowIndex}]"]`).val(null).trigger('change');
-                $(`[name="status[${rowIndex}]"]`).prop('checked', false);
-                $(`[name="kondisi[${rowIndex}]"]`).prop('checked', false);
-                $(`[name="lainnya[${rowIndex}]"]`).val(null).trigger('change');
-
-                $(`[name="nopol_noka[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="warna[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="status[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', true);
-                $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', true);
-                e.preventDefault();
-              }
-            }).on("select2:unselecting", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              $(this).data('unselecting', true);
-            }).on("select2:select", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              // console.log(`[name="tipe[]"] at index ${rowIndex} select value is = `, this.value);
-
-              if (list_type_unit.findIndex(tipe => String(this.value).toLowerCase() === String(tipe).toLowerCase()) === -1) {
-                console.log(`tipe at ${rowIndex} with ${this.value} is added`);
-                new_list_type_unit.push(this.value);
-                list_type_unit.push(this.value);
-                $(this).append(new Option(this.value, this.value, true, true));
-              }
-            });
-
-            $('[name^="tipe"]').each(function(e) {
-              $(this).rules('add', {
-                required: true,
-                messages: {
-                  required: "Mohon Isi Field Type Unit",
-                },
-              });
-            });
-
-            $(`[name^="warna"]`).append(`<option></option>`);
-            list_warna_unit.forEach(warna => {
-                $(`[name^="warna"]`).append(`<option value="${warna}">${warna}</option>`);
-            });
-
-            $(`[name^="warna"]`).val(null);
-
-            $(`[name^="warna"]`).select2({
-                placeholder: "PILIH SALAH SATU",
-                allowClear: true,
-                width: "style",
-                tags: true,
-            });
-
-            $('[name^="warna"]').on("change", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              
-              // console.log("rowIndex tipe is = ", rowIndex);
-
-              // console.log(`[name="tipe[]"] at index ${rowIndex} change value is = `, this.value);
-
-              // console.log("merk in tipe event = ", $(`[name="merk[${rowIndex}]"]`).val());
-
-              // $(`[name="status[${rowIndex}]"]`).prop('disabled', !$(`[name="merk[${rowIndex}]"]`).val() || !this.value);
-
-              $(this).trigger('blur');
-            }).on("blur", function(event) {
-              console.log(`on blur this value warna at ${rowIndex} = `, this.value);
-            }).on("select2:opening", function(e) {
-              if ($(this).data('unselecting')) {
-                $(this).removeData('unselecting');
-                // $(`[name="nopol_noka[${rowIndex}]"]`).val(null).trigger('change');
-                // $(`[name="warna[${rowIndex}]"]`).val(null).trigger('change');
-                // $(`[name="status[${rowIndex}]"]`).prop('checked', false);
-                // $(`[name="kondisi[${rowIndex}]"]`).prop('checked', false);
-                // $(`[name="lainnya[${rowIndex}]"]`).val(null).trigger('change');
-
-                // $(`[name="nopol_noka[${rowIndex}]"]`).prop('disabled', true);
-                // $(`[name="warna[${rowIndex}]"]`).prop('disabled', true);
-                // $(`[name="status[${rowIndex}]"]`).prop('disabled', true);
-                // $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', true);
-                // $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', true);
-                e.preventDefault();
-              }
-            }).on("select2:unselecting", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              $(this).data('unselecting', true);
-            }).on("select2:select", function(e) {
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-              // console.log(`[name="tipe[]"] at index ${rowIndex} select value is = `, this.value);
-
-              if (list_warna_unit.findIndex(warna => String(this.value).toLowerCase() === String(warna).toLowerCase()) === -1) {
-                console.log(`warna at ${rowIndex} with ${this.value} is added`);
-                new_list_warna_unit.push(this.value);
-                list_warna_unit.push(this.value);
-                $(this).append(new Option(this.value, this.value, true, true));
-              }
-            });
-
-            // $("[name^='status']").on("change", function(e) {
-            //   console.log("status on change");
-            //   console.log("input radio change status value = ", this.value);
-            // });
-
-            $("[name^='status']").on("click", function(e) {
-              // console.log("status on click");
-              // console.log("input radio click status value = ", this.value);
-
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-
-              $(`[name="nopol_noka[${rowIndex}]"]`).prop('disabled', false);
-              $(`[name="warna[${rowIndex}]"]`).prop('disabled', false);
-              $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', false);
-              // $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', false);
-            });
-
-            $('[name^="status"]').each(function(e) {
-              console.log("each status = ", $(this));
-              $(this).rules('add', {
-                required: true,
-                messages: {
-                  required: "Mohon Pilih Status Unit",
-                },
-              });
-            });
-
-            // topic: {
-              //     //   required: "#newsletter:checked",
-              //     //   minlength: 2
-              //     // },
-
-            // $(".form-check-label").on("click", function(e) {
-            //   console.log("child is = ", $(this).children());
-            //   console.log($(this).children().eq(0).attr("type"));
-            //   // if ($(this).children().eq(0).attr("type") === "radio") {
-
-            //   // }
-            // });
-
-            $("[name^='kondisi']").on("click", function(e) {
-              // console.log("kondisi on click");
-              // console.log("input radio click kondisi value = ", this.value);
-
-              rowIndex = $(this).attr("name").match(/\d+/)[0];
-
-              if (this.value !== "lainnya") {
-                $(`[name="lainnya[${rowIndex}]"]`).val("");
-              }
-              $(`[name="lainnya[${rowIndex}]"]`).prop('disabled', !(this.value === "lainnya"));
-            });
-          };
-
-          $(".minus").on("click", function() {
-            $('#qty').val(Number($('#qty').val()) - 1);
-            if (Number($('#qty').val()) === 1) {
-              $(".minus").prop('disabled', true);
-            }
-            generateTable();
-          });
-
-          $(".plus").on("click", function() {
-            $('#qty').val(Number($('#qty').val()) + 1);
-            if (Number($('#qty').val()) > 1) {
-              $(".minus").prop('disabled', false);
-            }
-            generateTable();
-          });
-
-          $("#qty, #tagihan_top").keypress( function (event) {
-            let charCode = (event.which) ? event.which : event.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
-            }
-          });
-
-          $('#qty').on("input", function() {
-            if (Number(this.value) === 0 || this.value === undefined || this.value === null || this.value.length === 0) {
-              // console.log("input qty is not validd");
-              this.value = 1;
-            }
-            this.style.width = 1.2 * this.value.length + "ch";
-            $(".minus").prop('disabled', Number(this.value) === 1);
-            generateTable();
-          });
-
-          // $('.merk').change(function() {
-          //       alert($(this).index());
-          //   });
-
-          // $('[name="warna[]"]').change(function() {
-          //     rowIndex = $('[name="warna[]"]').index(this);
-          //     alert(rowIndex);
-          //   });
-
-          // $('.merk').on("change", function() {
-          //   console.log("merk by class");
-          //   console.log($('[name="merk[]"]').index(this));
-          //   console.log($(this).val());
-          // });
-
-          // $('select[name^="merk[]"]').on("change", function() {
-          //   console.log("merk by name");
-          //   console.log($('[name="merk[]"]').index(this));
-          //   console.log($(this).val());
-          // });
-
-          $("input:radio[name='tagihan']").on("click", function() {
-            console.log("tagihan value = ", $(this).val());
-            $("#tagihan_top").removeAttr("disabled");
-          });
-
-          $("input:radio[name='asuransi']").on("click", function() {
-            console.log("asuransi value = ", $(this).val());
-            if ($(this).val() === "ada") {
-              $("#perincian_asuransi").removeAttr("disabled");
-            } else {
-              $("#perincian_asuransi").val("");
-              $("#perincian_asuransi").attr("disabled", "disabled");
-            }
-          });
-
-          $("input:radio[name='biaya_koord']").on("click", function() {
-            console.log("biaya_koord value = ", $(this).val());
-            if ($(this).val() === "ada") {
-              $("#keterangan_biaya_koord").removeAttr("disabled");
-            } else {
-              $("#keterangan_biaya_koord").val("");
-              $("#keterangan_biaya_koord").attr("disabled", "disabled");
-            }
-          });
-
-          $("input:radio[name='penawaran_kontrak']").on("click", function() {
-            console.log("penawaran_kontrak value = ", $(this).val());
-            if ($(this).val() === "ada") {
-              $(this).parents("div.form-group.form-row").css("height", "unset");
-              $('input:radio[name="opsi_penawaran_kontrak"][value="penawaran"]').prop('checked', true);
-              $("#no_opsi_penawaran_kontrak").val("");
-              $("div#opsi_penawaran_kontrak").show();
-              $("div#opsi_penawaran_kontrak").css({
-                display: "grid",
-                gap: "0.5rem",
-                margin: 0,
-                marginLeft: "1rem",
-                // marginTop: "0.5rem",
-              });
-            } else {
-              $(this).parents("div.form-group.form-row").css("height", "2.1875rem");
-              $("div#opsi_penawaran_kontrak").hide();
-              $("div#opsi_penawaran_kontrak").css({
-                display: "none",
-              });
-            }
-          });
-
-          $("input:radio[name='handling']").on("click", function() {
-            console.log("handling value = ", $(this).val());
-            // $("#tagihan_top").removeAttr("disabled");
-            if ($(this).val() === "ada") {
-              $(this).parents("div.form-group.form-row").css("height", "unset");
-              $("#nominal_handling").val("");
-              $("#nama_penerima_handling").val("");
-              $("#form_handling").show();
-              $("#form_handling").css({
-                display: "grid",
-                gap: "0.5rem",
-                margin: 0,
-                marginLeft: "1rem",
-                // marginTop: "0.5rem",
-              });
-            } else {
-              $("#form_handling").hide();
-            }
-          });
-
-
-          function downloadInnerHtml(event, filename, elId) {
-            // debugger;
-            let elHtml = document.getElementById(elId).innerHTML;
-            let link = document.createElement('a');
-            link.setAttribute('download', filename);
-            
-            link.setAttribute('href', 'data:' + 'text/doc' + ';charset=utf-8,' + encodeURIComponent(elHtml));
-            link.click(); 
-          }
-
-          $(".dropdown-item").on("click", (event) => {
-            // alert(event.target.id)
-            let {id} = event.target
-            // if (id === "docx") {
-              let elHtml = document.getElementById("filter-result-table").innerHTML;
-              let link = document.createElement('a');
-              link.setAttribute('download', `Report.${id}`);
-              
-              link.setAttribute('href', 'data:' + 'text/docx' + ';charset=utf-8,' + encodeURIComponent(elHtml));
-              link.click(); 
-            // }
-          });
-
           const form = document.forms.namedItem("jo-form");
-
-          console.log("form = ", form);
-          // console.log(moment("28/05/2024", "DD/MM/YYYY").format('DD-MMM-YYYY')); // 28-May-2024
 
           form.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -4548,204 +2759,77 @@
             const formData = new FormData(form);
 
             console.log("formData is = ", formData);
-
             
-
-            // console.log("nama pengirim value is = ", $(`#nama_pengirim`).val());
-            // console.log("alamat pengirim value is = ", $(`#alamat_pengirim`).val());
-            console.log("hr_tgl_ambil value is = ", $(`.hr_tgl_ambil`).datepicker("getDate"));
+            console.log("hr_tgl_ambil value is = ", $(`#hr_tgl_ambil`).datepicker("getDate"));
             console.log("jumlah value is = ", $(`#qty`).val());
             // let dp_masuk = Date.parse($(`${formName} #modal-form-${index + 1} .tgl_masuk`).datepicker("getDate"))
             // console.log("status value is = ", $("input[name='status']:checked").val());
 
+            console.log("list merk = ", formData.getAll('merk'));
+            console.log("list tipe = ", formData.getAll('tipe'));
+            console.log("list nopol_noka = ", formData.getAll('nopol_noka'));
+            console.log("list warna = ", formData.getAll('warna'));
+            console.log("list status = ", formData.getAll('status'));
+            console.log("list kondisi = ", formData.getAll('kondisi'));
+            console.log("list lainnya = ", formData.getAll('lainnya'));
+
+            let no_joj = $("#no_joj").val();
+            let hr_tgl_ambil = $('#hr_tgl_ambil').val();
+            // let tgl_wkt_dibuat = $(new Date()).datepicker("getDate");
             let nama_pengirim = $(`#nama_pengirim`).val();
             let alamat_pengirim = $(`#alamat_pengirim`).val();
             let kontak_pengirim = $(`#kontak_pengirim`).val();
             let nama_penerima = $(`#nama_penerima`).val();
             let alamat_penerima = $(`#alamat_penerima`).val();
             let kontak_penerima = $(`#kontak_penerima`).val();
-            let hr_tgl_ambil = $(`.hr_tgl_ambil`).datepicker("getDate");
-            let jumlah = $(`#qty`).val();
-            let nominal = $("#nominal").val().replace(/,|\Rp/g, '');
-            // let tagihan_top = $("#tagihan_top").val().replace(/,|\Rp/g, '');
-            let tagihan_top = $("#tagihan_top").val();
 
-            console.log("nominal = ", nominal);
-            console.log("tagihan_top = ", tagihan_top);
+            console.log("hr_tgl_ambil = ", hr_tgl_ambil);
+            // console.log("tgl_wkt_dibuat = ", tgl_wkt_dibuat);
+            
+            $("#jo-template #content > #header div:nth-child(1) h6").text(`${user.location}, ${moment(new Date()).format('DD MMMM YYYY')}`.toUpperCase());
+
+            $("#jo-template #content > #header div:nth-child(2) span").html(`No. JO : ${city_code + String(moment(new Date()).format('YY'))}<span id="no_joj" contenteditable="true">${String(init_no_joj).padStart(6, '0')}</span>`);
+            let qty = $(`#qty`).val();
+            let nominal = $("#nominal").val().replace(/,|\Rp/g, '');
+            let moda = $(`#moda`).val();
+            let invoice = $(`#invoice`).val();
+            let transfer_by = $(`#transfer_by`).val();
+            let tagihan = form.tagihan.value;
+            let tagihan_top = $("#tagihan_top").val();
+            let opsi_tagihan_top = tagihan_top ? form.opsi_tagihan_top.value : null;
+            let penawaran_kontrak = form.penawaran_kontrak.value;
+            let opsi_penawaran_kontrak = penawaran_kontrak === "ada" ? form.opsi_penawaran_kontrak.value : null;
+            let no_opsi_penawaran_kontrak = penawaran_kontrak === "ada" ? form.no_opsi_penawaran_kontrak.value  : null;
+            let handling = form.handling.value;
+            let nominal_handling = handling === "ada" ? form.nominal_handling.value : null;
+            let nama_penerima_handling = handling === "ada" ? form.nama_penerima_handling.value : null;
+            let asuransi = form.asuransi.value;
+            let perincian_asuransi = asuransi === "ada" ? form.perincian_asuransi.value : null;
+            let biaya_koord = form.biaya_koord.value;
+            let keterangan_biaya_koord = biaya_koord === "ada" ? form.keterangan_biaya_koord.value : null;
+            let note = $(`#note`).html();
+            console.log("note is = ", note);
+            // let ttd_dibuat_oleh = $("#signature-made-by").jSignature('getData', "image/svg+xml;base64").join(',');
+            let ttd_dibuat_oleh = $("#signature-made-by").jSignature('getData', "image").join(',');
+            console.log("ttd_dibuat_oleh is = ", ttd_dibuat_oleh);
 
             let isValid = true;
 
-            // console.log("nama_pengirim = ", nama_pengirim);
-
-            // $("#nama_penerima").trigger('blur');
-
             console.log("is jo form valid = ", $("#jo-form").valid());
-
-            // if (nama_pengirim !== undefined && nama_pengirim !== null && nama_pengirim.length !== 0) {
-            // if (nama_pengirim) {
-            //   console.log("np is right");
-            //   if (list_nama_pengirim.findIndex(value => String(nama_pengirim).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //     // nama_pengirim_opt += `<option value="${nama_pengirim}">${nama_pengirim}</option>`;
-            //     // console.log("new nama pengirim = ", nama_pengirim);
-            //     list_nama_pengirim.push(nama_pengirim);
-            //     // console.log("list_nama_pengirim in job order = ", JSON.stringify(list_nama_pengirim, null, '\t'));
-            //   }
-              
-            //   // $(`.nama_pengirim`).parent().removeClass('has-danger');
-            //   // $(`#nama_pengirim`).next(".select2-container").removeClass('form-control-danger');
-            //   // $("#nama_pengirim-error").text("");
-            // } else {
-            //   console.log("np is wrong");
-            //   isValid = false;
-            //   // $(`.nama_pengirim`).parent().addClass('has-danger');
-            //   // $(`#nama_pengirim`).next(".select2-container").addClass('form-control-danger');
-            //   // $("#nama_pengirim-error").text("Field Nama Pengirim tidak valid");
-
-            //   // $(`.nama_pengirim`).next(".select2-container").after('<label id="nama_pengirim-error" class="error text-danger" for="nama_pengirim" style="display: block;">Field Alamat Pengirim tidak valid</label>');
-            //   // ('<label id="nama_pengirim-error" class="error text-danger" for="nama_pengirim">Field Alamat Pengirim tidak valid</label>').insertAfter($(`.nama_pengirim`).next('.select2-container')).addClass('text-danger');
-            // }
-
-            // errorPlacement: function(label, element) {
-            //       // if (element.hasClass('web-select2')) {
-            //         label.insertAfter(element.next('.select2-container')).addClass('text-danger');
-            //         // select2label_nama_pengirim = label;
-            //       // } else {
-            //       //   label.addClass('mt-2 text-danger');
-            //       //   label.insertAfter(element);
-            //       // }
-            //     },
-            //     highlight: function(element, errorClass) {
-            //       $(element).parent().addClass('has-danger');
-            //       $(element).addClass('form-control-danger');
-            //     },
-            //     success: function(label, element) {
-            //       $(element).parent().removeClass('has-danger');
-            //       $(element).removeClass('form-control-danger');
-            //       label.remove();
-            //     },
-
-            // console.log("nama_pengirim is valid = ", $(`#nama_pengirim`).valid());
-
-            // console.log("kontak_pengirim is valid = ", $(`#kontak_pengirim`).valid());
-
-            // if (nama_pengirim !== undefined && nama_pengirim !== null && nama_pengirim.length !== 0 && list_nama_pengirim.findIndex(value => String(nama_pengirim).toLowerCase() === String(value).toLowerCase()) === -1) {
-              
-            // } else {
-              
-            // }
-
-            // if (alamat_pengirim !== undefined && alamat_pengirim !== null && alamat_pengirim.length !== 0 && list_alamat_pengirim.findIndex(value => String(alamat_pengirim).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //   list_alamat_pengirim.push(alamat_pengirim);
-            // } else {
-            //   isValid = false;
-            //   alert("Field Alamat Pengirim tidak valid atau sudah tersedia")
-            // }
-            
-            // if (alamat_pengirim) {
-            //   if (list_alamat_pengirim.findIndex(value => String(alamat_pengirim).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //     list_alamat_pengirim.push(alamat_pengirim);
-            //   }
-            // }
-
-            // if (kontak_pengirim) {
-            //   if (list_kontak_pengirim.findIndex(value => String(kontak_pengirim).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //     list_kontak_pengirim.push(kontak_pengirim);
-            //   }
-            // }
-
-            // if (nama_penerima) {
-            //   if (list_nama_penerima.findIndex(value => String(nama_penerima).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //     list_nama_penerima.push(nama_penerima);
-            //   }
-            // }
-
-            // if (alamat_penerima) {
-            //   if (list_alamat_penerima.findIndex(value => String(alamat_penerima).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //     list_alamat_penerima.push(alamat_penerima);
-            //   }
-            // }
-
-            // if (kontak_penerima) {
-            //   if (list_kontak_penerima.findIndex(value => String(kontak_penerima).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //     list_kontak_penerima.push(kontak_penerima);
-            //   }
-            // }
-
-            // console.log("list_nama_pengirim in job order after submit = ", JSON.stringify(list_nama_pengirim, null, '\t'));
-            // console.log("list_alamat_pengirim in job order after submit = ", JSON.stringify(list_alamat_pengirim, null, '\t'));
-            // console.log("list_kontak_pengirim in job order after submit = ", JSON.stringify(list_kontak_pengirim, null, '\t'));
-            // console.log("list_nama_penerima in job order after submit = ", JSON.stringify(list_nama_penerima, null, '\t'));
-            // console.log("list_alamat_penerima in job order after submit = ", JSON.stringify(list_alamat_penerima, null, '\t'));
-            // console.log("list_kontak_penerima in job order after submit = ", JSON.stringify(list_kontak_penerima, null, '\t'));
-
-            // if (!hr_tgl_ambil) {
-            //   isValid = false;
-            //   alert("Field Hari Tanggal Pengambilan tidak valid")
-            // }
-
-            // for (let index = 1; index <= jumlah; index++) {
-            //   if ($(`#merk-${index}`).val()) {
-            //     if (list_merk_unit.findIndex(value => String($(`#merk-${index}`).val()).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //       list_merk_unit.push($(`#merk-${index}`).val());
-            //     }
-            //   }
-
-            //   if ($(`#tipe-${index}`).val()) {
-            //     if (list_type_unit.findIndex(value => String($(`#tipe-${index}`).val()).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //       list_type_unit.push($(`#tipe-${index}`).val());
-            //     }
-            //   }
-
-            //   if (!$(`#nopol_noka-${index}`).val()) {
-            //     isValid = false;
-            //     // alert(`Field Nopol Noka Unit ${index} tidak valid`);
-            //   }
-
-            //   if ($(`#warna-${index}`).val()) {
-            //     if (list_warna_unit.findIndex(value => String($(`#warna-${index}`).val()).toLowerCase() === String(value).toLowerCase()) === -1) {
-            //       list_warna_unit.push($(`#warna-${index}`).val());
-            //     }
-            //   }
-            // }
-
-            // if (transfer_by || tagihan) {
-              
-            // } else {
-            //   isValid = false;
-            //   // alert('Mohon Pilih Metode Pembayaran');
-            // }
-
-            // if (tagihan_top) {
-            //   if (opsi_tagihan_top) {
-
-            //   } else {
-            //     isValid = false;
-            //     // alert('Mohon Pilih Opsi Tagihan TOP');
-            //   }
-            // }
-
-            // new_list_nama_pengirim
-            // new_list_alamat_pengirim
-            // new_list_kontak_pengirim
-            // new_list_nama_penerima
-            // new_list_alamat_penerima
-            // new_list_kontak_penerima
-            // new_list_merk_unit
-            // new_list_type_unit
-            // new_list_warna_unit
-
             
             
             if ($("#signature-made-by").jSignature('getData', 'native').length == 0) {
               isValid = false;
               // alert('Mohon Tanda Tangan Pembuat JO');
+              $("#signature-made-by canvas").css({
+                border: "2px solid #ff3366",
+              });
+              $("#sig-error").show();
             }
 
             console.log("isValid = ", isValid);
 
             if ($("#jo-form").valid() && isValid) {
-              console.log("isValid is trueee");
-
               console.log("new_list_nama_pengirim in job order = ", JSON.stringify(new_list_nama_pengirim, null, '\t'));
               console.log("new_list_alamat_pengirim in job order = ", JSON.stringify(new_list_alamat_pengirim, null, '\t'));
               console.log("new_list_kontak_pengirim in job order = ", JSON.stringify(new_list_kontak_pengirim, null, '\t'));
@@ -4756,11 +2840,48 @@
               console.log("new_list_type_unit in job order = ", JSON.stringify(new_list_type_unit, null, '\t'));
               console.log("new_list_warna_unit in job order = ", JSON.stringify(new_list_warna_unit, null, '\t'));
 
+              let merk = [];
+              let type = [];
+              let nopol_noka = [];
+              let warna = [];
+              let status = [];
+              let kondisi = list_kondisi.map((obj) => { return obj.value; });
+              let lainnya = list_lainnya.map((obj) => { return obj.value; });
+              
+
               // List key/value pairs
               for (let [name, value] of formData) {
                 console.log("List key/value pairs in formData");
                 console.log(`${name} = ${value}`);
+
+                // console.log("obj is = ",Object.keys({name})[0]);
+                if (name.split(/\[(.*?)\]/g)[0] === "merk") {
+                  merk.push(value)
+                } else if (name.split(/\[(.*?)\]/g)[0] === "tipe") {
+                  type.push(value)
+                } else if (name.split(/\[(.*?)\]/g)[0] === "nopol_noka") {
+                  nopol_noka.push(value)
+                } else if (name.split(/\[(.*?)\]/g)[0] === "warna") {
+                  warna.push(value)
+                } else if (name.split(/\[(.*?)\]/g)[0] === "status") {
+                  status.push(value)
+                } 
+                // else if (name.split(/\[(.*?)\]/g)[0] === "kondisi") {
+                //   kondisi.push(value)
+                // } else if (name.split(/\[(.*?)\]/g)[0] === "lainnya") {
+                //   lainnya.push(value)
+                // }
               }
+
+              new_list_nama_pengirim = new_list_nama_pengirim.map(x => ({ field: x }));
+              new_list_alamat_pengirim = new_list_alamat_pengirim.map(x => ({ field: x }));
+              new_list_kontak_pengirim = new_list_kontak_pengirim.map(x => ({ field: x }));
+              new_list_nama_penerima = new_list_nama_penerima.map(x => ({ field: x }));
+              new_list_alamat_penerima = new_list_alamat_penerima.map(x => ({ field: x }));
+              new_list_kontak_penerima = new_list_kontak_penerima.map(x => ({ field: x }));
+              new_list_merk_unit = new_list_merk_unit.map(x => ({ field: x }));
+              new_list_type_unit = new_list_type_unit.map(x => ({ field: x }));
+              new_list_warna_unit = new_list_warna_unit.map(x => ({ field: x }));
 
               const Toast = Swal.mixin({
                 toast: true,
@@ -4771,21 +2892,125 @@
               });
             
               try {
-                // const response = await fetch("/marketing/input-job-order", {
                 const response = await fetch("/input-job-order", {
                   method: "POST",
-                  body: formData,
+                  // body: formData,
+                  body: JSON.stringify({ 
+                    no_joj,
+                    city_code,
+                    tgl_wkt_dibuat: new Date(),
+                    nama_pengirim,
+                    alamat_pengirim,
+                    kontak_pengirim,
+                    nama_penerima,
+                    alamat_penerima,
+                    kontak_penerima,
+                    hr_tgl_ambil,
+                    qty,
+                    merk,
+                    type,
+                    nopol_noka,
+                    warna,
+                    status,
+                    kondisi,
+                    lainnya,
+                    new_list_nama_pengirim,
+                    new_list_alamat_pengirim,
+                    new_list_kontak_pengirim,
+                    new_list_nama_penerima,
+                    new_list_alamat_penerima,
+                    new_list_kontak_penerima,
+                    new_list_merk_unit,
+                    new_list_type_unit,
+                    new_list_warna_unit,
+                    nominal,
+                    moda,
+                    invoice,
+                    transfer_by,
+                    tagihan,
+                    tagihan_top,
+                    opsi_tagihan_top,
+                    penawaran_kontrak,
+                    opsi_penawaran_kontrak,
+                    no_opsi_penawaran_kontrak,
+                    handling,
+                    nominal_handling,
+                    nama_penerima_handling,
+                    asuransi,
+                    perincian_asuransi,
+                    biaya_koord,
+                    keterangan_biaya_koord,
+                    note,
+                    dibuat_oleh: user.username,
+                    ttd_dibuat_oleh,
+                   }),
+                  headers: {'Content-Type': 'application/json', "Accept":"text/html"},
+                  credentials: 'same-origin',
                 });
                 console.log("response of createData = ", response);
 
+                console.log("response body is = ", response.body);
+
                 if (response.status == 200 || response.ok) {
                   console.log('Promise resolved and HTTP status is successful');
-                  const result = await response.json();
-                  console.log("result from response of createData = ", result);
+                  // const result = await response.json();
+                  // console.log("result from response of createData = ", result);
+
                   Toast.fire({
                     icon: 'success',
                     html: `<label>Submit Form Success</label>`,
                   });
+
+                  clearInterval(timeInterval);
+
+                  //   // await $.ajax({
+              //   //   url: "/job-order-data",
+              //   //   type: "GET",
+              //   //   dataType: "json",
+              //   //   success: async (res) => {
+              //   //     console.log("results = ", res);
+              //   //   },
+              //   //   error: function (err) {
+              //   //     console.log("error = ", err);
+              //   //   },
+              //   // });
+
+                  // return await fetch(`/job-order/${no_joj}`, {
+                  //   method: "GET",
+                  //   headers: {
+                  //     "Content-Type": "application/json",
+                  //   },
+                  // }).then(res => {
+                  //   let htmlText = await response.text();
+                  //   document.getElementsByTagName('body')[0].innerHTML(bodyContent);
+                    
+                  // });
+
+                   // When the page is loaded convert it to text
+                  let responseText = await response.text();
+
+                  console.log("responseText is = ", responseText);
+
+                  // Initialize the DOM parser
+                  const parser = new DOMParser()
+
+                  // Parse the text
+                  const doc = await parser.parseFromString(responseText, "text/html")
+
+                  console.log("final result doc is = ", doc);
+
+                  setTimeout(() => {
+                    // app.get("/job-order/:no_joj", checkUser, async(req, res) => {
+                      window.history.pushState({}, "United Transindo Admin Dashboard", `/job-order/${no_joj}`);
+                      // $('body').html(doc);
+                      // $('body').html(responseText);
+                      // window.location.reload();
+
+                      let newDoc = document.open("text/html", "replace");
+                      newDoc.write(responseText);
+                      newDoc.close();
+                  }, 1000);
+
                 } else {
                   console.log('error: ', response.status, response.statusText);
                   console.error('Promise resolved but HTTP status failed');
@@ -4810,8 +3035,6 @@
                 //   getRow();
                 // console.log(performance.now() - now);
               } catch (err) {
-                // console.error('Promise rejected');
-                // console.log("err = ", err);
                 console.error(err)
                 
                 // const Toast = Swal.mixin({
@@ -4830,36 +3053,6 @@
             } else {
               console.log("there is invalid input in Input Form Job Order");
             }
-
-            // if(typeof($("#signature-made-by").jSignature('getData', 'native')) != 'undefined') {
-            //   alert('Please Enter Signature..');
-            // }
-
-    //           if ($(`.nama_pengirim`).val() !== undefined && $(`.nama_pengirim`).val() !== null && $(`.nama_pengirim`).val().length !== 0 &&
-    //               $(`.alamat_pengirim`).val() !== undefined && $(`.alamat_pengirim`).val() !== null && $(`.alamat_pengirim`).val().length !== 0 &&
-    //               $(`.kontak_pengirim`).val() !== undefined && $(`.kontak_pengirim`).val() !== null && $(`.kontak_pengirim`).val().length !== 0 &&
-    //               $(`.nama_penerima`).val() !== undefined && $(`.nama_penerima`).val() !== null && $(`.nama_penerima`).val().length !== 0 &&
-    //               $(`.alamat_penerima`).val() !== undefined && $(`.alamat_penerima`).val() !== null && $(`.alamat_penerima`).val().length !== 0 &&
-    //               $(`.kontak_penerima`).val() !== undefined && $(`.kontak_penerima`).val() !== null && $(`.kontak_penerima`).val().length !== 0 &&
-    //               $(`.hr_tgl_ambil`).datepicker("getDate") !== undefined && $(`.hr_tgl_ambil`).datepicker("getDate") !== null && $(`.hr_tgl_ambil`).datepicker("getDate").length !== 0 &&
-    //               $(`.merk`).val() !== undefined && $(`.merk`).val() !== null && $(`.merk`).val().length !== 0 &&
-    //               $(`.tipe`).val() !== undefined && $(`.tipe`).val() !== null && $(`.tipe`).val().length !== 0 &&
-    //               $(`.nopol_noka`).val() !== undefined && $(`.nopol_noka`).val() !== null && $(`.nopol_noka`).val().length !== 0 &&
-    //               $(`.warna`).val() !== undefined && $(`.warna`).val() !== null && $(`.warna`).val().length !== 0 &&
-    //               $("input[name='status']:checked").length !== 0 &&
-    //               ($("input[name='tagihan']:checked").length !== 0 || ($("input[name='tunai']:checked").length !== 0 && $("#nominal").val() !== undefined && $("#nominal").val() !== null && $("#nominal").val().length !== 0) || ($("input[name='transfer_by']").val() !== undefined && $("input[name='transfer_by']").val() !== null && $("input[name='transfer_by']").val().length !== 0)) 
-    //           ) {
-    //             // if (nama_pengirim !== undefined && nama_pengirim !== null && nama_pengirim.length !== 0 && arr_nama_pengirim.findIndex(value => String(nama_pengirim).toLowerCase() === String(value).toLowerCase()) === -1) {
-    //               if (list_nama_pengirim.findIndex(value => String($(`.nama_pengirim`).val()).toLowerCase() === String(value).toLowerCase()) === -1) {
-    //                 list_nama_pengirim.push($(`.nama_pengirim`).val());
-    //               }
-    //           } else {
-    //             console.log("form input is not valid");
-    //           }
-            // let valid_form = true;
-            // if ($(`.nama_pengirim`).val() !== undefined && $(`.nama_pengirim`).val() !== null && $(`.nama_pengirim`).val().length !== 0) {
-
-            // }
           });
 
         });
