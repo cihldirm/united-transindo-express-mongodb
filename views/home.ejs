@@ -8,7 +8,7 @@
     <meta name="author" content="PT UNITED TRANSINDO" />
     <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <title>United Transindo Company Profile</title>
     <link rel="shortcut icon" type="image/x-icon" href="/images/icons/Logo United Transindo.ico">
     <style type="text/css">
@@ -47,6 +47,11 @@
                 height: 100%;
             }
         }
+        @media (min-width: 992px) {
+            .navbar-expand-lg .navbar-collapse {
+                display: unset !important;
+            }
+        }
     </style>
 </head>
 <body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="0" tabindex="0">
@@ -63,35 +68,41 @@
                 />
                 <span>United Transindo</span>
             </a>
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#home-navbar" aria-controls="home-navbar" aria-expanded="false" aria-label="Toggle Navigation">
+            <button type="button" class="navbar-toggler" data-bs-smooth-scroll="true" data-bs-toggle="collapse" data-bs-target="#home-navbar" aria-controls="home-navbar" aria-expanded="false" aria-label="Toggle Navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="home-navbar">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#history">History</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#vision-mission">Vision & Mission</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#customers">Customers</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav navbar-right ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/sign-in">Sign In</a>
-                    </li>
-                </ul>
+                <div class="row">
+                    <div class="col">
+                        <ul class="navbar-nav">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#home">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#about">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#services">Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#history">History</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#vision-mission">Vision & Mission</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#customers">Customers</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <ul class="navbar-nav navbar-right ms-auto" style="justify-content: right;">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/sign-in">Sign In</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -128,7 +139,7 @@
                 // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
                 $('html, body').animate({
                     scrollTop: $(hash).offset().top
-                }, 800, function() {
+                }, 50, function() {
                     // Add hash (#) to URL when done scrolling (default click behavior)
                     window.location.hash = hash;
                 });
