@@ -175,6 +175,8 @@ const mongooseConfig = {
 	useUnifiedTopology: true,
 }
 
+console.log("db url is = ", db.url);
+
 const client = new MongoClient(db.url);
 
 db.mongoose.connect(db.url, mongooseConfig)
@@ -793,6 +795,10 @@ app.get("/listPagi", async(req, res,) => {
 	res.render("listPagi");
 });
 
+app.get("/select2", async(req, res,) => {
+	res.render("select2");
+});
+
 // app.get("/index", async(req, res) => {
 // 	res.render("index", {
 // 	  message:"",
@@ -984,7 +990,7 @@ app.post("/sign-in", async(req, res) => {
 		else if (/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email) === false) {
 			errorResult.email = `Email Address is not valid`
 		}
-        if (!password) errorResult.password = `Field password cannot be empty`
+        if (!password) errorResult.password = `Field Password cannot be empty`
 		return res.status(400).json({errors: errorResult});
     } else {
 		const existingUser = await db.Users.findOne({ email })
@@ -994,7 +1000,7 @@ app.post("/sign-in", async(req, res) => {
 			});
 		console.log("existingUser is = ", existingUser);
 
-		if (!isObjectEmpty(existingUser)) {
+		if (isObjectEmpty(existingUser) === false) {
 			userExist = existingUser.toObject();
 
 			try {
@@ -1462,11 +1468,13 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 	// 	token
 	// }
 
+	// let pathname = req.path
+
 	// return res.status(200).render(`job-order/${newJobOrder.no_joj}`, { viewOnly: false, jobOrder })
 	// res.setHeader("Content-Type", "text/html");
 		// res.writeHead(200, { 'Content-Type':'text/html'});
 	res.set('Content-Type', 'text/html');
-	res.status(200).render(`job-order-detail`, { viewOnly: false, jobOrder: newJobOrder }, (err, html) => {
+	res.status(200).render(`job-order-detail`, { viewOnly: false, jobOrder: newJobOrder, }, (err, html) => {
 		if (err) {
 		  return next(err); // Handle error appropriately
 		}
@@ -1488,8 +1496,9 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 	// 	.catch(err => res.status(500).send({message: err.message}))
 });
 
-app.get("/job-order/:no_joj", checkUser, async(req, res, next) => {
-	
+app.get(["/job-order/:no_joj", "/approve-job-order/:no_joj"], checkUser, async(req, res, next) => {
+	console.log("req path jo detail is = ", req.path);
+	// let pathname = req.path
 	const {no_joj} = req.params
 	let errorResult = {}
 	// console.log(await db.JobOrders.find({no_joj}));
@@ -1502,13 +1511,33 @@ app.get("/job-order/:no_joj", checkUser, async(req, res, next) => {
 
 	// res.locals.jobOrder = jobOrder.toObject();
 	// app.locals.jobOrder = jobOrder.toObject();
+	
 
+	// let saveFile
+
+	// if (res.locals.user.role === "Marketing") {
+	// 	saveFile = 
+	// } else if (res.locals.user.role === "Operational") {
+
+	// }
+
+	// if (req.path.split("/")[0] === "approve-job-order") {
+	// 	saveFile = false;
+	// } else if (req.path.split("/")[0] === "job-order") {
+	// 	saveFile = true;
+	// }
+	
+	// console.log("pathname jo detail is = ", pathname);
+
+	// res.locals.title = req.path.split("/")[0]
+	res.locals.pathname = req.path
+	res.locals.saveFile = req.path.split("/").filter(Boolean)[0] === "approve-job-order" ? false : true;
 
 	console.log("res locals in job-order-detail called = ", res.locals);
 
 	if (!isObjectEmpty(jobOrder)) {
 		// return res.status(200).render(`job-order/${jobOrder.no_joj}`, { viewOnly: true, jobOrder })
-		return res.status(200).render(`job-order-detail`, { viewOnly: true, jobOrder })
+		return res.status(200).render(`job-order-detail`, { viewOnly: true, jobOrder, })
 	} else {
 		errorResult = {title: "Invalid No JO", message: "Job Order is not found"};
 		return res.status(404).json({errors: errorResult});
@@ -1517,12 +1546,36 @@ app.get("/job-order/:no_joj", checkUser, async(req, res, next) => {
 
 app.get("/waitlist-approve-job-order", checkUser, async(req, res) => {
 	// res.locals.user = null;
-	console.log("user in waitlist = ", res.locals.user);
-	const waitlistJobOrder = await db.JobOrders.find({dibuat_oleh: res.locals.user.username, disetujui_oleh: ""})
+	
+	const { user } = res.locals
+	console.log("user in waitlist = ", user);
+
+	let waitlistJobOrder = [];
+
+	if (user.role === "Marketing") {
+		waitlistJobOrder = await db.JobOrders.find({dibuat_oleh: res.locals.user.username, disetujui_oleh: null})
 				.catch(function(err) {
 				console.log(err);
 				});
-				console.log("waitlistJobOrder is = ", waitlistJobOrder);
+	} else if (user.role === "Operational") {
+		let city_code
+		if (user.location === "Sidoarjo") {
+            city_code = "01";
+          } else if (user.location === "Cikarang") {
+            city_code = "02";
+          } else if (user.location === "Jakarta") {
+            city_code = "03";
+          } else if (user.location === "Makassar") {
+            city_code = "04";
+          }
+			waitlistJobOrder = await db.JobOrders.find({city_code})
+				.catch(function(err) {
+				console.log(err);
+				});
+	}
+
+	 
+				console.log("waitlistJobOrder is = ", waitlistJobOrder.length);
 	
 				return res.status(200).render("waitlist-approve-job-order", {
 					waitlistJobOrder

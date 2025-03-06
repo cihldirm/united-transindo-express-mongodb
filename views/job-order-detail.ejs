@@ -333,8 +333,7 @@
             visibility: visible;
             position: absolute;
             top: 0;
-            /* left: 0;
-            top: 0; */
+            /* left: 0; */
         }
     }
       /* .alert-div > div.alert.alert-danger{
@@ -435,9 +434,9 @@
         
           <nav class="page-breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="#">Marketing</a></li>
+              <li class="breadcrumb-item"><a href="/dashboard"><%= user.role %></a></li>
               <li class="breadcrumb-item active" aria-current="page">
-                Job Order Detail
+                <%= pathname.split("/").filter(Boolean)[0] === "approve-job-order" ? "Approve Job Order" : "Job Order Detail" %>
               </li>
             </ol>
           </nav>
@@ -759,7 +758,7 @@
                   </div>
                   <div class="col-3" style="border-right: 1px solid; padding: 0; display: block;">
                       <div style="border-bottom: 1px solid;">Disetujui oleh, </div>
-                      <div id="signature-approved-by"></div>
+                      <div id="signature-approved-by"><span style="display: none;"></span></div>
                   </div>
                   <div class="col-3" style="border-right: 1px solid; padding: 0; display: block;">
                       <div style="border-bottom: 1px solid;">Diterima oleh, </div>
@@ -771,7 +770,11 @@
                   </div>
               </div>
               <div id="jo-template-action" style="margin-top: 4rem; text-align: center;">
-                <input id="btnSave" class="btn btn-primary" type="submit" value="Save to PDF">
+                <% if (user.role === "Operational") { %>
+                  <input id="btnSubmit" class="btn btn-primary" type="submit" value="Submit Approval">
+                <% } else if (saveFile) { %>
+                  <input id="btnSave" class="btn btn-primary" type="submit" value="Save to PDF">
+                <% } %>
               </div>
           </div>
           <% } %>
@@ -804,51 +807,6 @@
     <script src="/vendors/moment/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/id.min.js" integrity="sha512-he8U4ic6kf3kustvJfiERUpojM8barHoz0WYpAUDWQVn61efpm3aVAD8RWL8OloaDDzMZ1gZiubF9OSdYBqHfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js"></script>
-    
-    <script>
-      /*  @preserve
-      jQuery pub/sub plugin by Peter Higgins (dante@dojotoolkit.org)
-      Loosely based on Dojo publish/subscribe API, limited in scope. Rewritten blindly.
-      Original is (c) Dojo Foundation 2004-2010. Released under either AFL or new BSD, see:
-      http://dojofoundation.org/license for more information.
-      */
-      (function($) {
-        var topics = {};
-        $.publish = function(topic, args) {
-            if (topics[topic]) {
-                var currentTopic = topics[topic],
-                args = args || {};
-        
-                for (var i = 0, j = currentTopic.length; i < j; i++) {
-                    currentTopic[i].call($, args);
-                }
-            }
-        };
-        $.subscribe = function(topic, callback) {
-            if (!topics[topic]) {
-                topics[topic] = [];
-            }
-            topics[topic].push(callback);
-            return {
-                "topic": topic,
-                "callback": callback
-            };
-        };
-        $.unsubscribe = function(handle) {
-            var topic = handle.topic;
-            if (topics[topic]) {
-                var currentTopic = topics[topic];
-        
-                for (var i = 0, j = currentTopic.length; i < j; i++) {
-                    if (currentTopic[i] === handle.callback) {
-                        currentTopic.splice(i, 1);
-                    }
-                }
-            }
-        };
-      })(jQuery);
-      
-    </script>
     <script src="/vendors/jSignature/src/jSignature.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.CompressorBase30.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.CompressorSVG.js"></script>
@@ -875,8 +833,14 @@
           const user = <%- JSON.stringify(user) %>;
           console.log("user in job order detail = ", JSON.stringify(user, null, '\t'));
 
+          const pathname = "<%= pathname %>";
+          console.log("pathname in job order detail = ", pathname);
+
           const viewOnly = <%= viewOnly %>;
           console.log("viewOnly in job order detail = ", viewOnly);
+
+          const saveFile = <%= saveFile %>;
+          console.log("saveFile in job order detail = ", saveFile);
 
           const jobOrder = <%- JSON.stringify(jobOrder) %>;
           console.log("jobOrder in job order detail = ", JSON.stringify(jobOrder, null, '\t'));
@@ -916,6 +880,64 @@
             }
             return frags.join(' ');
           }
+          
+          // // var timeInterval = null;
+          // var timeInterval = 
+          //     setInterval(function() {
+          //       $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+          //     }, 1000);
+          var timeInterval
+
+          if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
+            timeInterval = 
+              setInterval(function() {
+                $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+              }, 1000);
+          } else {
+            timeInterval = null
+          }
+
+          console.log("timeInterval is = ", timeInterval);
+
+          $(`#signature-approved-by`).jSignature({
+                'UndoButton': true,
+                'decor-color': 'transparent',
+                'color': '#000',
+                'width': '100%',
+                'height': '100',
+                'lineWidth': 1,
+              });
+
+              $("#signature-approved-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Disetujui Oleh</p>" );
+          // if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
+          //   console.log("pathname is job order approval 1 init");
+          //   // var timeInterval = null;
+          //   var timeInterval = 
+          //     setInterval(function() {
+          //       $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+          //     }, 1000);
+
+          
+            $("#signature-approved-by").bind('change', function(event) {
+              console.log("bind change ttd length = ", $("#signature-approved-by").jSignature('getData', 'native').length);
+              $("#signature-approved-by canvas").css({
+                border: "none",
+              });
+              $("#sig-error").hide();
+              if ($("#signature-approved-by").jSignature('getData', 'native').length != 0) {
+                // timeInterval = 
+                //   setInterval(function() {
+                //     $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+                //   }, 1000);
+                $("#signature-approved-by span").show();
+              } else {
+                // timeInterval = null;
+                $("#signature-approved-by span").hide();
+              }
+            });
+          // }
+
+          
 
           const loadData = async () => {
             $("#jo-template #content > #header div:nth-child(1) h6").text(`${city},  ${moment(new Date(jobOrder.tgl_wkt_dibuat)).format('DD MMMM YYYY')}`.toUpperCase());
@@ -985,14 +1007,79 @@
 
                 $("#signature-made-by span").html(`${moment(jobOrder.tgl_wkt_dibuat).format('DD-MMM-YYYY')}<br/>${moment(jobOrder.tgl_wkt_dibuat).format('HH:mm')}`);
             }
+
+            if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
+              console.log("pathname is job order approval 2 load data");
+              // $(`#signature-approved-by`).jSignature({
+              //   'UndoButton': true,
+              //   'decor-color': 'transparent',
+              //   'color': '#000',
+              //   'width': '100%',
+              //   'height': '100',
+              //   'lineWidth': 1,
+              // });
+
+              // $("#signature-approved-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Disetujui Oleh</p>" );
+
+              // $("#signature-approved-by").bind('change', function(event) {
+              //   $("#signature-approved-by canvas").css({
+              //     border: "none",
+              //   });
+              //   $("#sig-error").hide();
+              //   if ($("#signature-approved-by").jSignature('getData', 'native').length != 0) {
+              //     // timeInterval = 
+              //     //   setInterval(function() {
+              //     //     $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+              //     //   }, 1000);
+              //     $("#signature-approved-by span").show();
+              //   } else {
+              //     // timeInterval = null;
+              //     $("#signature-approved-by span").hide();
+              //   }
+              // });
+            }
           };
 
           loadData();
+
+          // $("#signature-approved-by").bind('change', function(event) {
+          //     $("#signature-approved-by canvas").css({
+          //       border: "none",
+          //     });
+          //     $("#sig-error").hide();
+          //     if ($("#signature-approved-by").jSignature('getData', 'native').length != 0) {
+          //       // timeInterval = 
+          //       //   setInterval(function() {
+          //       //     $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+          //       //   }, 1000);
+          //       $("#signature-approved-by span").show();
+          //     } else {
+          //       // timeInterval = null;
+          //       $("#signature-approved-by span").hide();
+          //     }
+          //   });
 
           $(".spinner-border").hide();
 
           $("#jo-template").show();
 
+          // $("#signature-approved-by").bind('change', function(event) {
+          //     $("#signature-approved-by canvas").css({
+          //       border: "none",
+          //     });
+          //     $("#sig-error").hide();
+          //     if ($("#signature-approved-by").jSignature('getData', 'native').length != 0) {
+          //       // timeInterval = 
+          //       //   setInterval(function() {
+          //       //     $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+          //       //   }, 1000);
+          //       $("#signature-approved-by span").show();
+          //     } else {
+          //       // timeInterval = null;
+          //       $("#signature-approved-by span").hide();
+          //     }
+          //   });
+        
           const Toast = Swal.mixin({
             toast: true,
             position: 'bottom-start',
@@ -1027,7 +1114,7 @@
               }).then(canvas => {
                 // document.body.appendChild(canvas);
                 // const pdf = new jsPDF('p', 'mm', "a4");
-                const pdf = new jsPDF('p', 'mm', [$("#jo-template").width(), $("#jo-template").height()]);
+                const pdf = new jsPDF('p', 'mm', [$("#jo-template").width() + 50, $("#jo-template").height() + 50]);
                 pdf.setProperties({
                     title: `${fileName} - Finance.pdf`
                 });
@@ -1035,7 +1122,7 @@
                 // console.log(pdf.internal.pageSize.width);
                 // console.log(pdf.internal.pageSize.height);
                 
-                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdf.internal.pageSize.width, pdf.internal.pageSize.height);
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 25, 25, pdf.internal.pageSize.width - 50, pdf.internal.pageSize.height - 50);
                 pdf.save(`${fileName} - Finance.pdf`);
                 // window.open(pdf.output('bloburl', `${fileName} - Finance.pdf`))
                 // pdf.output('save', `${fileName} - Finance.pdf`);
@@ -1084,7 +1171,7 @@
                       scale: 1,
                   }).then(canvas => {
                     // document.body.appendChild(canvas);
-                      const pdf = new jsPDF('p', 'mm', [$(clonedSource).width(), $(clonedSource).height()]);
+                      const pdf = new jsPDF('p', 'mm', [$(clonedSource).width() + 50, $(clonedSource).height() + 50]);
                       pdf.setProperties({
                           title: `${fileName} - Operational.pdf`
                       });
@@ -1118,7 +1205,7 @@ let ratio = widthRatio > heightRatio ? heightRatio : widthRatio
 // console.log(ratio);
 
                       // pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width * ratio, canvas.height * ratio);
-                      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+                      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 25, 25, pdf.internal.pageSize.getWidth() - 50, pdf.internal.pageSize.getHeight() - 50);
                       pdf.save(`${fileName} - Operational.pdf`);
                       window.open(pdf.output('bloburl', `${fileName} - Operational.pdf`))
                       // pdf.output('save', `${fileName} - Operational.pdf`);
@@ -1139,6 +1226,77 @@ let ratio = widthRatio > heightRatio ? heightRatio : widthRatio
           $("#btnSave").on('click', async function (e) {
             await DownloadToPDF();
           });
+
+          $("#btnSubmit").on('click', async function (e) {
+            let ttd_disetujui_oleh = $("#signature-approved-by").jSignature('getData', "image").join(',');
+            console.log("ttd_disetujui_oleh is = ", ttd_disetujui_oleh);
+
+            let isValid = true;
+            
+            if ($("#signature-approved-by").jSignature('getData', 'native').length == 0) {
+              isValid = false;
+              // alert('Mohon Tanda Tangan Pembuat JO');
+              $("#signature-approved-by canvas").css({
+                border: "2px solid #ff3366",
+              });
+              $("#sig-error").show();
+            }
+
+            console.log("isValid = ", isValid);
+          });
+
+          
+
+          // if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
+          //   // var timeInterval = null;
+          //   var timeInterval = 
+          //     setInterval(function() {
+          //       $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+          //     }, 1000);
+
+          //   $(`#signature-approved-by`).jSignature({
+          //     'UndoButton': true,
+          //     'decor-color': 'transparent',
+          //     'color': '#000',
+          //     'width': '100%',
+          //     'height': '100',
+          //     'lineWidth': 1,
+          //   });
+
+          //   $("#signature-approved-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Disetujui Oleh</p>" );
+
+          //   $("#signature-approved-by").bind('change', function(event) {
+          //     $("#signature-approved-by canvas").css({
+          //       border: "none",
+          //     });
+          //     $("#sig-error").hide();
+          //     if ($("#signature-approved-by").jSignature('getData', 'native').length != 0) {
+          //       $("#signature-approved-by span").show();
+          //     } else {
+          //       $("#signature-approved-by span").hide();
+          //     }
+          //   });
+
+          //   $("#btnSubmit").on('click', async function (e) {
+          //     let ttd_disetujui_oleh = $("#signature-approved-by").jSignature('getData', "image").join(',');
+          //     console.log("ttd_disetujui_oleh is = ", ttd_disetujui_oleh);
+
+          //     let isValid = true;
+              
+          //     if ($("#signature-approved-by").jSignature('getData', 'native').length == 0) {
+          //       isValid = false;
+          //       // alert('Mohon Tanda Tangan Pembuat JO');
+          //       $("#signature-approved-by canvas").css({
+          //         border: "2px solid #ff3366",
+          //       });
+          //       $("#sig-error").show();
+          //     }
+
+          //     console.log("isValid = ", isValid);
+
+          //     // if (isValid) {
+          //   });
+          // }
           
         });
     </script>

@@ -1,3 +1,3 @@
 module.exports =  {
-	url: process.env.MONGODB_URI || 'mongodb://localhost:27017/united-transindo'
+	url: 'mongodb://localhost:27017/united-transindo' || process.env.MONGODB_URI
 }

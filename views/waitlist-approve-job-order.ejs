@@ -46,510 +46,27 @@
     <script type="text/javascript" src="/vendors/jSignature/libs/flashcanvas.js"></script>
     <![endif]-->
     <style>
-      #choose-jo-city {
-        background-color: #fff;
-        height: 450px;
-        border: 1px solid;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        gap: 2rem;
-
-        & #container {
-          display: grid;
-          gap: 0.75rem;
-
-          & .city {
-            background-color: #fff;
-            width: 100px;
-            height: 50px;
-          }
-        }
-      }
       .page-content {
         padding-bottom: 0 !important;
         display: grid;
-      }
-      .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
-        color: #999 !important;
-      }
-      .select2-container--default .select2-selection--single .select2-selection__clear {
-        margin-left: 30px;
-      }
-      .select2-selection.select2-selection--single {
-        display: inline-grid;
-        padding-right: 40px !important;
       }
       .spinner-border {
         position: absolute;
         top: calc(50% + 30px);
         left: calc(50% + 120px);
       }
-      #jo-template, #jo-input-result {
-        background-color: #fff;
-        margin: auto;
-        width: 770px;
+      #myList .list-group-item-action:focus {
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        opacity: 0.5;
       }
-      
-      #jo-template > #header, #jo-input-result > #header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* font-size: 0.75rem; */
-        font-size: 0.625rem;
-        gap: 2rem;
-        margin-bottom: 0.5rem;
-
-        & div:nth-child(1) {
-          white-space: nowrap;
-        }
-        & div:nth-child(3) {
-          text-align: right;
-          white-space: nowrap;
+      .pager .pagination li.page-item.disabled {
+        .page-link {
+          /* background-color: #e9ecef; */
+          color: rgba(33,37,41,0.75);
+          background-color: #adb5bd;
         }
       }
-      #jo-template #content {
 
-      }
-      #jo-template #content > #header, #jo-input-result #content > #header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: 1px solid;
-        border-bottom: unset;
-        /* padding: 0.75rem 2rem; */
-        padding: 1rem 2rem;
-        /* & h5 {
-            font-weight: bold;
-            line-height: 0;
-        } */
-        & div:nth-child(1) > h6 {
-          font-weight: 800;
-        }
-        & div:nth-child(2) > span {
-          & #no_joj {
-            &:empty:before {
-              content: "\feff"; /* ZERO WIDTH NO-BREAK SPACE */
-            }
-          }
-        }
-      }
-      #jo-template #content > #container {
-        border: 1px solid;
-        padding-left: 2rem;
-        padding-right: 2rem;
-        & h3 {
-            padding: 2rem;
-            text-decoration: underline;
-            text-align: center;
-            font-size: 26px;
-            font-weight: 800;
-        }
-        /* & label {
-          height: 2rem;
-        } */
-        /* & select:enabled + span.select2.select2-container span.select2-selection.select2-selection--single {
-          border: 1px solid;
-        } */
-        & input[type="radio"]:disabled {
-          cursor: unset;
-        }
-        & select:disabled + span.select2.select2-container span.select2-selection.select2-selection--single,
-          input[type="text"]:disabled, input[type="radio"]:disabled + i.input-frame::before {
-            border: 1px solid darkgrey !important;
-            background-color: lightgrey !important;
-
-          /* &:focus {
-            background-color: lightgrey;
-          } */
-        }
-        /* & .form-group.has-danger .select2-container .select2-selection--single { */
-        & .form-group {
-          & span.select2.select2-container {
-            /* margin-left: 0.75rem; */
-
-            & span.select2-selection.select2-selection--single {
-              /* display: inline-grid;
-              padding-right: 40px !important;
-              border: 1px solid;
-              border-radius: 4px; */
-
-              & span.select2-selection__arrow {
-                width: 100%;
-                height: 100%;
-                z-index: auto;
-
-                & b {
-                  left: unset;
-                  right: 14px;
-                  margin-top: -6px;
-                }
-              }
-
-              & .select2-selection__clear {
-                margin-left: 30px;
-                z-index: 100;
-              }
-            }
-          }
-
-          &.has-danger .select2-container .select2-selection--single {
-            border-color: #ff3366 !important;
-          }
-        }
-        & span.select2.select2-container span.select2-selection.select2-selection--single {
-          display: inline-grid;
-          padding-right: 40px !important;
-          border: 1px solid;
-          border-radius: 4px;
-        }
-        & #data-customer {
-          display: grid;
-
-          & .form-group.form-row {
-            height: 2.1875rem;
-            margin: 0;
-            margin-bottom: 0.25rem;
-            display: inline-table;
-            /* display: flex;
-            align-items: center;
-            flex-wrap: nowrap; */
-          }
-          & label {
-            margin: 0;
-            width: 120px;
-            line-height: 1;
-            vertical-align: unset;
-
-            &.error {
-              width: unset;
-              margin-left: 0.75rem;
-            }
-          }
-          .my_select2_optgroup_selected {
-              background-color: #ddd;
-          }
-          .my_select2_optgroup_hovered {
-              color: #FFF;
-              background-color: #5897fb !important;
-              cursor: pointer;
-          }
-          strong.select2-results__group {
-              padding: 0 !important;
-          }
-          .my_select2_optgroup {
-              display: block;
-              padding: 6px;
-          }
-          /* & span.select2.select2-container {
-            margin-left: 0.75rem;
-
-            & span.select2-selection.select2-selection--single {
-              display: inline-grid;
-              padding-right: 40px !important;
-              border: 1px solid;
-
-              & span.select2-container--default .select2-selection--single .select2-selection__clear {
-                margin-left: 30px;
-              }
-            }
-          } */
-        }
-        & #data-kendaraan {
-          & .form-group.form-row {
-            height: 2.1875rem;
-            margin: 0;
-            margin-bottom: 0.25rem;
-            /* display: inline-table; */
-            display: flex;
-            align-items: center;
-            flex-wrap: nowrap;
-          }
-          & .quantity {
-            margin-left: 0.75rem;
-            display: flex;
-            /* border: 2px solid #3498db; */
-            border: 1px solid darkgrey;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-            & button {
-              /* background-color: #3498db; */
-              color: #fff;
-              border: none;
-              cursor: pointer;
-              /* font-size: 20px;
-              width: 30px; */
-              height: auto;
-              text-align: center;
-              transition: background-color 0.2s;
-            }
-            & .btn-danger:disabled {
-              background-color: darkgrey;
-              cursor: unset;
-            }
-          }
-
-          & .input-box {
-            /* width: 40px; */
-            text-align: center;
-            border: none;
-            /* padding: 8px 10px;
-            font-size: 16px; */
-            outline: none;
-          }
-
-          /* Hide the number input spin buttons */
-          & .input-box::-webkit-inner-spin-button,
-            .input-box::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-          }
-
-          & .input-box[type="number"] {
-            -moz-appearance: textfield;
-          }
-          & .table th, .table td {
-            border: 1px solid darkslategrey !important;
-          }
-          & .table tbody th {
-            text-align: center;
-          }
-          & .table tbody td.has-danger .select2-container .select2-selection--single {
-            border-color: #ff3366 !important;
-          }
-          /* & label[for="form-label"] { */
-          & label.form-label {
-            margin: 0;
-            width: 60px;
-            line-height: 1;
-          }
-          & label.form-check-label {
-            display: flex;
-            margin: 0;
-            gap: 0.5rem;
-          }
-          & label.error {
-            margin: 0;
-            margin-left: 0.75rem;
-          }
-          & .form-check-input {
-            position: relative;
-          }
-          & i.input-frame {
-            position: absolute;
-          }
-          & .table input.form-control[type="text"] {
-            width: max-content;
-            margin: 0;
-            border-color: rgb(118, 118, 118);
-          }
-          & span.select2.select2-container {
-            /* margin-left: 0.75rem; */
-            width: max-content;
-          }
-        }
-        & #pembayaran {
-          & .form-group.form-row {
-            height: 2.1875rem;
-            margin: 0;
-            margin-bottom: 0.25rem;
-            /* display: inline-table; */
-            display: flex;
-            align-items: center;
-            flex-wrap: nowrap;
-          }
-          & label {
-            margin: 0;
-            width: 85px;
-            line-height: 1;
-            /* vertical-align: unset; */
-          }
-          & .form-check.form-check-inline {
-            margin: 0;
-            display: flex;
-            align-items: center;
-          }
-          & input.form-control {
-            width: 192px;
-            min-width: 192px;
-            /* margin: 0 0.625rem; */
-            margin-left: 0.75rem;
-            border-color: rgb(118,118,118);
-          }
-        }
-        & #detail-pembayaran-1 {
-          & .form-group.form-row {
-            height: 2.1875rem;
-            margin: 0;
-            margin-bottom: 0.25rem;
-            /* display: inline-table; */
-            display: flex;
-            align-items: center;
-            flex-wrap: nowrap;
-          }
-          & span.form-label {
-            margin: 0;
-            /* min-width: 80px;
-            width: 80px; */
-            min-width: 90px;
-            width: 90px;
-            line-height: 1;
-            /* vertical-align: unset; */
-            /* min-width: 120px;
-            width: 120px; */
-            /* min-width: 150px;
-            width: 150px; */
-          }
-          & input.form-control {
-            /* margin: 0 0.625rem; */
-            /* margin-left: 0.75rem; */
-            margin-left: 0.625rem;
-            border-color: rgb(118,118,118);
-          }
-          & label.form-check-label {
-            display: flex;
-            margin: 0;
-            gap: 0.5rem;
-          }
-          & input[name="tagihan"], input[name="opsi_tagihan_top"] {
-            position: relative;
-          }
-          & i.input-frame {
-            position: absolute;
-          }
-        }
-        & #detail-pembayaran-2 {
-          & .form-group.form-row {
-            height: 2.1875rem;
-            margin: 0;
-            margin-bottom: 0.25rem;
-            /* display: inline-table; */
-            display: flex;
-            align-items: center;
-            flex-wrap: nowrap;
-          }
-          & span.form-label {
-            margin: 0;
-            min-width: 150px;
-            width: 150px;
-            line-height: 1;
-            /* vertical-align: unset; */
-          }
-          & input.form-control {
-            /* margin: 0 0.625rem; */
-            /* margin-left: 0.75rem; */
-            margin-left: 0.625rem;
-            border-color: rgb(118,118,118);
-          }
-          & label.form-check-label {
-            display: flex;
-            margin: 0;
-            gap: 0.5rem;
-          }
-          & i.input-frame {
-            position: absolute;
-          }
-          & input[name="asuransi"], input[name="biaya_koord"] {
-            position: relative;
-          }
-          #note {
-            color: black;
-            border-color: rgb(118, 118, 118);
-            min-width: 192px;
-            line-height: normal;
-            height: auto;
-            min-height: 2.1875rem;
-
-            &[placeholder]:empty:before {
-              cursor: text;
-              content: attr(placeholder);
-              color: #555; 
-            }
-
-            &[placeholder]:empty:focus:before {
-              content: "";
-            }
-          }
-        }
-        & .form-check .form-check-label {
-          display: inline;
-        }
-        & .hr_tgl_ambil.input-group.date.datepicker {
-          width: 250px;
-          margin-left: 0.75rem;
-          /* width: fit-content; */
-          display: inline-flex;
-          border: 1px solid;
-          border-radius: 4px;
-
-          & span.input-group-addon {
-            border-left: 1px solid;
-          }
-        }
-        .datepicker.datepicker-dropdown.dropdown-menu {
-          z-index: 1000;
-        }
-        & #qty {
-          padding: 0;
-          width: 1.2ch;
-          margin: 0 0.5rem;
-        }
-        /* & #lainnya {
-            position: relative;
-            margin: 0 0.5rem;
-        } */
-        & #nominal {
-          border-color: rgb(118,118,118);
-        }
-        input::placeholder {
-          color: #999;
-          opacity: 1; /* Firefox */
-        }
-        input::-ms-input-placeholder { /* Edge 12 -18 */
-          color: #999;
-        }
-        /* & .form-control-danger {
-          border-color: #ff3366 !important;
-        } */
-      }
-      #jo-template #content > #footer, #jo-input-result #content > #footer {
-        border: 1px solid;
-        border-top: unset;
-        display: flex;
-        text-align: center;
-
-        /* & div.col-3 {
-          height: 100px;
-        } */
-
-        /*This is the div within which the signature canvas is fitted*/
-        & #signature-made-by,
-          #signature-approved-by,
-          #signature-received-by-1,
-          #signature-received-by-2 {
-            height: 100px;
-            /* border: 1px solid; */
-
-
-            & div img {
-              display: none !important;
-            }
-            
-            & canvas.jSignature {
-            }
-
-            & span {
-              position: absolute;
-              bottom: 2px;
-              right: 2px;
-              font-size: 11px;
-              line-height: 1;
-            }
-        }
-      }
       /* .alert-div > div.alert.alert-danger{
         font-weight: bold;
         text-align: center;
@@ -637,11 +154,11 @@
             </ol>
           </nav>
 
-          <div class="spinner-border" role="status" style="display: none;">
+          <div class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
           </div>
 
-          <div class="list-group">
+          <!-- <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
               <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">List group item heading</h5>
@@ -671,12 +188,6 @@
           <div id="waitlist-approve" class="row">
             <div class="col-12">
               <div class="list-group" id="list-tab" role="tablist">
-                <!-- <% if (typeof waitlistJobOrder != 'undefined' && waitlistJobOrder.length) {  
-                    waitlistJobOrder.forEach(function(row,index) { %>
-                        <p class="name font-weight-bold mb-0"><%= user.name %></p>
-                        <p class="email text-muted mb-3"><%= user.email %></p>
-                    <% }); %>
-                <% } %> -->
                 <a class="list-group-item list-group-item-action" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">Home</a>
                 <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">Profile</a>
                 <a class="list-group-item list-group-item-action" id="list-messages-list" data-bs-toggle="list" href="#list-messages" role="tab" aria-controls="list-messages">Messages</a>
@@ -691,20 +202,41 @@
                 <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">this settings is </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div class="row">
-            <div class="col-12">
-              <h2>Paged list</h2>
-              <div class="panel panel-default">
-                <div class="panel-heading">Panel heading</div>
-                <ul id="myList" class="list-group"></ul>
-                <ul class="pager">
-                  <li class="previous"><a href="" onclick="prevPage(); return false;">«</a></li>
-                  <li class="next"><a href="" onclick="nextPage(); return false;">»</a></li>
-                </ul>
-              </div>
-            </div>
+          <div id="waitlist-content" style="display: none;">
+            <!-- <div class="col-12"> -->
+              <h3>Waitlist Approve Job Order</h3>
+              <!-- <div class="panel panel-default">
+                <div class="panel-heading">Panel heading</div> -->
+                <div id="myList" class="list-group mt-3"></div>
+
+                <div class="pager mt-5">
+                  <!-- <span class="previous"><a href="" onclick="prevPage(); return false;">«</a></span>
+                  <span class="next"><a href="" onclick="nextPage(); return false;">»</a></span> -->
+
+                  <!-- <ul class="pagination pagination-rounded pagination-sm justify-content-end">
+                    <li class="page-item disabled">
+                      <a class="page-link" href="" onclick="prevPage(); return false;" tabindex="-1" aria-disabled="true">«</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="" onclick="nextPage(); return false;">»</a>
+                    </li>
+                  </ul> -->
+                  <ul class="pagination pagination-rounded pagination-sm justify-content-end"></ul>
+                </div>
+
+                <!-- <nav id="pag_nav">
+                  <ul class="pagination">
+                  </ul>
+                </nav> -->
+
+
+              <!-- </div> -->
+            <!-- </div> -->
           </div>
 
         </div>
@@ -720,7 +252,7 @@
     <!-- endinject -->
     <!-- plugin js for this page -->
     <!-- jQuery -->
-    <script src="/vendors/jSignature/libs/jquery.js"></script>
+    <!-- <script src="/vendors/jSignature/libs/jquery.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
     <script src="/vendors/jquery.autosize.input/jquery.autosize.input.js"></script>
     <!-- Bootstrap JS -->
@@ -744,57 +276,12 @@
     <script src="/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js"></script>
     <script src="/vendors/inputmask/jquery.inputmask.min.js"></script>
     <script src="/vendors/jquery-validation/jquery.validate.min.js"></script>
-    
-    <script>
-      /*  @preserve
-      jQuery pub/sub plugin by Peter Higgins (dante@dojotoolkit.org)
-      Loosely based on Dojo publish/subscribe API, limited in scope. Rewritten blindly.
-      Original is (c) Dojo Foundation 2004-2010. Released under either AFL or new BSD, see:
-      http://dojofoundation.org/license for more information.
-      */
-      (function($) {
-        var topics = {};
-        $.publish = function(topic, args) {
-            if (topics[topic]) {
-                var currentTopic = topics[topic],
-                args = args || {};
-        
-                for (var i = 0, j = currentTopic.length; i < j; i++) {
-                    currentTopic[i].call($, args);
-                }
-            }
-        };
-        $.subscribe = function(topic, callback) {
-            if (!topics[topic]) {
-                topics[topic] = [];
-            }
-            topics[topic].push(callback);
-            return {
-                "topic": topic,
-                "callback": callback
-            };
-        };
-        $.unsubscribe = function(handle) {
-            var topic = handle.topic;
-            if (topics[topic]) {
-                var currentTopic = topics[topic];
-        
-                for (var i = 0, j = currentTopic.length; i < j; i++) {
-                    if (currentTopic[i] === handle.callback) {
-                        currentTopic.splice(i, 1);
-                    }
-                }
-            }
-        };
-      })(jQuery);
-      
-    </script>
-    <script src="/vendors/jSignature/src/jSignature.js"></script>
+    <!-- <script src="/vendors/jSignature/src/jSignature.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.CompressorBase30.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.CompressorSVG.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.UndoButton.js"></script> 
     <script src="/vendors/jSignature/src/plugins/signhere/jSignature.SignHere.js"></script> 
-    <script src="https://willowsystems.github.io/jSignature/js/libs/jSignature.min.js"></script>
+    <script src="https://willowsystems.github.io/jSignature/js/libs/jSignature.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
     <!-- end plugin js for this page -->
@@ -803,78 +290,192 @@
     <script src="/js/template.js"></script>
     <!-- endinject -->
     <!-- custom js for this page -->
-    <script src="/js/dashboard.js"></script>
+    <!-- <script src="/js/dashboard.js"></script> -->
     <!-- <script src="/js/datepicker-id.js" charset="UTF-8"></script> -->
     <!-- <script src="/js/datepicker.js"></script> -->
     <!-- <script src="/js/timepicker.js"></script> -->
     <!-- end custom js for this page -->
 
     <script>
+      var waitlistJobOrder = <%- JSON.stringify(waitlistJobOrder) %>;
+      console.log("waitlistJobOrder is = ", JSON.stringify(waitlistJobOrder, null, '\t'));
+
+        var pager = {};
+        pager.items = waitlistJobOrder;
+        pager.itemsPerPage = 3;
+        pager.currentPage = 0;
+        pagerInit(pager);
+
+        function bindList() {
+            let pgItems = pager.pagedItems[pager.currentPage];
+            $('.pager .pagination li').removeClass('disabled');
+            // $(this).not('.prev,.next').addClass('active');
+            // $('li.prev').next().addClass('active');
+            if (pager.currentPage === 0) {
+              $('li.prev').addClass('disabled');
+            } else if (pager.currentPage + 1 === pager.pagedItems.length) {
+              $('li.next').addClass('disabled');
+            }
+            
+            $("#myList").empty();
+            for(let i = 0, city; i < pgItems.length; i++){
+              switch (pgItems[i].city_code) {
+                  case "01":
+                      city = "Sidoarjo";
+                      break;
+                  case "02":
+                      city = "Cikarang";
+                      break;
+                  case "03":
+                      city = "Jakarta";
+                      break;
+                  case "04":
+                      city = "Makassar";
+                      break;
+              }
+
+              let option = `
+                <a href="" class="list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 id="no_jo" class="mb-1">Job Order No. ${pgItems[i].city_code + String(moment(new Date(pgItems[i].tgl_wkt_dibuat)).format('YY')) + pgItems[i].no_joj}</h5>
+                    <small class="text-muted">${city}, tanggal ${moment(pgItems[i].tgl_wkt_dibuat).format('DD MMMM YYYY')} jam ${moment(pgItems[i].tgl_wkt_dibuat).format('HH:mm')}</small>
+                  </div>
+                  <p class="mb-1">Dari ${pgItems[i].nama_pengirim} kepada ${pgItems[i].nama_penerima}</p>
+                  <small class="text-muted">Pengambilan Unit pada hari ${pgItems[i].hr_tgl_ambil.split(" / ")[0]} tanggal ${pgItems[i].hr_tgl_ambil.split(" / ")[1]}</small>
+                </a>
+              `;
+
+              // console.log("option is = ", option);
+
+              $("#myList").append(option);
+            }
+        }
+
+        // function prevPage(){
+        //     pager.prevPage();
+        //     bindList();
+        // }
+
+        // function nextPage(){
+        //     pager.nextPage();
+        //     bindList();
+        // }
+
+        function pagerInit(p) {
+            p.pagedItems = [];
+            p.prevPage = function () {
+                if (p.currentPage > 0) {
+                  $('li.active').removeClass('active').prev().addClass('active');
+                    p.currentPage--;
+                }
+            };
+            p.nextPage = function () {
+                if (p.currentPage < p.pagedItems.length - 1) {
+                  $('li.active').removeClass('active').next().addClass('active');
+                    p.currentPage++;
+                }
+            };
+            init = function () {
+                $(".pager ul.pagination").empty();
+                
+                // $(".pager ul.pagination").append('<li class=prev><a href="" aria-label=Previous><span aria-hidden=true>&laquo;</span></a></li>');
+                // JSON.stringify(p.pagedItems, null, '\t')
+                $(".pager ul.pagination").append(`
+                  <li class="page-item prev disabled">
+                    <a class="page-link" href="" tabindex="-1" aria-disabled="true">«</a>
+                  </li>
+                `);
+                for (let i = 0; i < p.items.length; i++) {
+                  // console.log("Math.floor(i / p.itemsPerPage) = ", Math.floor(i / p.itemsPerPage));
+                  // console.log("p.items[i] = ", p.items[i]);
+                  if (i % p.itemsPerPage === 0) {
+                      p.pagedItems[Math.floor(i / p.itemsPerPage)] = [p.items[i]];
+                  } else {
+                      p.pagedItems[Math.floor(i / p.itemsPerPage)].push(p.items[i]);
+                  }
+                  console.log("p.pagedItems = ", JSON.stringify(p.pagedItems, null, '\t'));
+                }
+                console.log("p.pagedItems final result = ", JSON.stringify(p.pagedItems, null, '\t'));
+                for (let index = 1; index <= p.pagedItems.length; index++) {
+                  $(".pager ul.pagination").append(`
+                    <li class="page-item"><a class="page-link" href="">${index}</a></li>
+                  `);
+                }
+                $(".pager ul.pagination").append(`
+                  <li class="page-item next">
+                    <a class="page-link" href="">»</a>
+                  </li>
+                `);
+                $('li.prev').next().addClass('active');
+            };
+            init();
+        }
+
         $(document).ready(function() {
-            var waitlistJobOrder = <%- JSON.stringify(waitlistJobOrder) %>;
-            console.log("waitlistJobOrder is = ", JSON.stringify(waitlistJobOrder, null, '\t'));
+            
 
-            for (let index = 0; index < waitlistJobOrder.length; index++) {
-                console.log("index is = ", index);
-                console.log("waitlistJobOrder is = ", waitlistJobOrder[index]);
-            }
+            // for (let index = 0; index < waitlistJobOrder.length; index++) {
+            //     console.log("index is = ", index);
+            //     console.log("waitlistJobOrder is = ", waitlistJobOrder[index]);
+            // }
 
-            var items = '[{"Id":1,"Title":"One"},{"Id":2,"Title":"Two"},{"Id":3,"Title":"Three"},{"Id":4,"Title":"Four"},{"Id":5,"Title":"Five"}]';
-            var pager = {};
-            pager.items = JSON.parse(items);
-            pager.itemsPerPage = 3;
-            pagerInit(pager);
-            bindList();
+            const loadData = async () => {
+              bindList();
+              console.log("pager after init ready = ", pager);
+            };
 
-            function bindList() {
-                let pgItems = pager.pagedItems[pager.currentPage];
-                $("#myList").empty();
-                for(let i = 0; i < pgItems.length; i++){
-                    let option = $('<li class="list-group-item">');
-                    for( let key in pgItems[i] ){
-                        option.html(pgItems[i][key]);
-                    }
-                    $("#myList").append(option);
-                }
-            }
+            loadData();
 
-            function prevPage(){
-                pager.prevPage();
-                bindList();
-            }
+            $(".spinner-border").hide();
 
-            function nextPage(){
-                pager.nextPage();
-                bindList();
-            }
+            $("#waitlist-content").show();
 
-            function pagerInit(p) {
-                p.pagedItems = [];
-                p.currentPage = 0;
-                if (p.itemsPerPage === undefined) {
-                    p.itemsPerPage = 5;
-                }
-                p.prevPage = function () {
-                    if (p.currentPage > 0) {
-                        p.currentPage--;
-                    }
-                };
-                p.nextPage = function () {
-                    if (p.currentPage < p.pagedItems.length - 1) {
-                        p.currentPage++;
-                    }
-                };
-                init = function () {
-                    for (let i = 0; i < p.items.length; i++) {
-                        if (i % p.itemsPerPage === 0) {
-                            p.pagedItems[Math.floor(i / p.itemsPerPage)] = [p.items[i]];
-                        } else {
-                            p.pagedItems[Math.floor(i / p.itemsPerPage)].push(p.items[i]);
-                        }
-                    }
-                };
-                init();
-            }
+            $('#myList').on('click', '.list-group-item-action', async function(event) {
+              event.preventDefault();
+              let no_jo = waitlistJobOrder[pager.currentPage * pager.itemsPerPage + $(this).index()].no_joj;
+              // console.log("no_jo is = ", no_jo);
+              // console.log($(this).data('wpurl'));
+              // event.originalEvent.currentTarget.href = `/job-order/${no_jo}`;
+              // console.log(event.originalEvent.currentTarget.href);
+              if (user.role === "Marketing") {
+                location.replace(`/job-order/${no_jo}`);
+              } else if (user.role === "Operational") {
+                location.replace(`/approve-job-order/${no_jo}`);
+              }
+              // return await fetch(`/job-order/${no_jo}`, {
+              //       method: "GET",
+              //       headers: {
+              //         "Content-Type": "application/json",
+              //       },
+              //     });
+              // return false;
+              // event.preventDefault();
+              // return;
+            });
+
+            $('.pager .pagination').on('click', 'li:not(.prev):not(.next)', function() {
+              $('.pager .pagination li').removeClass('active');
+              $(this).not('.prev,.next').addClass('active');
+              pager.currentPage = Number($(this).text()) - 1;
+              bindList();
+              return false;
+            });
+
+            $('.pager .pagination').on('click', 'li.prev', function() {
+              // $('li.active').removeClass('active').prev().addClass('active');
+              pager.prevPage();
+              bindList();
+              return false;
+            });
+
+            $('.pager .pagination').on('click', 'li.next', function() {
+              // $('li.active').removeClass('active').next().addClass('active');
+              pager.nextPage();
+              bindList();
+              return false;
+            });
+
+
         });
     </script>
   </body>

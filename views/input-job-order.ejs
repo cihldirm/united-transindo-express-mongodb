@@ -21,6 +21,7 @@
     <!-- <link rel="stylesheet" href="/css/bootstrap-msg.css"> -->
     <!-- Font Awesome 4 -->
     <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://select2.github.io/select2/select2-3.5.2/select2.css"> -->
     <link rel="stylesheet" href="/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
     <link
@@ -732,6 +733,22 @@
                           </div>
                           <!-- <br/> -->
                           <br/>
+                          <!-- <div class="form-group form-row">
+                            <select id="e1" style="width:300px;">
+                              <optgroup label="A1 comps">
+                                  <option value="A1">AAA 1</option>
+                                  <option value="A2">AAA 2</option>
+                                  <option value="A#">AAA 3</option>
+                                  <option value="A4">AAA 4</option>
+                              </optgroup>
+                              <optgroup label="B1 comps">
+                                  <option value="B1">BBB 1</option>
+                                  <option value="B2">BBB 2</option>
+                                  <option value="B3">BBB 3</option>
+                                  <option value="B4">BBB 4</option>
+                              </optgroup>
+                            </select>
+                          </div> -->
                           <div class="form-group form-row">
                             <label for="nama_penerima">Nama Penerima</label> <span style="margin-right: .75rem;">:</span>
                             <select name="nama_penerima" id="nama_penerima" class="form-control"></select>
@@ -1626,6 +1643,7 @@
     <!-- <script src="https://github.com/jquery/jquery-ui/blob/main/ui/i18n/datepicker-id.js" type='text/javascript'></script> -->
     <script src="/vendors/apexcharts/apexcharts.min.js"></script>
     <script src="/vendors/progressbar.js/progressbar.min.js"></script>
+    <!-- <script src="https://select2.github.io/select2/select2-3.5.2/select2.js"></script> -->
     <script src="/vendors/select2/select2.min.js"></script>
     <script src="/vendors/sweetalert2/sweetalert2.min.js"></script>
     <script src="/vendors/promise-polyfill/polyfill.min.js"></script>
@@ -1988,13 +2006,39 @@
 
             $(`[name^="tipe"]`).val(null);
 
+            // $(`[name^="tipe"]`).val("jie83jwjd");
+
             $(`[name^="tipe"]`).select2({
                 placeholder: "PILIH SALAH SATU",
                 allowClear: true,
                 width: "style",
                 tags: true,
                 closeOnSelect: true,
-                minimumInputLength: 3,
+                minimumInputLength: 3, 
+              //   language: {
+              //     inputTooShort: function(args) {
+              //         // return "";
+              //         // args.input = args.input || $(this).data('select2').dropdown.$search.val();
+              //         // rowIndex = $(this).attr("name").match(/\d+/)[0];
+              // // console.log(`[name="tipe[]"] at index ${rowIndex} select value is = `, this.value);
+              // // console.log(`select2 select value is = `, this.value);
+              // // console.log($(this));
+              // // $(this).select2("search", this.value);
+              // // name="tipe[1]"
+              // // $(this).select2("search", "this value 63qe7daggsag");
+              // // $(`[name="tipe[${rowIndex}]"]`).select2("search", "this value 63qe7daggsag");
+              //         console.log("language inputTooShort");
+              //         console.log($(this).val());
+              //         // console.log($(`[name="tipe[${rowIndex}]"]`).val());
+              //         console.log("args = ", args);
+              //         console.log("args minimum = ", args.minimum);
+              //         console.log("args input = ", args.input);
+              //         // console.log("this dropdown.$search.val = ", $(this).data('select2').dropdown.$search.val());
+              //         // if ($(this).data('select2').dropdown.$search.val() >= args.minimum) {
+              //         //   return false
+              //         // }
+              //     }
+              //   },
             });
 
             $('[name^="tipe"]').on("change", function(e) {
@@ -2011,7 +2055,11 @@
               $(this).trigger('blur');
             }).on("blur", function(event) {
               console.log(`on blur this value type at ${rowIndex} = `, this.value);
+              $(this).data('select2').dropdown.$search.val(this.value);
             }).on("select2:opening", function(e) {
+              console.log("tipe select 2 opening value is = ", this.value);
+              console.log($(this).data('select2').dropdown);
+              $(this).data('select2').dropdown.$search.val(this.value);
               if ($(this).data('unselecting')) {
                 $(this).removeData('unselecting');
                 $(`[name="nopol_noka[${rowIndex}]"]`).val(null).trigger('change');
@@ -2031,12 +2079,24 @@
                 });
                 e.preventDefault();
               }
+              
+              // $(this).select2("search", this.value);
+            }).on("select2:open", function(e) {
+              // $(this).select2("search", "Ertiga");
+              console.log("tipe select 2 open val is = ", this.value);
+              // $(this).data('select2').dropdown.$search.val(this.value);
             }).on("select2:unselecting", function(e) {
               rowIndex = $(this).attr("name").match(/\d+/)[0];
               $(this).data('unselecting', true);
             }).on("select2:select", function(e) {
               rowIndex = $(this).attr("name").match(/\d+/)[0];
               // console.log(`[name="tipe[]"] at index ${rowIndex} select value is = `, this.value);
+              console.log(`select2 select value is = `, this.value);
+              // console.log($(this));
+              // $(this).select2("search", this.value);
+              // name="tipe[1]"
+              // $(this).select2("search", "this value 63qe7daggsag");
+              // $(`[name="tipe[${rowIndex}]"]`).select2("search", "this value 63qe7daggsag");
 
               if (list_type_unit.findIndex(tipe => String(this.value).toLowerCase() === String(tipe).toLowerCase()) === -1) {
                 console.log(`tipe at ${rowIndex} with ${this.value} is added`);
@@ -2076,7 +2136,9 @@
               $(this).trigger('blur');
             }).on("blur", function(event) {
               console.log(`on blur this value warna at ${rowIndex} = `, this.value);
+              $(this).data('select2').dropdown.$search.val(this.value);
             }).on("select2:opening", function(e) {
+              $(this).data('select2').dropdown.$search.val(this.value);
               if ($(this).data('unselecting')) {
                 $(this).removeData('unselecting');
                 e.preventDefault();
@@ -2353,12 +2415,21 @@
               }
             });
 
+            // $("#e1").val("B1").select2();
+            // $("#e1").on("select2-opening", function() { 
+            //   $("#e1").on("select2-open", function() { 
+            //     $(this).select2("search","BB234798132786wq8sdaB");
+            //   });
+            // })
+
             $(`#nama_penerima`).append(`<option value=""></option>`);
             list_nama_penerima.forEach(nama_penerima => {
                 $(`#nama_penerima`).append(`<option value="${nama_penerima}">${nama_penerima}</option>`);
             });
 
-            $(`#nama_penerima`).val(null);
+            // $(`#nama_penerima`).val(null);
+
+            // $(`#nama_penerima`).val("3829jadfrgugs sadf adsr24").trigger('change');
 
             $(`#nama_penerima`).select2({
                 placeholder: "PILIH SALAH SATU",
@@ -2408,6 +2479,12 @@
                 $(this).append(new Option(this.value, this.value, true, true));
               }
             });
+
+            // $(`#nama_penerima`).val("3829jadfrgugs sadf adsr24").trigger('change');
+            // $(`#nama_penerima`).val("UMC Surabaya");
+            // $(`#nama_penerima`).val("UMC Surabaya").trigger('change');
+
+            // alert($(`#nama_penerima`).val())
 
             $(`#alamat_penerima`).append(`<option value=""></option>`);
             list_alamat_penerima.forEach(alamat_penerima => {

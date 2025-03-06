@@ -40,15 +40,16 @@
     pager.items = JSON.parse(items);
     pager.itemsPerPage = 3;
     pagerInit(pager);
-    console.log("pager aftet init = ", pager);
+    console.log("pager before init ready = ", pager);
         
     function bindList() {
       var pgItems = pager.pagedItems[pager.currentPage];
+      console.log("pgItems is = ", pgItems);
       $("#myList").empty();
-      console.log("pgItems is == ", pgItems);
       for(var i = 0; i < pgItems.length; i++){
         var option = $('<li class="list-group-item">');
         for( var key in pgItems[i] ){
+          console.log("pgItems[i][key] = ", pgItems[i][key]);
           option.html(pgItems[i][key]);
         }
         $("#myList").append(option);
@@ -69,7 +70,7 @@
         p.itemsPerPage = 5;
       }
       p.prevPage = function () {
-	if (p.currentPage > 0) {
+	    if (p.currentPage > 0) {
           p.currentPage--;
         }
       };
@@ -80,17 +81,23 @@
       };
       init = function () {
         for (var i = 0; i < p.items.length; i++) {
+          console.log("Math.floor(i / p.itemsPerPage) = ", Math.floor(i / p.itemsPerPage));
+          console.log("p.items[i] = ", p.items[i]);
           if (i % p.itemsPerPage === 0) {
             p.pagedItems[Math.floor(i / p.itemsPerPage)] = [p.items[i]];
           } else {
             p.pagedItems[Math.floor(i / p.itemsPerPage)].push(p.items[i]);
           }
+          
+          console.log("p.pagedItems = ", JSON.stringify(p.pagedItems, null, '\t'));
         }
+        console.log("p.pagedItems final result = ", JSON.stringify(p.pagedItems, null, '\t'));
       };
       init();
     }		
     $(function() {
       bindList();
+      console.log("pager after init ready = ", pager);
     });
   </script>
 </body>
