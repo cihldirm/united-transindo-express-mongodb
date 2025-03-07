@@ -1283,7 +1283,7 @@ app.get("/input-job-order", checkUser, async(req, res) => {
 
 app.post("/input-job-order", checkUser, async(req, res, next) => {
 	console.log("res locals in post input-job-order called = ", res.locals);
-	console.log("req body of input-job-order = ", req.body);
+	console.log("req body of post input-job-order = ", req.body);
   
 	let {
 		no_joj,
@@ -1494,6 +1494,33 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 	// jobOrders.create(req.body)
 	// 	.then(() => res.send({message: "Tersimpan"}))
 	// 	.catch(err => res.status(500).send({message: err.message}))
+});
+
+app.put("/input-job-order/:no_joj", checkUser, async(req, res, next) => {
+	console.log("req body of update input-job-order = ", req.body);
+	const {no_joj} = req.params
+	let errorResult = {}
+  
+	let {
+		disetujui_oleh,
+		ttd_disetujui_oleh
+	} = req.body;
+	// let dbo = mongoose.db
+
+	try {
+		await client.connect();
+	
+		const result = await dbo.collection('job-order').updateOne({no_joj},{$set:{disetujui_oleh,
+			ttd_disetujui_oleh}});
+		
+		console.log('Updated Job Order =>', result);
+	  } catch (err) {
+		console.error(err);
+		  errorResult = {message: "Update job order failed"};
+		  return res.status(400).json({errors: errorResult});
+	  } finally {
+		await client.close();
+	  }
 });
 
 app.get(["/job-order/:no_joj", "/approve-job-order/:no_joj"], checkUser, async(req, res, next) => {

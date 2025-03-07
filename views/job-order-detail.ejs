@@ -899,16 +899,18 @@
 
           console.log("timeInterval is = ", timeInterval);
 
-          $(`#signature-approved-by`).jSignature({
-                'UndoButton': true,
-                'decor-color': 'transparent',
-                'color': '#000',
-                'width': '100%',
-                'height': '100',
-                'lineWidth': 1,
-              });
+          console.log("width approved by before load data = ", $(`#signature-approved-by`).width());
 
-              $("#signature-approved-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Disetujui Oleh</p>" );
+          // $(`#signature-approved-by`).jSignature({
+          //       'UndoButton': true,
+          //       'decor-color': 'transparent',
+          //       'color': '#000',
+          //       'width': '100%',
+          //       'height': '100',
+          //       'lineWidth': 1,
+          //     });
+
+          //     $("#signature-approved-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Disetujui Oleh</p>" );
           // if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
           //   console.log("pathname is job order approval 1 init");
           //   // var timeInterval = null;
@@ -1008,36 +1010,37 @@
                 $("#signature-made-by span").html(`${moment(jobOrder.tgl_wkt_dibuat).format('DD-MMM-YYYY')}<br/>${moment(jobOrder.tgl_wkt_dibuat).format('HH:mm')}`);
             }
 
-            if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
-              console.log("pathname is job order approval 2 load data");
-              // $(`#signature-approved-by`).jSignature({
-              //   'UndoButton': true,
-              //   'decor-color': 'transparent',
-              //   'color': '#000',
-              //   'width': '100%',
-              //   'height': '100',
-              //   'lineWidth': 1,
-              // });
+            // if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
+            //   console.log("pathname is job order approval 2 load data");
+            //   console.log("width approved by after load data = ", $(`#signature-approved-by`).width());
+            //   $(`#signature-approved-by`).jSignature({
+            //     'UndoButton': true,
+            //     'decor-color': 'transparent',
+            //     'color': '#000',
+            //     'width': '100%',
+            //     'height': '100',
+            //     'lineWidth': 1,
+            //   });
 
-              // $("#signature-approved-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Disetujui Oleh</p>" );
+            //   $("#signature-approved-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Disetujui Oleh</p>" );
 
-              // $("#signature-approved-by").bind('change', function(event) {
-              //   $("#signature-approved-by canvas").css({
-              //     border: "none",
-              //   });
-              //   $("#sig-error").hide();
-              //   if ($("#signature-approved-by").jSignature('getData', 'native').length != 0) {
-              //     // timeInterval = 
-              //     //   setInterval(function() {
-              //     //     $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
-              //     //   }, 1000);
-              //     $("#signature-approved-by span").show();
-              //   } else {
-              //     // timeInterval = null;
-              //     $("#signature-approved-by span").hide();
-              //   }
-              // });
-            }
+            //   // $("#signature-approved-by").bind('change', function(event) {
+            //   //   $("#signature-approved-by canvas").css({
+            //   //     border: "none",
+            //   //   });
+            //   //   $("#sig-error").hide();
+            //   //   if ($("#signature-approved-by").jSignature('getData', 'native').length != 0) {
+            //   //     // timeInterval = 
+            //   //     //   setInterval(function() {
+            //   //     //     $("#signature-approved-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
+            //   //     //   }, 1000);
+            //   //     $("#signature-approved-by span").show();
+            //   //   } else {
+            //   //     // timeInterval = null;
+            //   //     $("#signature-approved-by span").hide();
+            //   //   }
+            //   // });
+            // }
           };
 
           loadData();
@@ -1062,6 +1065,22 @@
           $(".spinner-border").hide();
 
           $("#jo-template").show();
+
+          console.log("width approved by aftered load data = ", $(`#signature-approved-by`).width());
+
+          if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
+
+          $(`#signature-approved-by`).jSignature({
+                'UndoButton': true,
+                'decor-color': 'transparent',
+                'color': '#000',
+                'width': '100%',
+                'height': '100',
+                'lineWidth': 1,
+              });
+
+              $("#signature-approved-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Disetujui Oleh</p>" );
+            }
 
           // $("#signature-approved-by").bind('change', function(event) {
           //     $("#signature-approved-by canvas").css({
@@ -1235,7 +1254,7 @@ let ratio = widthRatio > heightRatio ? heightRatio : widthRatio
             
             if ($("#signature-approved-by").jSignature('getData', 'native').length == 0) {
               isValid = false;
-              // alert('Mohon Tanda Tangan Pembuat JO');
+              // alert('Mohon Tanda Tangan Penyetuju JO');
               $("#signature-approved-by canvas").css({
                 border: "2px solid #ff3366",
               });
@@ -1243,6 +1262,161 @@ let ratio = widthRatio > heightRatio ? heightRatio : widthRatio
             }
 
             console.log("isValid = ", isValid);
+
+            if (isValid) {
+              try {
+                const response = await fetch(`/input-job-order/${jobOrder.no_joj}`, {
+                  method: "PUT",
+                  // body: formData,
+                  body: JSON.stringify({ 
+                    disetujui_oleh: user.username,
+                    ttd_disetujui_oleh,
+                   }),
+                  headers: {'Content-Type': 'application/json', "Accept":"text/html"},
+                  credentials: 'same-origin',
+                });
+                console.log("response of updateData = ", response);
+
+                console.log("response body is = ", response.body);
+
+                if (response.status == 200 || response.ok) {
+                  console.log('Promise resolved and HTTP status is successful');
+                  // const result = await response.json();
+                  // console.log("result from response of createData = ", result);
+
+                  Toast.fire({
+                    icon: 'success',
+                    html: `<label>Approve Job Order ${jobOrder.no_joj} Success</label>`,
+                  });
+
+                  clearInterval(timeInterval);
+
+                  $("#jo-template-action").attr('hidden', 'true')
+                  let fileName = `Job Order ${jobOrder.city_code + String(moment(new Date(jobOrder.tgl_wkt_dibuat)).format('YY')) + jobOrder.no_joj}`;
+                  let source = document.querySelector('#jo-template')
+
+                  // console.log(source.clientWidth);
+                  // console.log($(source).width());
+
+                  // console.log(source.clientHeight);
+                  // console.log($(source).height());     
+                  try {
+                    await html2canvas(source, {
+                      allowTaint: true,
+                      useCORS: true,
+                      scale: 1,
+                    }).then(canvas => {
+                      // document.body.appendChild(canvas);
+                      // const pdf = new jsPDF('p', 'mm', "a4");
+                      const pdf = new jsPDF('p', 'mm', [$("#jo-template").width() + 50, $("#jo-template").height() + 50]);
+                      pdf.setProperties({
+                          title: `${fileName} - Operational.pdf`
+                      });
+                      console.log("pdf Operational => ", pdf);
+                      // console.log(pdf.internal.pageSize.width);
+                      // console.log(pdf.internal.pageSize.height);
+                      
+                      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 25, 25, pdf.internal.pageSize.width - 50, pdf.internal.pageSize.height - 50);
+                      pdf.save(`${fileName} - Operational.pdf`);
+                      window.open(pdf.output('bloburl', `${fileName} - Operational.pdf`))
+                      $("#jo-template-action").removeAttr('hidden', 'true')
+                    });
+                  } catch (error) {
+                    console.error('Error:', error.message);
+                    Toast.fire({
+                          icon: 'error',
+                          html: `<label>Save Operational PDF Failed</label>`,
+                        });
+                  }
+
+                  //   // await $.ajax({
+              //   //   url: "/job-order-data",
+              //   //   type: "GET",
+              //   //   dataType: "json",
+              //   //   success: async (res) => {
+              //   //     console.log("results = ", res);
+              //   //   },
+              //   //   error: function (err) {
+              //   //     console.log("error = ", err);
+              //   //   },
+              //   // });
+
+                  // return await fetch(`/job-order/${no_joj}`, {
+                  //   method: "GET",
+                  //   headers: {
+                  //     "Content-Type": "application/json",
+                  //   },
+                  // }).then(res => {
+                  //   let htmlText = await response.text();
+                  //   document.getElementsByTagName('body')[0].innerHTML(bodyContent);
+                    
+                  // });
+
+                   // When the page is loaded convert it to text
+                  // let responseText = await response.text();
+
+                  // console.log("responseText is = ", responseText);
+
+                  // // Initialize the DOM parser
+                  // const parser = new DOMParser()
+
+                  // // Parse the text
+                  // const doc = await parser.parseFromString(responseText, "text/html")
+
+                  // console.log("final result doc is = ", doc);
+
+                  // setTimeout(() => {
+                  //   // app.get("/job-order/:no_joj", checkUser, async(req, res) => {
+                  //     window.history.pushState({}, "United Transindo Admin Dashboard", `/job-order/${no_joj}`);
+                  //     // $('body').html(doc);
+                  //     // $('body').html(responseText);
+                  //     // window.location.reload();
+
+                  //     let newDoc = document.open("text/html", "replace");
+                  //     newDoc.write(responseText);
+                  //     newDoc.close();
+                  // }, 1000);
+
+                } else {
+                  console.log('error: ', response.status, response.statusText);
+                  console.error('Promise resolved but HTTP status failed');
+                  // const Toast = Swal.mixin({
+                  //   toast: true,
+                  //   position: 'bottom-start',
+                  //   showConfirmButton: false,
+                  //   timer: 5000,
+                  //   timerProgressBar: true,
+                  // });
+                    
+                  Toast.fire({
+                    icon: 'error',
+                    html: `<label>There are some errors when submitting the form</label>`,
+                  });
+                  /* Handle the error returned by the HTTP request */
+                  return {error: {status: response.status, statusText: response.statusText}};
+                }
+                
+                // const now = performance.now();
+                // for (let l = 0; l < 1000000; l += 1)
+                //   getRow();
+                // console.log(performance.now() - now);
+              } catch (err) {
+                console.error(err)
+                
+                // const Toast = Swal.mixin({
+                //   toast: true,
+                //   position: 'bottom-start',
+                //   showConfirmButton: false,
+                //   timer: 5000,
+                //   timerProgressBar: true,
+                // });
+                  
+                Toast.fire({
+                  icon: 'error',
+                  html: `<label>Submit Form Failed</label>`,
+                });
+              }
+            }
           });
 
           
