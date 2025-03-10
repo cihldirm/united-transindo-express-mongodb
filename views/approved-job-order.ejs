@@ -150,7 +150,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#">Marketing</a></li>
               <li class="breadcrumb-item active" aria-current="page">
-                Waitlist Approve Job Order
+                Approved Job Order
               </li>
             </ol>
           </nav>
@@ -159,85 +159,15 @@
             <span class="sr-only">Loading...</span>
           </div>
 
-          <!-- <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">List group item heading</h5>
-                <small>3 days ago</small>
-              </div>
-              <p class="mb-1">Some placeholder content in a paragraph.</p>
-              <small>And some small print.</small>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">List group item heading</h5>
-                <small class="text-muted">3 days ago</small>
-              </div>
-              <p class="mb-1">Some placeholder content in a paragraph.</p>
-              <small class="text-muted">And some muted small print.</small>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">List group item heading</h5>
-                <small class="text-muted">3 days ago</small>
-              </div>
-              <p class="mb-1">Some placeholder content in a paragraph.</p>
-              <small class="text-muted">And some muted small print.</small>
-            </a>
-          </div>
-
-          <div id="waitlist-approve" class="row">
-            <div class="col-12">
-              <div class="list-group" id="list-tab" role="tablist">
-                <a class="list-group-item list-group-item-action" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">Home</a>
-                <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">Profile</a>
-                <a class="list-group-item list-group-item-action" id="list-messages-list" data-bs-toggle="list" href="#list-messages" role="tab" aria-controls="list-messages">Messages</a>
-                <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings" role="tab" aria-controls="list-settings">Settings</a>
-              </div>
-            </div>
-            <div class="col-8">
-              <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">this is home</div>
-                <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">profile this is </div>
-                <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">this message is </div>
-                <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">this settings is </div>
-              </div>
-            </div>
-          </div> -->
-
-          <div id="waitlist-content" style="display: none;">
+          <div id="list-content" style="display: none;">
             <!-- <div class="col-12"> -->
-              <h3>Waitlist Approve Job Order</h3>
-              <!-- <div class="panel panel-default">
-                <div class="panel-heading">Panel heading</div> -->
+              <h3>Approved Job Order</h3>
                 <div id="myList" class="list-group mt-3"></div>
 
                 <div class="pager mt-5">
-                  <!-- <span class="previous"><a href="" onclick="prevPage(); return false;">«</a></span>
-                  <span class="next"><a href="" onclick="nextPage(); return false;">»</a></span> -->
-
-                  <!-- <ul class="pagination pagination-rounded pagination-sm justify-content-end">
-                    <li class="page-item disabled">
-                      <a class="page-link" href="" onclick="prevPage(); return false;" tabindex="-1" aria-disabled="true">«</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                      <a class="page-link" href="" onclick="nextPage(); return false;">»</a>
-                    </li>
-                  </ul> -->
                   <ul class="pagination pagination-rounded pagination-sm justify-content-end"></ul>
                 </div>
 
-                <!-- <nav id="pag_nav">
-                  <ul class="pagination">
-                  </ul>
-                </nav> -->
-
-
-              <!-- </div> -->
-            <!-- </div> -->
           </div>
 
         </div>
@@ -298,11 +228,11 @@
     <!-- end custom js for this page -->
 
     <script>
-      var waitlistJobOrder = <%- JSON.stringify(waitlistJobOrder) %>;
-      console.log("waitlistJobOrder is = ", JSON.stringify(waitlistJobOrder, null, '\t'));
+      var JobOrder = <%- JSON.stringify(JobOrder) %>;
+      console.log("JobOrder is = ", JSON.stringify(JobOrder, null, '\t'));
 
         var pager = {};
-        pager.items = waitlistJobOrder;
+        pager.items = JobOrder;
         pager.itemsPerPage = 3;
         pager.currentPage = 0;
         pagerInit(pager);
@@ -430,20 +360,20 @@
 
             $(".spinner-border").hide();
 
-            $("#waitlist-content").show();
+            $("#list-content").show();
 
             $('#myList').on('click', '.list-group-item-action', async function(event) {
               event.preventDefault();
-              let no_jo = waitlistJobOrder[pager.currentPage * pager.itemsPerPage + $(this).index()].no_joj;
+              let no_jo = JobOrder[pager.currentPage * pager.itemsPerPage + $(this).index()].no_joj;
               // console.log("no_jo is = ", no_jo);
               // console.log($(this).data('wpurl'));
               // event.originalEvent.currentTarget.href = `/job-order/${no_jo}`;
               // console.log(event.originalEvent.currentTarget.href);
-              if (user.role === "Marketing") {
+              // if (user.role === "Marketing") {
                 location.replace(`/job-order/${no_jo}`);
-              } else if (user.role === "Operational") {
-                location.replace(`/approve-job-order/${no_jo}`);
-              }
+              // } else if (user.role === "Operational") {
+              //   location.replace(`/approve-job-order/${no_jo}`);
+              // }
               // return await fetch(`/job-order/${no_jo}`, {
               //       method: "GET",
               //       headers: {
@@ -464,14 +394,12 @@
             });
 
             $('.pager .pagination').on('click', 'li.prev', function() {
-              // $('li.active').removeClass('active').prev().addClass('active');
               pager.prevPage();
               bindList();
               return false;
             });
 
             $('.pager .pagination').on('click', 'li.next', function() {
-              // $('li.active').removeClass('active').next().addClass('active');
               pager.nextPage();
               bindList();
               return false;

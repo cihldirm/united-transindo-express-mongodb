@@ -104,6 +104,14 @@
         gap: 2rem;
         margin-bottom: 0.5rem;
 
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */        
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* IE10+/Edge */
+        user-select: none; /* Standard & Non-prefixed version, currently
+        supported by Chrome, Edge, Opera and Firefox */
+
         & div:nth-child(1) {
           white-space: nowrap;
         }
@@ -693,7 +701,7 @@
                 Telp. (021) 4535007-8, Fax. (021) 45865813
               </div>
               <div class="">
-                <img width="270" height="50" src="/images/Logo Header PT UT.jpeg" alt="logo-header-job-order" />
+                <img width="270" height="50" src="/images/Logo Header PT UT.jpeg" alt="logo-header-job-order" draggable="false" />
               </div>
               <div class="">
                 Komplek Pergudangan Sinar Buduran II Blok A No. 09 </br>
@@ -2056,10 +2064,12 @@
             }).on("blur", function(event) {
               console.log(`on blur this value type at ${rowIndex} = `, this.value);
               $(this).data('select2').dropdown.$search.val(this.value);
+              // $(this).data('select2').selection.$search.val(this.value);
             }).on("select2:opening", function(e) {
               console.log("tipe select 2 opening value is = ", this.value);
               console.log($(this).data('select2').dropdown);
               $(this).data('select2').dropdown.$search.val(this.value);
+              // $(this).data('select2').selection.$search.val(this.value);
               if ($(this).data('unselecting')) {
                 $(this).removeData('unselecting');
                 $(`[name="nopol_noka[${rowIndex}]"]`).val(null).trigger('change');
@@ -2104,6 +2114,14 @@
                 list_type_unit.push(this.value);
                 $(this).append(new Option(this.value, this.value, true, true));
               }
+            }).on("select2:closing", function(e) {
+              console.log("tipe select 2 closing val is = ", this.value);
+              console.log($(this).data('select2').dropdown);
+              $(this).data('select2').dropdown.$search.val(this.value);
+            }).on("select2:close", function(e) {
+              console.log("tipe select 2 close val is = ", this.value);
+              console.log($(this).data('select2').dropdown);
+              $(this).data('select2').dropdown.$search.val(this.value);
             });
 
             $('[name^="tipe"]').each(function(e) {

@@ -24,6 +24,7 @@
     <!-- Font Awesome 4 -->
     <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
     <link
       rel="stylesheet"
       href="/vendors/sweetalert2/sweetalert2.min.css"
@@ -69,6 +70,14 @@
         font-size: 0.625rem;
         gap: 2rem;
         margin-bottom: 0.5rem;
+
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */        
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* IE10+/Edge */
+        user-select: none; /* Standard & Non-prefixed version, currently
+        supported by Chrome, Edge, Opera and Firefox */
 
         & div:nth-child(1) {
           white-space: nowrap;
@@ -454,7 +463,7 @@
                 Telp. (021) 4535007-8, Fax. (021) 45865813
               </div>
               <div class="">
-                <img width="270" height="50" src="/images/Logo Header PT UT.jpeg" alt="logo-header-job-order" />
+                <img width="270" height="50" src="/images/Logo Header PT UT.jpeg" alt="logo-header-job-order" draggable="false" />
               </div>
               <div class="">
                 Komplek Pergudangan Sinar Buduran II Blok A No. 09 </br>
@@ -1010,6 +1019,26 @@
                 $("#signature-made-by span").html(`${moment(jobOrder.tgl_wkt_dibuat).format('DD-MMM-YYYY')}<br/>${moment(jobOrder.tgl_wkt_dibuat).format('HH:mm')}`);
             }
 
+            if (jobOrder.ttd_disetujui_oleh) {
+                let data = jobOrder.ttd_disetujui_oleh.split(",");
+                // console.log("data from ttd_disetujui_oleh = ", data);
+                let img = new Image();
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.objectFit = "contain";
+                img.setAttribute("draggable", false);
+                img.src = 'data:' + data[0] + ',' + data[1];
+                // console.log("img is = ", img);
+                $(img).appendTo($('#signature-approved-by'));
+
+                $("#signature-approved-by span").html(`${moment(jobOrder.tgl_wkt_disetujui).format('DD-MMM-YYYY')}<br/>${moment(jobOrder.tgl_wkt_disetujui).format('HH:mm')}`);
+                $("#signature-approved-by span").show();
+
+                if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
+                  $("#jo-template-action").hide();
+                }
+            }
+
             // if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
             //   console.log("pathname is job order approval 2 load data");
             //   console.log("width approved by after load data = ", $(`#signature-approved-by`).width());
@@ -1070,7 +1099,7 @@
 
           if (pathname.split("/").filter(Boolean)[0] === "approve-job-order") {
 
-          $(`#signature-approved-by`).jSignature({
+              $(`#signature-approved-by`).jSignature({
                 'UndoButton': true,
                 'decor-color': 'transparent',
                 'color': '#000',

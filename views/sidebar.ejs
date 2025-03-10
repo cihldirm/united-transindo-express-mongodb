@@ -1,3 +1,13 @@
+<style>
+    i.link-icon.mdi {
+        font-size: 17px;
+        display: inline-table;
+
+        &::before {
+            display: block;
+        }
+    }
+</style>
 <nav class="sidebar">
     <div class="sidebar-header" style="padding: 0 12px;">
         <a href="#" class="sidebar-brand" style="cursor: pointer">
@@ -41,13 +51,13 @@
             <!-- <i class="link-arrow" data-feather="chevron-down"></i> -->
             <!-- </a> -->
             </li>
-            <!-- <li class="nav-item">
+            <li class="nav-item">
             <a href="/database" class="nav-link">
                 <i class="link-icon" data-feather="database"></i>
                 <span class="link-title">Database</span>
             </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a href="/report" class="nav-link">
                     <i class="link-icon" data-feather="database"></i>
                     <span class="link-title">Report</span>
@@ -59,16 +69,17 @@
                     <a
                         class="nav-link"
                         data-toggle="collapse"
-                        href="#marketing"
+                        data-target="#marketing-module"
+                        href="#marketing-module"
                         role="button"
-                        aria-expanded="false"
-                        aria-controls="users"
+                        aria-expanded="true"
+                        aria-controls="marketing-module"
                     >
                         <i class="link-icon" data-feather="users"></i>
                         <span class="link-title">Marketing</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <div class="collapse" id="marketing">
+                    <div class="collapse show" id="marketing-module">
                         <ul class="nav sub-menu">
                         <li class="nav-item">
                             <a href="/input-job-order" class="nav-link">
@@ -78,8 +89,14 @@
                         </li>
                         <li class="nav-item">
                             <a href="/waitlist-approve-job-order" class="nav-link">
-                                <i class="link-icon" data-feather="file-text"></i>
+                                <i class="link-icon mdi mdi-timetable"></i>
                                 <span class="link-title">Waitlist Approve Job Order</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/history-job-order" class="nav-link">
+                                <i class="link-icon mdi mdi-history"></i>
+                                <span class="link-title">History Job Order</span>
                             </a>
                         </li>
                         </ul>
@@ -90,21 +107,33 @@
                     <a
                         class="nav-link"
                         data-toggle="collapse"
-                        href="#operational"
+                        href="#operational-module"
                         role="button"
-                        aria-expanded="false"
-                        aria-controls="users"
+                        aria-expanded="true"
+                        aria-controls="operational-module"
                     >
                         <i class="link-icon" data-feather="users"></i>
                         <span class="link-title">Operational</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <div class="collapse" id="operational">
+                    <div class="collapse show" id="operational-module">
                         <ul class="nav sub-menu">
                         <li class="nav-item">
                             <a href="/waitlist-approve-job-order" class="nav-link">
-                                <i class="link-icon" data-feather="file-text"></i>
+                                <i class="link-icon mdi mdi-timetable"></i>
                                 <span class="link-title">Waitlist Approve Job Order</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/approved-job-order" class="nav-link">
+                                <i class="link-icon mdi mdi-timetable"></i>
+                                <span class="link-title">Approved Job Order</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/history-job-order" class="nav-link">
+                                <i class="link-icon mdi mdi-history"></i>
+                                <span class="link-title">History Job Order</span>
                             </a>
                         </li>
                         </ul>
@@ -115,25 +144,25 @@
                     <a
                         class="nav-link"
                         data-toggle="collapse"
-                        href="#finance"
+                        href="#finance-module"
                         role="button"
-                        aria-expanded="false"
-                        aria-controls="users"
+                        aria-expanded="true"
+                        aria-controls="finance-module"
                     >
                         <i class="link-icon" data-feather="users"></i>
                         <span class="link-title">Finance</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <!-- <div class="collapse" id="finance">
+                    <div class="collapse show" id="finance-module">
                         <ul class="nav sub-menu">
                         <li class="nav-item">
-                            <a href="/approve-job-order" class="nav-link">
+                            <!-- <a href="/approve-job-order" class="nav-link">
                                 <i class="link-icon" data-feather="file-text"></i>
                                 <span class="link-title">Approve Job Order</span>
-                            </a>
+                            </a> -->
                         </li>
                         </ul>
-                    </div> -->
+                    </div>
                     </li>
             <% } %>
             <!-- <li class="nav-item">

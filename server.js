@@ -234,34 +234,37 @@ async function readGoogleSheet(sheet) {
 	 }
 	});
 	//Google Sheets API
-	let spreadsheetId = '1h5_afIl-tH4faCNGnRO-JjE6_r_e2iCnDfb7lb6Ng-U',
+	let spreadsheetId = '1oNDJFbl-P5jKE9k0QAdxFoDHORLznv0v-zWEXYhX_pA',
+	// let spreadsheetId = '1h5_afIl-tH4faCNGnRO-JjE6_r_e2iCnDfb7lb6Ng-U',
 		// sheetRange =  sheet === "database" ? 'DATABASE 2024!A1:AQ' : 'Kode Rute!A1:Z',
 		sheetRange,
 		sheets = google.sheets('v4');
   
 	if (sheet === "database") {
-	  sheetRange = 'DATABASE 2024!A:AQ';
-	} else if (sheet === "nama pengirim") {
-	  sheetRange = 'Nama Pengirim!A:A';
-	} else if (sheet === "alamat pengirim") {
-	  sheetRange = 'Alamat Pengirim!A:A';
-	} else if (sheet === "kontak pengirim") {
-	  sheetRange = 'Kontak Pengirim!A:A';
-	} else if (sheet === "nama penerima") {
-	  sheetRange = 'Nama Penerima!A:A';
-	} else if (sheet === "alamat penerima") {
-	  sheetRange = 'Alamat Penerima!A:A';
-	} else if (sheet === "kontak penerima") {
-	  sheetRange = 'Kontak Penerima!A:A';
-	} else if (sheet === "merk") {
-	  sheetRange = 'Merk!A:A';
-	} else if (sheet === "type") {
-	  sheetRange = 'Type!A:A';
-	} else if (sheet === "warna") {
-	  sheetRange = 'Warna!A:A';
-	} else if (sheet === "nopol noka") {
-	  sheetRange = 'Nopol Noka!A:A';
-	} else {
+	  sheetRange = 'DATABASE 2025!A:AQ';
+	} 
+	// else if (sheet === "nama pengirim") {
+	//   sheetRange = 'Nama Pengirim!A:A';
+	// } else if (sheet === "alamat pengirim") {
+	//   sheetRange = 'Alamat Pengirim!A:A';
+	// } else if (sheet === "kontak pengirim") {
+	//   sheetRange = 'Kontak Pengirim!A:A';
+	// } else if (sheet === "nama penerima") {
+	//   sheetRange = 'Nama Penerima!A:A';
+	// } else if (sheet === "alamat penerima") {
+	//   sheetRange = 'Alamat Penerima!A:A';
+	// } else if (sheet === "kontak penerima") {
+	//   sheetRange = 'Kontak Penerima!A:A';
+	// } else if (sheet === "merk") {
+	//   sheetRange = 'Merk!A:A';
+	// } else if (sheet === "type") {
+	//   sheetRange = 'Type!A:A';
+	// } else if (sheet === "warna") {
+	//   sheetRange = 'Warna!A:A';
+	// } else if (sheet === "nopol noka") {
+	//   sheetRange = 'Nopol Noka!A:A';
+	// } 
+	else {
 	  // Kode Rute
 	  sheetRange = 'Kode Rute!A:B';
 	}
@@ -302,7 +305,7 @@ async function readGoogleSheet(sheet) {
 		}, []);
 
 		console.log("headerTable db is = ", headerTable);
-		console.log("contentTable db is = ", contentTable);
+		// console.log("contentTable db is = ", contentTable);
   
 		return { headerTable, contentTable };
 	  }
@@ -788,16 +791,16 @@ const accessValidation  = (req, res, next) => {
 // app.get('*', requireAuth);
 
 app.get("/", async(req, res,) => {
-	res.render("home");
+	res.render("sign-in");
 });
 
-app.get("/listPagi", async(req, res,) => {
-	res.render("listPagi");
-});
+// app.get("/listPagi", async(req, res,) => {
+// 	res.render("listPagi");
+// });
 
-app.get("/select2", async(req, res,) => {
-	res.render("select2");
-});
+// app.get("/select2", async(req, res,) => {
+// 	res.render("select2");
+// });
 
 // app.get("/index", async(req, res) => {
 // 	res.render("index", {
@@ -1138,6 +1141,15 @@ app.post('/decrypt',(req, res) => {
 // app.get("/dashboard", requireAuth, async(req, res) => {
 app.get("/dashboard", checkUser, async(req, res) => {
 	res.render("dashboard");
+});
+
+app.get("/database", checkUser, async(req, res) => {
+	// console.log("contentTable = ", await readGoogleSheet("database"));
+	let { headerTable, contentTable } = await readGoogleSheet("database");
+	return res.status(200).render("database", {
+		headerTable,
+		contentTable,
+	});
 });
 
 app.get("/profile", checkUser, async(req, res) => {
@@ -1580,10 +1592,13 @@ app.get("/waitlist-approve-job-order", checkUser, async(req, res) => {
 	let waitlistJobOrder = [];
 
 	if (user.role === "Marketing") {
-		waitlistJobOrder = await db.JobOrders.find({dibuat_oleh: res.locals.user.username, disetujui_oleh: null})
-				.catch(function(err) {
-				console.log(err);
-				});
+		waitlistJobOrder = await db.JobOrders.find({
+			dibuat_oleh: res.locals.user.username, 
+			disetujui_oleh: null
+		})
+		.catch(function(err) {
+			console.log(err);
+		});
 	} else if (user.role === "Operational") {
 		let city_code
 		if (user.location === "Sidoarjo") {
@@ -1595,18 +1610,67 @@ app.get("/waitlist-approve-job-order", checkUser, async(req, res) => {
           } else if (user.location === "Makassar") {
             city_code = "04";
           }
-			waitlistJobOrder = await db.JobOrders.find({city_code})
+			waitlistJobOrder = await db.JobOrders.find({city_code, disetujui_oleh: null})
 				.catch(function(err) {
 				console.log(err);
 				});
 	}
 
 	 
-				console.log("waitlistJobOrder is = ", waitlistJobOrder.length);
+	console.log("waitlistJobOrder is = ", waitlistJobOrder.length);
+
+	return res.status(200).render("waitlist-approve-job-order", {
+		waitlistJobOrder
+	});
+});
+
+app.get("/approved-job-order", checkUser, async(req, res) => {
+	// res.locals.user = null;
 	
-				return res.status(200).render("waitlist-approve-job-order", {
-					waitlistJobOrder
+	const { user } = res.locals
+	console.log("user in approved = ", user);
+
+	let JobOrder = [];
+
+	// if (user.role === "Marketing") {
+	// 	waitlistJobOrder = await db.JobOrders.find({
+	// 		dibuat_oleh: user.username, 
+	// 		disetujui_oleh: 
+	// 	})
+	// 			.catch(function(err) {
+	// 			console.log(err);
+	// 			});
+	// } else if (user.role === "Operational") {
+	// 	let city_code
+	// 	if (user.location === "Sidoarjo") {
+    //         city_code = "01";
+    //       } else if (user.location === "Cikarang") {
+    //         city_code = "02";
+    //       } else if (user.location === "Jakarta") {
+    //         city_code = "03";
+    //       } else if (user.location === "Makassar") {
+    //         city_code = "04";
+    //       }
+	// 		waitlistJobOrder = await db.JobOrders.find({city_code})
+	// 			.catch(function(err) {
+	// 			console.log(err);
+	// 			});
+	// }
+
+	JobOrder = await db.JobOrders.find({
+		disetujui_oleh: user.username, 
+	})
+
+	 
+				console.log("JobOrder is = ", JobOrder.length);
+	
+				return res.status(200).render("approved-job-order", {
+					JobOrder
 				  });
+});
+
+app.get("/history-job-order", checkUser, async(req, res) => {
+
 });
 
 // app.listen(port, () => {
