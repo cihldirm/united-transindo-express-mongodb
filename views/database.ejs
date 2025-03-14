@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>United Transindo Admin Dashboard</title>
 	<!-- <title>NobleUI Responsive Bootstrap 4 Dashboard Template</title> -->
 	<!-- core:css -->
@@ -12,6 +13,7 @@
   <!-- plugin css for this page -->
   <link rel="stylesheet" href="./vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
   <link rel="stylesheet" href="./vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="./vendors/table-scroll-shadow/table-scroll-shadow.min.css">
 	<!-- end plugin css for this page -->
 	<!-- inject:css -->
 	<link rel="stylesheet" href="./fonts/feather-font/css/iconfont.css">
@@ -22,6 +24,66 @@
   <!-- End layout styles -->
   <!-- <link rel="shortcut icon" href="./images/favicon.png" /> -->
   <link rel="icon" type="image/x-icon" href="./images/icons/Logo United Transindo.ico">
+  <style>
+    .page-content {
+      padding-bottom: 0 !important;
+      display: grid;
+    }
+    .spinner-border {
+      position: absolute;
+      top: calc(50% + 30px);
+      left: calc(50% + 120px);
+    }
+    /* #myList .list-group-item-action:focus {
+      border: 1px solid rgba(0, 0, 0, 0.125);
+      opacity: 0.5;
+    } */
+    .pager .pagination li.page-item.disabled {
+      .page-link {
+        color: rgba(33,37,41,0.75);
+        background-color: #adb5bd;
+      }
+    }
+
+    .table-outer {
+      /* border:1px solid #000; */
+      /* max-width: 25%;
+      max-width: 925px; */
+      /* max-width: 57.8125rem; */
+      /* overflow-x: scroll; */
+    }
+    .table{
+      /* table-layout: fixed;  */
+      /* margin:40px auto 0px auto; */
+      /* margin: 0 auto; */
+      /* width: 600px; */
+      /* width: 1140px;
+      max-width: 100%; */
+    }
+    .table, .table th, .table td{
+      border-collapse:collapse; 
+      border:1px solid #777;
+    }
+    .table th, .table td{
+      padding: 1px !important;
+      width: 100px;
+      line-height: unset;
+    }
+    .table th{
+      /* padding:20px 7px; 
+      font-size:15px;  */
+      color:#444; 
+      background:#66C2E0;
+      white-space: pre-wrap !important;
+      vertical-align: middle !important;
+      text-align: center;
+    }
+    .table td{
+      vertical-align: top;
+      text-align: center;
+      white-space: pre-wrap !important;
+    }
+  </style>
 </head>
 <body>
 	<div class="main-wrapper">
@@ -62,7 +124,7 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" style="overflow-x:auto;">
           <div class="col-12 col-xl-12 grid-margin stretch-card">
             <div class="card overflow-hidden">
               <div class="card-body">
@@ -81,95 +143,40 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-responsive">
-                  <table class="table table-hover mb-0">
-                    <thead>
-                      <tr>
-                        <th class="pt-0">#</th>
-                        <th class="pt-0">Project Name</th>
-                        <th class="pt-0">Start Date</th>
-                        <th class="pt-0">Due Date</th>
-                        <th class="pt-0">Status</th>
-                        <th class="pt-0">Assign</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>NobleUI jQuery</td>
-                        <td>01/01/2020</td>
-                        <td>26/04/2020</td>
-                        <td><span class="badge badge-danger">Released</span></td>
-                        <td>Leonardo Payne</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>NobleUI Angular</td>
-                        <td>01/01/2020</td>
-                        <td>26/04/2020</td>
-                        <td><span class="badge badge-success">Review</span></td>
-                        <td>Carl Henson</td>
-                      </tr>
-                      <tr>
-                        <td>3</td>
-                        <td>NobleUI ReactJs</td>
-                        <td>01/05/2020</td>
-                        <td>10/09/2020</td>
-                        <td><span class="badge badge-info-muted">Pending</span></td>
-                        <td>Jensen Combs</td>
-                      </tr>
-                      <tr>
-                        <td>4</td>
-                        <td>NobleUI VueJs</td>
-                        <td>01/01/2020</td>
-                        <td>31/11/2020</td>
-                        <td><span class="badge badge-warning">Work in Progress</span>
-                        </td>
-                        <td>Amiah Burton</td>
-                      </tr>
-                      <tr>
-                        <td>5</td>
-                        <td>NobleUI Laravel</td>
-                        <td>01/01/2020</td>
-                        <td>31/12/2020</td>
-                        <td><span class="badge badge-danger-muted text-white">Coming soon</span></td>
-                        <td>Yaretzi Mayo</td>
-                      </tr>
-                      <tr>
-                        <td>6</td>
-                        <td>NobleUI NodeJs</td>
-                        <td>01/01/2020</td>
-                        <td>31/12/2020</td>
-                        <td><span class="badge badge-primary">Coming soon</span></td>
-                        <td>Carl Henson</td>
-                      </tr>
-                      <tr>
-                        <td class="border-bottom">3</td>
-                        <td class="border-bottom">NobleUI EmberJs</td>
-                        <td class="border-bottom">01/05/2020</td>
-                        <td class="border-bottom">10/11/2020</td>
-                        <td class="border-bottom"><span class="badge badge-info-muted">Pending</span></td>
-                        <td class="border-bottom">Jensen Combs</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <!-- <div class="row align-items-start mb-2">
-                  <div class="col-md-7">
-                    <p class="text-muted tx-13 mb-3 mb-md-0">Revenue is the income that a business has from its normal business activities, usually from the sale of goods and services to customers.</p>
-                  </div>
-                  <div class="col-md-5 d-flex justify-content-md-end">
-                    <div class="btn-group mb-3 mb-md-0" role="group" aria-label="Basic example">
-                      <button type="button" class="btn btn-outline-primary">Today</button>
-                      <button type="button" class="btn btn-outline-primary d-none d-md-block">Week</button>
-                      <button type="button" class="btn btn-primary">Month</button>
-                      <button type="button" class="btn btn-outline-primary">Year</button>
-                    </div>
+                
+                <div class="table-outer table-wrapper table-responsive">
+                  <div class="table-scroll">
+                    <table class="table inner table-hover mb-0" style="border-spacing: 0;">
+                      <thead>
+                        <% if (headerTable.length) { %>
+                          <tr>
+                            <% headerTable.forEach((header) => { %>
+                              <th class="pt-0"><%= header %></th>
+                            <% }) %>
+                          </tr>
+                        <% } %>
+                      </thead>
+                      <tbody>
+          
+                        <% if (contentTable.length) { 
+                          contentTable.forEach((content) => { %>
+                          <tr>
+                            <% if (headerTable.length) {
+                              headerTable.forEach((header) => {
+                                %>
+                              <td><%= content[header] %></td>
+                              <% })
+                            } %>
+                          </tr>
+                          <% 
+                              })
+                              } %>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-                <div class="flot-wrapper">
-                  <div id="flotChart1" class="flot-chart"></div>
-                </div> -->
+
+                
               </div>
             </div>
           </div>
@@ -194,6 +201,10 @@
   <script src="./vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
   <script src="./vendors/apexcharts/apexcharts.min.js"></script>
   <script src="./vendors/progressbar.js/progressbar.min.js"></script>
+  <!-- <script src="./vendors/table-scroll-shadow/table-scroll-shadow.min.js"></script> -->
+  <!-- <script type="text/javascript" src="https://raw.github.com/sniku/jQuery-doubleScroll/master/jquery.doubleScroll.js"></script> -->
+   <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
 	<!-- end plugin js for this page -->
 	<!-- inject:js -->
 	<script src="./vendors/feather-icons/feather.min.js"></script>
@@ -206,6 +217,238 @@
 	<!-- end custom js for this page -->
 
   <script>
+    (function () {
+      // Define the constructor
+      this.TableScrollShadow = function () {
+        // Define option defaults
+        let defaults = {
+          wrapperClass: '.table-wrapper',
+          scrollAreaClass: '.table-scroll',
+          throttleDelay: 75
+        }
+
+        // Create options by extending defaults with the passed in arugments
+        if (arguments[0] && typeof arguments[0] === 'object') {
+          this.options = extendDefaults(defaults, arguments[0])
+        } else {
+          this.options = defaults
+        }
+      }
+
+      // Public init method
+      TableScrollShadow.prototype.init = function () {
+        const tables = document.querySelectorAll(this.options.wrapperClass)
+
+        // Handling of overflow and shadows
+        const checkForOverflow = new ResizeObserver(
+          throttle((entries) => {
+            for (let entry of entries) {
+              const tableWrapper = entry.target
+              const scrollArea = tableWrapper.querySelector(this.options.scrollAreaClass)
+              const table = tableWrapper.querySelector('table')
+              let tableHasOverflow = false
+
+              // console.log("tableWrapper = ", tableWrapper);
+              // console.log("scrollArea = ", scrollArea);
+              // console.log("table = ", table);
+
+              // Override color css variable
+              if (this.options.shadowColor) {
+                tableWrapper.style.setProperty('--table-shadow-color', this.options.shadowColor)
+              }
+
+              // Override size css variable
+              if (this.options.shadowSize) {
+                tableWrapper.style.setProperty('--table-shadow-size', this.options.shadowSize)
+              }
+
+              // console.log("table clientWidth is = ", table.clientWidth);
+              // console.log("scrollArea clientWidth is = ", scrollArea.clientWidth);
+
+              if (table.clientWidth > scrollArea.clientWidth) {
+                // Handle overflow
+                tableHasOverflow = true
+                tableWrapper.classList.add('has-overflow')
+              } else {
+                tableHasOverflow = false
+                tableWrapper.classList.remove('has-overflow', 'has-shadow-left', 'has-shadow-right')
+              }
+
+              // Add horizontal shadows
+              if (tableHasOverflow) {
+                tableWrapper.classList.add('has-shadow-right')
+
+                scrollArea.addEventListener('scroll', () => {
+                  let scrollSize = table.clientWidth - scrollArea.clientWidth
+
+                  // console.log("");
+
+                  // console.log("start scroll");
+                  // console.log("scrollArea scrollLeft is = ", scrollArea.scrollLeft);
+
+                  // console.log("table clientWidth is = ", table.clientWidth);
+                  // console.log("scrollArea clientWidth is = ", scrollArea.clientWidth);
+                  // console.log("scrollSize is = ", scrollSize);
+
+                  // console.log("end scroll");
+
+                  // console.log("");
+
+                  // if (scrollArea.scrollLeft <= 0) {
+                  //   tableWrapper.classList.add('has-shadow-right')
+                  //   tableWrapper.classList.remove('has-shadow-left')
+                  // } else if (scrollArea.scrollLeft > 0 && scrollArea.scrollLeft !== scrollSize) {
+                  //   tableWrapper.classList.add('has-shadow-right', 'has-shadow-left')
+                  // } else if (scrollArea.scrollLeft >= scrollSize) {
+                  //   tableWrapper.classList.remove('has-shadow-right')
+                  //   tableWrapper.classList.add('has-shadow-left')
+                  // }
+
+                  if (scrollArea.scrollLeft > 0) {
+                    tableWrapper.classList.add('has-shadow-left')
+                  } else {
+                    tableWrapper.classList.remove('has-shadow-left')
+                  }
+                  if (scrollArea.scrollLeft < scrollSize) {
+                    tableWrapper.classList.add('has-shadow-right')
+                  } else {
+                    tableWrapper.classList.remove('has-shadow-right')
+                  }
+                })
+              }
+            }
+          }, this.options.throttleDelay)
+        )
+
+        // Observe the tables present on the page
+        tables.forEach((table) => {
+          checkForOverflow.observe(table)
+        })
+      }
+
+      // Utility method to extend defaults with options
+      const extendDefaults = (source, properties) => {
+        let property
+        for (property in properties) {
+          if (properties.hasOwnProperty(property)) {
+            source[property] = properties[property]
+          }
+        }
+        return source
+      }
+
+      // Utility to throttle callbacks
+      const throttle = (callback, delay) => {
+        let timer = 0
+        return function (...args) {
+          clearTimeout(timer)
+          timer = setTimeout(() => callback.apply(this, args), delay)
+        }
+      }
+    })()
+  </script>
+  
+  <script>
+    /*
+ * @name DoubleScroll
+ * @desc displays scroll bar on top and on the bottom of the div
+ * @requires jQuery, jQueryUI
+ *
+ * @author Pawel Suwala - http://suwala.eu/
+ * @version 0.3 (12-03-2014)
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ */
+ 
+(function($){
+    $.widget("suwala.doubleScroll", {
+		options: {
+            contentElement: undefined, // Widest element, if not specified first child element will be used
+			topScrollBarMarkup: '<div class="suwala-doubleScroll-scroll-wrapper" style="height: 20px; width: 100%;"><div class="suwala-doubleScroll-scroll" style="height: 20px;"></div></div>',
+			topScrollBarInnerSelector: '.suwala-doubleScroll-scroll',			
+			scrollCss: {                
+				'overflow-x': 'scroll',
+				'overflow-y':'hidden'
+            },
+			contentCss: {
+				'overflow-x': 'scroll',
+				'overflow-y':'hidden'
+			}
+        },		
+        _create : function() {
+            var self = this;
+			      var contentElement;
+
+            // add div that will act as an upper scroll
+			      var topScrollBar = $($(self.options.topScrollBarMarkup));
+            self.element.before(topScrollBar);
+
+            // find the content element (should be the widest one)			
+            if (self.options.contentElement !== undefined && self.element.find(self.options.contentElement).length !== 0) {
+                contentElement = self.element.find(self.options.contentElement);
+            }
+            else {
+                contentElement = self.element.find('>:first-child');
+            }
+
+            // bind upper scroll to bottom scroll
+            topScrollBar.scroll(function(){
+                self.element.scrollLeft(topScrollBar.scrollLeft());
+            });
+			
+            // bind bottom scroll to upper scroll
+            self.element.scroll(function(){
+                topScrollBar.scrollLeft(self.element.scrollLeft());
+            });
+
+            // apply css
+            topScrollBar.css(self.options.scrollCss);
+            self.element.css(self.options.contentCss);
+
+            console.log("suwala doubleScroll _create");
+            console.log("contentElement scrollWidth is = ", contentElement[0].scrollWidth);
+            console.log("self element clientWidth is = ", self.element[0].clientWidth);
+
+            // set the width of the wrappers
+            // $(self.options.topScrollBarInnerSelector, topScrollBar).width(contentElement[0].scrollWidth);
+            // topScrollBar.width(self.element[0].clientWidth);
+
+            $(self.options.topScrollBarInnerSelector, topScrollBar).width(contentElement[0].scrollWidth);
+            topScrollBar.width("100%");
+        },
+        refresh: function(){
+            // this should be called if the content of the inner element changed.
+            // i.e. After AJAX data load
+            var self = this;
+			      var contentElement;
+            var topScrollBar = self.element.parent().find('.suwala-doubleScroll-scroll-wrapper');
+
+            // find the content element (should be the widest one)
+            if (self.options.contentElement !== undefined && self.element.find(self.options.contentElement).length !== 0) {
+                contentElement = self.element.find(self.options.contentElement);
+            }
+            else {
+                contentElement = self.element.find('>:first-child');
+            }
+
+            // console.log("suwala doubleScroll refresh");
+            // console.log("contentElement scrollWidth is = ", contentElement[0].scrollWidth);
+            // console.log("self element clientWidth is = ", self.element[0].clientWidth);
+
+            // set the width of the wrappers
+            $(self.options.topScrollBarInnerSelector, topScrollBar).width(contentElement[0].scrollWidth);
+            // topScrollBar.width(self.element[0].clientWidth);
+            topScrollBar.width("100%");
+        }
+    });
+})(jQuery);
+
+  </script>
+  
+
+  <script>
     // console.log("session in dashboard = ", JSON.stringify(session, null, '\t'));
 
     var user = <%- JSON.stringify(user) %>;
@@ -216,7 +459,31 @@
     
     var contentTable = <%- JSON.stringify(contentTable) %>;
     console.log("contentTable in database = ", JSON.stringify(contentTable, null, '\t'));
-    
+
+
+    console.log(Object.keys( contentTable[0]));
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      function () {
+        const table = new TableScrollShadow({
+          shadowColor: 'rgba(0, 0, 0, 0.25)',
+          // throttleDelay: 100,
+          // size: '2em',
+          // wrapperClass: '.table-wrapper',
+          // scrollAreaClass: '.table-scroll',
+        })
+        table.init()
+      },
+      false
+    );
+
+    $(function() {
+      // $('.table-outer').doubleScroll();
+      $('.table-scroll').doubleScroll();
+
+      
+    });
   </script>
 </body>
 </html>

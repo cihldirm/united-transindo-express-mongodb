@@ -139,6 +139,7 @@ dist
 /demo_4/
 /demo_5/
 ut-database-center-a56620beabc3.json
-views/home.ejs
+/views/home.ejs
+/views/index.ejs
 .gitignore
 .DS_Store

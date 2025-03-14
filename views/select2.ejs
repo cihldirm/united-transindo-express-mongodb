@@ -3,10 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Document</title>
     <link rel="stylesheet" href="https://select2.github.io/select2/select2-3.5.2/select2.css">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="https://raw.github.com/sniku/jQuery-doubleScroll/master/jquery.doubleScroll.js"></script>
+    <style>
+        .search-table-outter {
+      border:2px solid red;
+    }
+    .search-table{
+      table-layout: fixed; 
+      margin:40px auto 0px auto;
+    }
+    .search-table, .search-table td, .search-table th{
+      border-collapse:collapse; 
+      border:1px solid #777;
+    }
+    .search-table th{
+      padding:20px 7px; 
+      font-size:15px; 
+      color:#444; 
+      background:#66C2E0;
+    }
+    .search-table td{
+      padding:5px 10px; 
+      height:35px;
+    }
+    .search-table-outter {
+      overflow-x: scroll;
+    }
+    .search-table th, .search-table td {
+      min-width: 200px;
+    }
+
+    table {
+  margin: 0% 5%;
+  width: 90%;
+  color: black;
+  font-family: Consolas;
+  border-spacing: 0;
+}
+
+table tbody tr {
+  display: block;
+  white-space: nowrap;
+}
+
+table,
+td,
+th {
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+td,
+th {
+  padding: 4px 0px;
+  display: inline-block;
+}
+
+td {
+  width: calc(100% / 5 - 8px);
+}
+
+th {
+  width: calc(100% / 4);
+}
+
+
+/* th.A, td.A {width: 14%;}
+th.B, td.B {width: 29%;} 
+th.C, td.C {width: 43%;} */
+
+td.color {
+  background-color: #FE33E9;
+}
+
+table tbody {
+  display: inline-block;
+  width: 100%;
+  height: 80px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.double-scroll{
+        width: 400px;
+    }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function(){
+           $('.double-scroll').doubleScroll();
+        });
+    </script>
 </head>
 <body>
+    <div class="double-scroll">
+        <table id="very-wide-element" border="1">
+            <tbody>
+                <tr>
+                    <td>AAAAAAAAA</td>
+                    <td>BBBBBBBBB</td>
+                    <td>CCCCCCCCC</td>
+                    <td>DDDDDDDDD</td>
+                    <td>EEEEEEEEE</td>
+                    <td>FFFFFFFFF</td>
+                    <td>GGGGGGGGG</td>
+                    <td>HHHHHHHHH</td>
+                </tr>
+                <tr>
+                    <td>AAAAAAAAA</td>
+                    <td>BBBBBBBBB</td>
+                    <td>CCCCCCCCC</td>
+                    <td>DDDDDDDDD</td>
+                    <td>EEEEEEEEE</td>
+                    <td>FFFFFFFFF</td>
+                    <td>GGGGGGGGG</td>
+                    <td>HHHHHHHHH</td>
+                </tr>
+                <tr>
+                    <td>AAAAAAAAA</td>
+                    <td>BBBBBBBBB</td>
+                    <td>CCCCCCCCC</td>
+                    <td>DDDDDDDDD</td>
+                    <td>EEEEEEEEE</td>
+                    <td>FFFFFFFFF</td>
+                    <td>GGGGGGGGG</td>
+                    <td>HHHHHHHHH</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <select id="e1" style="width:300px;">
         <optgroup label="A1 comps">
            <option value="A1">AAA 1</option>
@@ -21,8 +150,123 @@
            <option value="B4">BBB 4</option>
        </optgroup>
     </select>
+    <br>
+    <br>
+    <br>
+    <div class="search-table-outter wrapper">
+        <table class="search-table inner">
+            <thead>
+          <tr>
+            <th>Col1</th>
+            <th>Col2</th>
+            <th>Col3</th>
+            <th>Col4</th>
+            <th>Col5</th>
+            <th>Col6</th>
+            <th>Col7</th>
+            <th>Col8</th>
+            <th>Col9</th>
+            <th>Col10</th>
+          </tr>
+        </thead>
+        <tbody>
+              <tr>
+            <td><a href="#">The brown fox is mad jumping all over the place for no reason  </a></td> 
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+                  <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+          </tr>
+                    <tr>
+            <td><a href="#">The brown fox is mad jumping all over the place for no reason  </a></td> 
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+                  <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+          </tr>
+                    <tr>
+            <td><a href="#">The brown fox is mad jumping all over the place for no reason  </a></td> 
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+                  <td>The brown fox is mad jumping all over the place for no reason </td>
+            <td>The brown fox is mad jumping all over the place for no reason </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+      <!-- <br>
+      <table>
+        <thead>
+          <tr>
+            <th class="C" colspan="2">Color</th>
+            <th class="A">X</th>
+            <th class="A">Y</th>
+            <th class="B">Caption</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="A color">.</td>
+            <td class="B">FE33E9</td>
+            <td class="A">121</td>
+            <td class="A">433</td>
+            <td class="B">bottom</td>
+          </tr>
+          <tr>
+            <td class="A color">.</td>
+            <td class="B">FE33E9</td>
+            <td class="A">121</td>
+            <td class="A">433</td>
+            <td class="B">bottom</td>
+          </tr>
+          <tr>
+            <td class="A color">.</td>
+            <td class="B">FE33E9</td>
+            <td class="A">121</td>
+            <td class="A">433</td>
+            <td class="B">bottom</td>
+          </tr>
+          <tr>
+            <td class="A color">.</td>
+            <td class="B">FE33E9</td>
+            <td class="A">121</td>
+            <td class="A">433</td>
+            <td class="B">bottom</td>
+          </tr>
+          <tr>
+            <td class="A color">.</td>
+            <td class="B">FE33E9</td>
+            <td class="A">121</td>
+            <td class="A">433</td>
+            <td class="B">bottom</td>
+          </tr>
+          <tr>
+            <td class="A color">.</td>
+            <td class="B">FE33E9</td>
+            <td class="A">121</td>
+            <td class="A">433</td>
+            <td class="B">bottom</td>
+          </tr>
+        </tbody>
+      </table> -->
     <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
     <script src="https://select2.github.io/select2/select2-3.5.2/select2.js"></script>
+    
     <script>
         $(function() {
             // $("#e1").val("B1").select2();
@@ -39,7 +283,7 @@
                 });
             })
 
-
+            // $('#double-scroll').doubleScroll();
         });
     </script>
 </body>

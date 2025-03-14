@@ -14,6 +14,7 @@ app.use(session({
     saveUninitialized: false
 }));
 const path = require("path")
+const moment = require('moment');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors")
@@ -524,13 +525,13 @@ async function readGoogleSheet(sheet) {
   
   const merkUnitModel = mongoose.model("merk-unit", merkUnitSchema);
   
-  const typeUnitSchema = new mongoose.Schema({
+  const tipeUnitSchema = new mongoose.Schema({
 	field: String
   }, {
-	collection: "type-unit"
+	collection: "tipe-unit"
   });
   
-  const typeUnitModel = mongoose.model("type-unit", typeUnitSchema);
+  const tipeUnitModel = mongoose.model("tipe-unit", tipeUnitSchema);
   
   const nopolNokaUnitSchema = new mongoose.Schema({
 	field: String
@@ -1145,10 +1146,78 @@ app.get("/dashboard", checkUser, async(req, res) => {
 
 app.get("/database", checkUser, async(req, res) => {
 	// console.log("contentTable = ", await readGoogleSheet("database"));
-	let { headerTable, contentTable } = await readGoogleSheet("database");
+	// let { headerTable, contentTable } = await readGoogleSheet("database");
+	let contentTable = await db.databases.find().catch(err => res.status(500).send({message: err.message})),
+		headerTable = Object.keys(contentTable[0].toObject()),
+		dataTable = []
+		// list_no_joj = contentTable.map((data) => data.toObject()["no_joj"]).map((value) => Number(value));
+
+	// contentTable = 
+
+	// console.log("key bfr = ", Object.keys(contentTable[0]));
+	// console.log("key aft = ", Object.keys(contentTable[0].toObject()));
+	
+	headerTable.splice(headerTable.indexOf("_id"), 1);
+
+	headerTable.splice(headerTable.indexOf("PENGIRIM"), 0, ...["NAMA PENGIRIM", "ALAMAT PENGIRIM", "KONTAK PENGIRIM"]);
+
+	headerTable.splice(headerTable.indexOf("PENGIRIM"), 1);
+
+	headerTable.splice(headerTable.indexOf("PENERIMA"), 0, ...["NAMA PENERIMA", "ALAMAT PENERIMA", "KONTAK PENERIMA"]);
+
+	headerTable.splice(headerTable.indexOf("PENERIMA"), 1);
+
+	console.log("result of headerTable is = ", headerTable);
+
+	const phoneExp = /(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/img;
+
+	contentTable.forEach((content) => {
+		// console.log(content["_id"]); 
+		content = content.toObject();
+		// console.log("key content bfr = ", Object.keys(content));
+		delete content["_id"]; 
+		// console.log("key content aft = ", Object.keys(content));
+		// console.log("content = ", content);
+
+		let [nama_pengirim, alamat_pengirim, kontak_pengirim] = content["PENGIRIM"].split(";");
+		if (nama_pengirim) nama_pengirim = nama_pengirim.trim();
+		if (alamat_pengirim) alamat_pengirim = alamat_pengirim.trim();
+		if (kontak_pengirim) kontak_pengirim = kontak_pengirim.trim();
+		if (phoneExp.test(alamat_pengirim)) {
+			kontak_pengirim = alamat_pengirim;
+			alamat_pengirim = undefined;
+		}
+
+		let keyValuesPengirim = Object.entries(content);
+		keyValuesPengirim.splice(Object.keys(content).indexOf("PENGIRIM"), 1);
+		keyValuesPengirim.splice(Object.keys(content).indexOf("PENGIRIM"), 0, ["NAMA PENGIRIM", nama_pengirim],["ALAMAT PENGIRIM", alamat_pengirim],["KONTAK PENGIRIM",kontak_pengirim]);
+		content = Object.fromEntries(keyValuesPengirim);
+
+		let [nama_penerima, alamat_penerima, kontak_penerima] = content["PENERIMA"].split(";");
+		if (nama_penerima) nama_penerima = nama_penerima.trim();
+		if (alamat_penerima) alamat_penerima = alamat_penerima.trim();
+		if (kontak_penerima) kontak_penerima = kontak_penerima.trim();
+        if (phoneExp.test(alamat_penerima)) {
+          kontak_penerima = alamat_penerima;
+          alamat_penerima = undefined;
+        }
+
+		let keyValuesPenerima = Object.entries(content);
+		keyValuesPenerima.splice(Object.keys(content).indexOf("PENERIMA"), 1);
+		keyValuesPenerima.splice(Object.keys(content).indexOf("PENERIMA"), 0, ["NAMA PENERIMA", nama_penerima],["ALAMAT PENERIMA", alamat_penerima],["KONTAK PENERIMA",kontak_penerima]);
+		content = Object.fromEntries(keyValuesPenerima);
+		
+
+		dataTable.push(content)
+		return content;
+	});
+	
+	res.locals.headerTable = headerTable
+	res.locals.contentTable = dataTable
+
 	return res.status(200).render("database", {
 		headerTable,
-		contentTable,
+		contentTable: dataTable,
 	});
 });
 
@@ -1248,7 +1317,7 @@ app.get("/input-job-order", checkUser, async(req, res) => {
       getData = false;
       console.log(err);
     });
-  let listTypeUnit = await typeUnitModel.find({}).select({"field": 1, "_id": 0})
+  let listTipeUnit = await tipeUnitModel.find({}).select({"field": 1, "_id": 0})
     .catch(function(err) {
       getData = false;
       console.log(err);
@@ -1266,7 +1335,7 @@ app.get("/input-job-order", checkUser, async(req, res) => {
   listAlamatPenerima = listAlamatPenerima.map((data) => data.field);
   listKontakPenerima = listKontakPenerima.map((data) => data.field);
   listMerkUnit = listMerkUnit.map((data) => data.field);
-  listTypeUnit = listTypeUnit.map((data) => data.field);
+  listTipeUnit = listTipeUnit.map((data) => data.field);
   listWarnaUnit = listWarnaUnit.map((data) => data.field);
 
   if (!getData) {
@@ -1283,7 +1352,7 @@ app.get("/input-job-order", checkUser, async(req, res) => {
       listAlamatPenerima,
       listKontakPenerima,
       listMerkUnit,
-      listTypeUnit,
+      listTipeUnit,
       listWarnaUnit,
       // listNopolNokaUnit,
     //   message:"",
@@ -1310,7 +1379,7 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 		hr_tgl_ambil,
 		qty,
 		merk,
-		type,
+		tipe,
 		nopol_noka,
 		warna,
 		status,
@@ -1323,7 +1392,7 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 		new_list_alamat_penerima,
 		new_list_kontak_penerima,
 		new_list_merk_unit,
-		new_list_type_unit,
+		new_list_tipe_unit,
 		new_list_warna_unit,
 		nominal,
 		moda,
@@ -1361,7 +1430,7 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 		hr_tgl_ambil,
 		qty,
 		merk,
-		type,
+		tipe,
 		nopol_noka,
 		warna,
 		status,
@@ -1415,8 +1484,8 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 	 if (new_list_merk_unit.length) {
 	  await dbo.collection('merk-unit').insertMany(new_list_merk_unit);
 	  } 
-	 if (new_list_type_unit.length) {
-	  await dbo.collection('type-unit').insertMany(new_list_type_unit);
+	 if (new_list_tipe_unit.length) {
+	  await dbo.collection('tipe-unit').insertMany(new_list_tipe_unit);
 	  } 
 	 if (new_list_warna_unit.length) {
 	  await dbo.collection('warna-unit').insertMany(new_list_warna_unit);
@@ -1670,7 +1739,573 @@ app.get("/approved-job-order", checkUser, async(req, res) => {
 });
 
 app.get("/history-job-order", checkUser, async(req, res) => {
+	let contentTable = await db.JobOrders.find().catch(err => res.status(500).send({message: err.message})),
+		headerTable = [
+			'No. Job Order',
+			'Kota',
+			'Nama Pengirim',
+			'Alamat Pengirim',
+			'Kontak Pengirim',
+			'Nama Penerima',
+			'Alamat Penerima',
+			'Kontak Penerima',
+			'Hari / Tanggal Pengambilan',
+			'Merk Unit',
+			'Type Unit',
+			'Nopol / Noka Unit',
+			'Warna Unit',
+			'Status Unit',
+			'Kondisi Surat Unit',
+			// 'Keterangan Lainnya',
+			'Nominal',
+			'Moda',
+			'Invoice a.n.',
+			'Transfer By',
+			'Tagihan',
+			'TOP Tagihan',
+			'Penawaran / Kontrak',
+			'No. Penawaran / Kontrak',
+			// 'Keterangan Penawaran / Kontrak',
+			// 'Handling',
+			// 'Keterangan Handling',
+			'Nominal Handling',
+			'Nama Penerima Handling',
+			'Asuransi',
+			// 'Rincian Asuransi',
+			'Biaya Koordinasi / Kawal',
+			'Note',
+			'Dibuat Oleh',
+			'Tanggal Jam Dibuat',
+			'Disetujui Oleh',
+			'Tanggal Jam Disetujui',
+		],
+		dataTable = []
+		// list_no_joj = contentTable.map((data) => data.toObject()["no_joj"]).map((value) => Number(value));
 
+	// contentTable = 
+
+	// console.log("key bfr = ", Object.keys(contentTable[0]));
+	// console.log("key aft = ", Object.keys(contentTable[0].toObject()));
+	
+	// headerTable.splice(headerTable.indexOf("_id"), 1);
+
+	// headerTable.splice(headerTable.indexOf("PENGIRIM"), 0, ...["NAMA PENGIRIM", "ALAMAT PENGIRIM", "KONTAK PENGIRIM"]);
+
+	// headerTable.splice(headerTable.indexOf("PENGIRIM"), 1);
+
+	// headerTable.splice(headerTable.indexOf("PENERIMA"), 0, ...["NAMA PENERIMA", "ALAMAT PENERIMA", "KONTAK PENERIMA"]);
+
+	// headerTable.splice(headerTable.indexOf("PENERIMA"), 1);
+
+	// console.log("result of headerTable is = ", headerTable);
+
+	// const phoneExp = /(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/img;
+
+	contentTable.forEach((content) => {
+		// console.log(content["_id"]); 
+		content = content.toObject();
+		// console.log("key content bfr = ", Object.keys(content));
+		delete content["_id"]; 
+		// console.log("key content aft = ", Object.keys(content));
+		// console.log("content = ", content);
+		
+		for (let index = 0; index < Number(content['qty']); index++) {
+			let data = {};
+			
+			data['No. Job Order'] = content['no_joj'] ? content['no_joj'] : "-";
+			if (content['city_code']) {
+				switch (content['city_code']) {
+					case "01":
+						data['Kota'] = "Sidoarjo";
+						break;
+					case "02":
+						data['Kota'] = "Cikarang";
+						break;
+					case "03":
+						data['Kota'] = "Jakarta";
+						break;
+					case "04":
+						data['Kota'] = "Makassar";
+						break;
+				}
+			} else {
+				data['Kota'] = "-";
+			}
+			data['Nama Pengirim'] = content['nama_pengirim'] ? content['nama_pengirim'] : "-";
+			data['Alamat Pengirim'] = content['alamat_pengirim'] ? content['alamat_pengirim'] : "-";
+			data['Kontak Pengirim'] = content['kontak_pengirim'] ? content['kontak_pengirim'] : "-";
+			data['Nama Penerima'] = content['nama_penerima'] ? content['nama_penerima'] : "-";
+			data['Alamat Penerima'] = content['alamat_penerima'] ? content['alamat_penerima'] : "-";
+			data['Kontak Penerima'] = content['kontak_penerima'] ? content['kontak_penerima'] : "-";
+			data['Hari / Tanggal Pengambilan'] = content['hr_tgl_ambil'] ? content['hr_tgl_ambil'] : "-";
+			data['Merk Unit'] = content['merk'] && content['merk'][index] ? content['merk'][index] : "-";
+			data['Type Unit'] = content['tipe'] && content['tipe'][index] ? content['tipe'][index] : "-";
+			data['Nopol / Noka Unit'] = content['nopol_noka'] && content['nopol_noka'][index] ? content['nopol_noka'][index] : "-";
+			data['Warna Unit'] = content['warna'] && content['warna'][index] ? content['warna'][index] : "-";
+			data['Status Unit'] = content['status'] && content['status'][index] ? content['status'][index] : "-";
+
+			if (content['kondisi'] && content['kondisi'][index]) {
+				if (content['kondisi'][index] === "lainnya") {
+					if (content['lainnya'][index]) {
+						data['Kondisi Surat Unit'] = content['lainnya'][index];
+					} else {
+						data['Kondisi Surat Unit'] = "lainnya";
+					}
+				} else {
+					data['Kondisi Surat Unit'] = content['kondisi'][index];
+				}
+			} else {
+				data['Kondisi Surat Unit'] = "-";
+			}
+			data['Nominal'] = content['nominal'] ? content['nominal'] : "0";
+			data['Moda'] = content['moda'] ? content['moda'] : "-";
+			data['Invoice a.n.'] = content['invoice'] ? content['invoice'] : "-";
+			data['Transfer By'] = content['transfer_by'] ? content['transfer_by'] : "T/A";
+			data['Tagihan'] = content['tagihan'] ? content['tagihan'] : "T/A";
+			if (content['tagihan_top']) {
+				if (content['opsi_tagihan_top'] === "hari_kerja") {
+					data['TOP Tagihan'] = content['tagihan_top'] + " hari kerja";
+				} else if (content['opsi_tagihan_top'] === "kalender") {
+					data['TOP Tagihan'] = content['tagihan_top'] + " hari kalender";
+				}
+			} else {
+				data['TOP Tagihan'] = "T/A";
+			}
+			if (content['penawaran_kontrak'] === "ada") {
+				if (content['opsi_penawaran_kontrak'] === "penawaran") {
+					data['Penawaran / Kontrak'] = "Surat Penawaran";
+				} else if (content['opsi_penawaran_kontrak'] === "kontrak") {
+					data['Penawaran / Kontrak'] = "Kontrak";
+				} else if (content['opsi_penawaran_kontrak'] === "ban") {
+					data['Penawaran / Kontrak'] = "BAN (Berita Acara Negosiasi)";
+				}
+				// if (content['no_opsi_penawaran_kontrak']) {
+				// 	data['Penawaran / Kontrak'] += "<br>No. " + content['no_opsi_penawaran_kontrak'];
+				// }
+			} else {
+				data['Penawaran / Kontrak'] = "T/A";
+			}
+			data['No. Penawaran / Kontrak'] = content['no_opsi_penawaran_kontrak'] ? content['no_opsi_penawaran_kontrak'] : "T/A";
+
+			if (content['handling'] === "ada") {
+				// if (!content['nominal_handling'] && !content['nama_penerima_handling']) {
+
+				// }
+				data['Nominal Handling'] = content['nominal_handling'] ? content['nominal_handling'] : "0";
+				data['Nama Penerima Handling'] = content['nama_penerima_handling'] ? content['nama_penerima_handling'] : "-";
+			} else {
+				data['Nominal Handling'] = "T/A";
+				data['Nama Penerima Handling'] = "T/A";
+			}
+
+			if (content['asuransi'] === "ada") {
+				data['Asuransi'] = content['perincian_asuransi'] ? content['perincian_asuransi'] : "ada";
+			} else {
+				data['Asuransi'] = "T/A";
+			}
+
+			if (content['biaya_koord'] === "ada") {
+				data['Biaya Koordinasi / Kawal'] = content['keterangan_biaya_koord'] ? content['keterangan_biaya_koord'] : "0";
+			} else {
+				data['Biaya Koordinasi / Kawal'] = "T/A";
+			}
+
+			data['Note'] = content['note'] ? content['note'] : "-";
+			data['Dibuat Oleh'] = content['dibuat_oleh'] ? content['dibuat_oleh'] : "-";
+			// data['Tanggal Jam Dibuat Oleh'] = content['tgl_wkt_dibuat'] ? content['tgl_wkt_dibuat'] : "-";
+			data['Tanggal Jam Dibuat'] = content['tgl_wkt_dibuat'] ? `${moment(content['tgl_wkt_dibuat']).format('DD MMMM YYYY')} ${moment(content['tgl_wkt_dibuat']).format('HH:mm')}` : "-";
+			data['Disetujui Oleh'] = content['disetujui_oleh'] ? content['disetujui_oleh'] : "-";
+			// data['Tanggal Jam Disetujui Oleh'] = content['tgl_wkt_disetujui'] ? content['tgl_wkt_disetujui'] : "-";
+			data['Tanggal Jam Disetujui'] = content['tgl_wkt_disetujui'] ? `${moment(content['tgl_wkt_disetujui']).format('DD MMMM YYYY')} ${moment(content['tgl_wkt_disetujui']).format('HH:mm')}` : "-";
+			dataTable.push(data);
+		}
+		return content;
+	});
+	
+	res.locals.headerTable = headerTable
+	res.locals.contentTable = dataTable
+
+	// return res.status(200).render("history-job-order", {
+	// 	headerTable,
+	// 	contentTable: dataTable,
+	// });
+
+	let listCreatedBy=[], listApprovedBy=[]
+
+	let getData = true;
+
+	let listUser = await db.Users.find()
+				.catch(function(err) {
+					getData = false;
+				console.log(err);
+				});
+				
+	listUser.forEach((user) => {
+		user = user.toObject();
+		if (user.role === "Marketing") listCreatedBy.push(user)
+		else if (user.role === "Operational") listApprovedBy.push(user)
+	});
+
+  let listNamaPengirim = await namaPengirimModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listAlamatPengirim = await alamatPengirimModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listKontakPengirim = await kontakPengirimModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listNamaPenerima = await namaPenerimaModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listAlamatPenerima = await alamatPenerimaModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listKontakPenerima = await kontakPenerimaModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listMerkUnit = await merkUnitModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listTipeUnit = await tipeUnitModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+	let listWarnaUnit = await warnaUnitModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+
+	listNamaPengirim = listNamaPengirim.map((data) => data.field);
+  listAlamatPengirim = listAlamatPengirim.map((data) => data.field);
+  listKontakPengirim = listKontakPengirim.map((data) => data.field);
+  listNamaPenerima = listNamaPenerima.map((data) => data.field);
+  listAlamatPenerima = listAlamatPenerima.map((data) => data.field);
+  listKontakPenerima = listKontakPenerima.map((data) => data.field);
+  listMerkUnit = listMerkUnit.map((data) => data.field);
+  listTipeUnit = listTipeUnit.map((data) => data.field);
+  listWarnaUnit = listWarnaUnit.map((data) => data.field);
+
+  if (!getData) {
+    return res.status(500).send("Request Timeout - Internal Server Error \n There is problem when getting data");
+  } else {
+    return res.status(200).render("history-job-order", {
+		headerTable,
+		contentTable: dataTable,
+      listNamaPengirim,
+      listAlamatPengirim,
+      listKontakPengirim,
+      listNamaPenerima,
+      listAlamatPenerima,
+      listKontakPenerima,
+      listMerkUnit,
+      listTipeUnit,
+      listWarnaUnit,
+	  listCreatedBy,
+		listApprovedBy,
+    });
+  }
+});
+
+app.get("/job-order-history-table", checkUser, async(req, res) => {
+	let contentTable = await db.JobOrders.find().catch(err => res.status(500).send({message: err.message})),
+		headerTable = [
+			'No. Job Order',
+			'Kota',
+			'Nama Pengirim',
+			'Alamat Pengirim',
+			'Kontak Pengirim',
+			'Nama Penerima',
+			'Alamat Penerima',
+			'Kontak Penerima',
+			'Hari / Tanggal Pengambilan',
+			'Merk Unit',
+			'Type Unit',
+			'Nopol / Noka Unit',
+			'Warna Unit',
+			'Status Unit',
+			'Kondisi Surat Unit',
+			// 'Keterangan Lainnya',
+			'Nominal',
+			'Moda',
+			'Invoice a.n.',
+			'Transfer By',
+			'Tagihan',
+			'TOP Tagihan',
+			'Penawaran / Kontrak',
+			'No. Penawaran / Kontrak',
+			// 'Keterangan Penawaran / Kontrak',
+			// 'Handling',
+			// 'Keterangan Handling',
+			'Nominal Handling',
+			'Nama Penerima Handling',
+			'Asuransi',
+			// 'Rincian Asuransi',
+			'Biaya Koordinasi / Kawal',
+			'Note',
+			'Dibuat Oleh',
+			'Tanggal Jam Dibuat',
+			'Disetujui Oleh',
+			'Tanggal Jam Disetujui',
+		],
+		dataTable = []
+		// list_no_joj = contentTable.map((data) => data.toObject()["no_joj"]).map((value) => Number(value));
+
+	// contentTable = 
+
+	// console.log("key bfr = ", Object.keys(contentTable[0]));
+	// console.log("key aft = ", Object.keys(contentTable[0].toObject()));
+	
+	// headerTable.splice(headerTable.indexOf("_id"), 1);
+
+	// headerTable.splice(headerTable.indexOf("PENGIRIM"), 0, ...["NAMA PENGIRIM", "ALAMAT PENGIRIM", "KONTAK PENGIRIM"]);
+
+	// headerTable.splice(headerTable.indexOf("PENGIRIM"), 1);
+
+	// headerTable.splice(headerTable.indexOf("PENERIMA"), 0, ...["NAMA PENERIMA", "ALAMAT PENERIMA", "KONTAK PENERIMA"]);
+
+	// headerTable.splice(headerTable.indexOf("PENERIMA"), 1);
+
+	// console.log("result of headerTable is = ", headerTable);
+
+	// const phoneExp = /(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/img;
+
+	contentTable.forEach((content) => {
+		// console.log(content["_id"]); 
+		content = content.toObject();
+		// console.log("key content bfr = ", Object.keys(content));
+		delete content["_id"]; 
+		// console.log("key content aft = ", Object.keys(content));
+		// console.log("content = ", content);
+		
+		for (let index = 0; index < Number(content['qty']); index++) {
+			let data = {};
+			
+			data['No. Job Order'] = content['no_joj'] ? content['no_joj'] : "-";
+			if (content['city_code']) {
+				switch (content['city_code']) {
+					case "01":
+						data['Kota'] = "Sidoarjo";
+						break;
+					case "02":
+						data['Kota'] = "Cikarang";
+						break;
+					case "03":
+						data['Kota'] = "Jakarta";
+						break;
+					case "04":
+						data['Kota'] = "Makassar";
+						break;
+				}
+			} else {
+				data['Kota'] = "-";
+			}
+			data['Nama Pengirim'] = content['nama_pengirim'] ? content['nama_pengirim'] : "-";
+			data['Alamat Pengirim'] = content['alamat_pengirim'] ? content['alamat_pengirim'] : "-";
+			data['Kontak Pengirim'] = content['kontak_pengirim'] ? content['kontak_pengirim'] : "-";
+			data['Nama Penerima'] = content['nama_penerima'] ? content['nama_penerima'] : "-";
+			data['Alamat Penerima'] = content['alamat_penerima'] ? content['alamat_penerima'] : "-";
+			data['Kontak Penerima'] = content['kontak_penerima'] ? content['kontak_penerima'] : "-";
+			data['Hari / Tanggal Pengambilan'] = content['hr_tgl_ambil'] ? content['hr_tgl_ambil'] : "-";
+			data['Merk Unit'] = content['merk'] && content['merk'][index] ? content['merk'][index] : "-";
+			data['Type Unit'] = content['tipe'] && content['tipe'][index] ? content['tipe'][index] : "-";
+			data['Nopol / Noka Unit'] = content['nopol_noka'] && content['nopol_noka'][index] ? content['nopol_noka'][index] : "-";
+			data['Warna Unit'] = content['warna'] && content['warna'][index] ? content['warna'][index] : "-";
+			data['Status Unit'] = content['status'] && content['status'][index] ? content['status'][index] : "-";
+
+			if (content['kondisi'] && content['kondisi'][index]) {
+				if (content['kondisi'][index] === "lainnya") {
+					if (content['lainnya'][index]) {
+						data['Kondisi Surat Unit'] = content['lainnya'][index];
+					} else {
+						data['Kondisi Surat Unit'] = "lainnya";
+					}
+				} else {
+					data['Kondisi Surat Unit'] = content['kondisi'][index];
+				}
+			} else {
+				data['Kondisi Surat Unit'] = "-";
+			}
+			data['Nominal'] = content['nominal'] ? content['nominal'] : "0";
+			data['Moda'] = content['moda'] ? content['moda'] : "-";
+			data['Invoice a.n.'] = content['invoice'] ? content['invoice'] : "-";
+			data['Transfer By'] = content['transfer_by'] ? content['transfer_by'] : "T/A";
+			data['Tagihan'] = content['tagihan'] ? content['tagihan'] : "T/A";
+			if (content['tagihan_top']) {
+				if (content['opsi_tagihan_top'] === "hari_kerja") {
+					data['TOP Tagihan'] = content['tagihan_top'] + " hari kerja";
+				} else if (content['opsi_tagihan_top'] === "kalender") {
+					data['TOP Tagihan'] = content['tagihan_top'] + " hari kalender";
+				}
+			} else {
+				data['TOP Tagihan'] = "T/A";
+			}
+			if (content['penawaran_kontrak'] === "ada") {
+				if (content['opsi_penawaran_kontrak'] === "penawaran") {
+					data['Penawaran / Kontrak'] = "Surat Penawaran";
+				} else if (content['opsi_penawaran_kontrak'] === "kontrak") {
+					data['Penawaran / Kontrak'] = "Kontrak";
+				} else if (content['opsi_penawaran_kontrak'] === "ban") {
+					data['Penawaran / Kontrak'] = "BAN (Berita Acara Negosiasi)";
+				}
+				// if (content['no_opsi_penawaran_kontrak']) {
+				// 	data['Penawaran / Kontrak'] += "<br>No. " + content['no_opsi_penawaran_kontrak'];
+				// }
+			} else {
+				data['Penawaran / Kontrak'] = "T/A";
+			}
+			data['No. Penawaran / Kontrak'] = content['no_opsi_penawaran_kontrak'] ? content['no_opsi_penawaran_kontrak'] : "T/A";
+
+			if (content['handling'] === "ada") {
+				// if (!content['nominal_handling'] && !content['nama_penerima_handling']) {
+
+				// }
+				data['Nominal Handling'] = content['nominal_handling'] ? content['nominal_handling'] : "0";
+				data['Nama Penerima Handling'] = content['nama_penerima_handling'] ? content['nama_penerima_handling'] : "-";
+			} else {
+				data['Nominal Handling'] = "T/A";
+				data['Nama Penerima Handling'] = "T/A";
+			}
+
+			if (content['asuransi'] === "ada") {
+				data['Asuransi'] = content['perincian_asuransi'] ? content['perincian_asuransi'] : "ada";
+			} else {
+				data['Asuransi'] = "T/A";
+			}
+
+			if (content['biaya_koord'] === "ada") {
+				data['Biaya Koordinasi / Kawal'] = content['keterangan_biaya_koord'] ? content['keterangan_biaya_koord'] : "0";
+			} else {
+				data['Biaya Koordinasi / Kawal'] = "T/A";
+			}
+
+			data['Note'] = content['note'] ? content['note'] : "-";
+			data['Dibuat Oleh'] = content['dibuat_oleh'] ? content['dibuat_oleh'] : "-";
+			// data['Tanggal Jam Dibuat Oleh'] = content['tgl_wkt_dibuat'] ? content['tgl_wkt_dibuat'] : "-";
+			data['Tanggal Jam Dibuat'] = content['tgl_wkt_dibuat'] ? `${moment(content['tgl_wkt_dibuat']).format('DD MMMM YYYY')} ${moment(content['tgl_wkt_dibuat']).format('HH:mm')}` : "-";
+			data['Disetujui Oleh'] = content['disetujui_oleh'] ? content['disetujui_oleh'] : "-";
+			// data['Tanggal Jam Disetujui Oleh'] = content['tgl_wkt_disetujui'] ? content['tgl_wkt_disetujui'] : "-";
+			data['Tanggal Jam Disetujui'] = content['tgl_wkt_disetujui'] ? `${moment(content['tgl_wkt_disetujui']).format('DD MMMM YYYY')} ${moment(content['tgl_wkt_disetujui']).format('HH:mm')}` : "-";
+			dataTable.push(data);
+		}
+		return content;
+	});
+	
+	res.locals.headerTable = headerTable
+	res.locals.contentTable = dataTable
+
+	// return res.status(200).render("history-job-order", {
+	// 	headerTable,
+	// 	contentTable: dataTable,
+	// });
+
+	let listCreatedBy=[], listApprovedBy=[]
+
+	let getData = true;
+
+	let listUser = await db.Users.find()
+				.catch(function(err) {
+					getData = false;
+				console.log(err);
+				});
+				
+	listUser.forEach((user) => {
+		user = user.toObject();
+		if (user.role === "Marketing") listCreatedBy.push(user)
+		else if (user.role === "Operational") listApprovedBy.push(user)
+	});
+
+  let listNamaPengirim = await namaPengirimModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listAlamatPengirim = await alamatPengirimModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listKontakPengirim = await kontakPengirimModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listNamaPenerima = await namaPenerimaModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listAlamatPenerima = await alamatPenerimaModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listKontakPenerima = await kontakPenerimaModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listMerkUnit = await merkUnitModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+  let listTipeUnit = await tipeUnitModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+	let listWarnaUnit = await warnaUnitModel.find({}).select({"field": 1, "_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
+
+	listNamaPengirim = listNamaPengirim.map((data) => data.field);
+  listAlamatPengirim = listAlamatPengirim.map((data) => data.field);
+  listKontakPengirim = listKontakPengirim.map((data) => data.field);
+  listNamaPenerima = listNamaPenerima.map((data) => data.field);
+  listAlamatPenerima = listAlamatPenerima.map((data) => data.field);
+  listKontakPenerima = listKontakPenerima.map((data) => data.field);
+  listMerkUnit = listMerkUnit.map((data) => data.field);
+  listTipeUnit = listTipeUnit.map((data) => data.field);
+  listWarnaUnit = listWarnaUnit.map((data) => data.field);
+
+  if (!getData) {
+    return res.status(500).send("Request Timeout - Internal Server Error \n There is problem when getting data");
+  } else {
+    return res.status(200).render("job-order-history-table", {
+		headerTable,
+		contentTable: dataTable,
+      listNamaPengirim,
+      listAlamatPengirim,
+      listKontakPengirim,
+      listNamaPenerima,
+      listAlamatPenerima,
+      listKontakPenerima,
+      listMerkUnit,
+      listTipeUnit,
+      listWarnaUnit,
+	  listCreatedBy,
+		listApprovedBy,
+    });
+  }
 });
 
 // app.listen(port, () => {

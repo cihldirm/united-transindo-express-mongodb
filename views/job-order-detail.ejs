@@ -562,7 +562,7 @@
                                   <tr>
                                     <th><%= i+1 %></th>
                                     <td><%= jobOrder.merk[i] ? jobOrder.merk[i] : "-" %></td>
-                                    <td><%= jobOrder.type[i] ? jobOrder.type[i] : "-" %></td>
+                                    <td><%= jobOrder.tipe[i] ? jobOrder.tipe[i] : "-" %></td>
                                     <td><%= jobOrder.nopol_noka[i] ? jobOrder.nopol_noka[i] : "-" %></td>
                                     <td><%= jobOrder.warna[i] ? jobOrder.warna[i] : "-" %></td>
                                     <td><%= jobOrder.status[i] ? jobOrder.status[i] : "-" %></td>
@@ -779,7 +779,7 @@
                   </div>
               </div>
               <div id="jo-template-action" style="margin-top: 4rem; text-align: center;">
-                <% if (user.role === "Operational") { %>
+                <% if (!saveFile) { %>
                   <input id="btnSubmit" class="btn btn-primary" type="submit" value="Submit Approval">
                 <% } else if (saveFile) { %>
                   <input id="btnSave" class="btn btn-primary" type="submit" value="Save to PDF">

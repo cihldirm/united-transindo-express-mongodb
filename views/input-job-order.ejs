@@ -24,6 +24,7 @@
     <!-- <link rel="stylesheet" href="https://select2.github.io/select2/select2-3.5.2/select2.css"> -->
     <link rel="stylesheet" href="/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
     <link
       rel="stylesheet"
       href="/vendors/sweetalert2/sweetalert2.min.css"
@@ -1242,8 +1243,8 @@
                                         type="radio"
                                         class="form-check-input"
                                         name="opsi_penawaran_kontrak"
-                                        id="penawaran"
-                                        value="penawaran"
+                                        id="surat_penawaran"
+                                        value="surat_penawaran"
                                         checked
                                         style="position: relative;"
                                       />
@@ -1706,7 +1707,7 @@
               list_alamat_penerima,
               list_kontak_penerima,
               list_merk_unit,
-              list_type_unit,
+              list_tipe_unit,
               // list_nopol_noka_unit,
               list_warna_unit,
               rowIndex
@@ -1738,8 +1739,8 @@
           var list_merk_unit = <%- JSON.stringify(listMerkUnit) %>;
           // console.log("list_merk_unit in job order = ", JSON.stringify(list_merk_unit, null, '\t'));
 
-          var list_type_unit = <%- JSON.stringify(listTypeUnit) %>;
-          // console.log("list_type_unit in job order = ", JSON.stringify(list_type_unit, null, '\t'));
+          var list_tipe_unit = <%- JSON.stringify(listTipeUnit) %>;
+          // console.log("list_tipe_unit in job order = ", JSON.stringify(list_tipe_unit, null, '\t'));
 
           var list_warna_unit = <%- JSON.stringify(listWarnaUnit) %>;
           // console.log("list_warna_unit in job order = ", JSON.stringify(list_warna_unit, null, '\t'));
@@ -1751,7 +1752,7 @@
           var new_list_alamat_penerima = [];
           var new_list_kontak_penerima = [];
           var new_list_merk_unit = [];
-          var new_list_type_unit = [];
+          var new_list_tipe_unit = [];
           var new_list_warna_unit = [];
 
           // var list_kondisi = [{index: 1, value: ""}];
@@ -2008,8 +2009,8 @@
             });
 
             $(`[name^="tipe"]`).append(`<option></option>`);
-            list_type_unit.forEach(type => {
-                $(`[name^="tipe"]`).append(`<option value="${type}">${type}</option>`);
+            list_tipe_unit.forEach(tipe => {
+                $(`[name^="tipe"]`).append(`<option value="${tipe}">${tipe}</option>`);
             });
 
             $(`[name^="tipe"]`).val(null);
@@ -2062,7 +2063,7 @@
 
               $(this).trigger('blur');
             }).on("blur", function(event) {
-              console.log(`on blur this value type at ${rowIndex} = `, this.value);
+              console.log(`on blur this value tipe at ${rowIndex} = `, this.value);
               $(this).data('select2').dropdown.$search.val(this.value);
               // $(this).data('select2').selection.$search.val(this.value);
             }).on("select2:opening", function(e) {
@@ -2108,10 +2109,10 @@
               // $(this).select2("search", "this value 63qe7daggsag");
               // $(`[name="tipe[${rowIndex}]"]`).select2("search", "this value 63qe7daggsag");
 
-              if (list_type_unit.findIndex(tipe => String(this.value).toLowerCase() === String(tipe).toLowerCase()) === -1) {
+              if (list_tipe_unit.findIndex(tipe => String(this.value).toLowerCase() === String(tipe).toLowerCase()) === -1) {
                 console.log(`tipe at ${rowIndex} with ${this.value} is added`);
-                new_list_type_unit.push(this.value);
-                list_type_unit.push(this.value);
+                new_list_tipe_unit.push(this.value);
+                list_tipe_unit.push(this.value);
                 $(this).append(new Option(this.value, this.value, true, true));
               }
             }).on("select2:closing", function(e) {
@@ -2785,7 +2786,7 @@
               console.log("penawaran_kontrak value = ", $(this).val());
               if ($(this).val() === "ada") {
                 $(this).parents("div.form-group.form-row").css("height", "unset");
-                $('input:radio[name="opsi_penawaran_kontrak"][value="penawaran"]').prop('checked', true);
+                $('input:radio[name="opsi_penawaran_kontrak"][value="surat_penawaran"]').prop('checked', true);
                 $("#no_opsi_penawaran_kontrak").val("");
                 $("div#opsi_penawaran_kontrak").show();
                 $("div#opsi_penawaran_kontrak").css({
@@ -2932,11 +2933,11 @@
               console.log("new_list_alamat_penerima in job order = ", JSON.stringify(new_list_alamat_penerima, null, '\t'));
               console.log("new_list_kontak_penerima in job order = ", JSON.stringify(new_list_kontak_penerima, null, '\t'));
               console.log("new_list_merk_unit in job order = ", JSON.stringify(new_list_merk_unit, null, '\t'));
-              console.log("new_list_type_unit in job order = ", JSON.stringify(new_list_type_unit, null, '\t'));
+              console.log("new_list_tipe_unit in job order = ", JSON.stringify(new_list_tipe_unit, null, '\t'));
               console.log("new_list_warna_unit in job order = ", JSON.stringify(new_list_warna_unit, null, '\t'));
 
               let merk = [];
-              let type = [];
+              let tipe = [];
               let nopol_noka = [];
               let warna = [];
               let status = [];
@@ -2953,7 +2954,7 @@
                 if (name.split(/\[(.*?)\]/g)[0] === "merk") {
                   merk.push(value)
                 } else if (name.split(/\[(.*?)\]/g)[0] === "tipe") {
-                  type.push(value)
+                  tipe.push(value)
                 } else if (name.split(/\[(.*?)\]/g)[0] === "nopol_noka") {
                   nopol_noka.push(value)
                 } else if (name.split(/\[(.*?)\]/g)[0] === "warna") {
@@ -2975,7 +2976,7 @@
               new_list_alamat_penerima = new_list_alamat_penerima.map(x => ({ field: x }));
               new_list_kontak_penerima = new_list_kontak_penerima.map(x => ({ field: x }));
               new_list_merk_unit = new_list_merk_unit.map(x => ({ field: x }));
-              new_list_type_unit = new_list_type_unit.map(x => ({ field: x }));
+              new_list_tipe_unit = new_list_tipe_unit.map(x => ({ field: x }));
               new_list_warna_unit = new_list_warna_unit.map(x => ({ field: x }));
 
               const Toast = Swal.mixin({
@@ -3003,7 +3004,7 @@
                     hr_tgl_ambil,
                     qty,
                     merk,
-                    type,
+                    tipe,
                     nopol_noka,
                     warna,
                     status,
@@ -3016,7 +3017,7 @@
                     new_list_alamat_penerima,
                     new_list_kontak_penerima,
                     new_list_merk_unit,
-                    new_list_type_unit,
+                    new_list_tipe_unit,
                     new_list_warna_unit,
                     nominal,
                     moda,

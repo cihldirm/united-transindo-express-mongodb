@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="initial-scale=1.0, target-densitydpi=device-dpi" /><!-- this is for mobile (Android) Chrome -->
+  <meta name="viewport" content="initial-scale=1.0, width=device-height"><!--  mobile Safari, FireFox, Opera Mobile  -->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>United Transindo Admin Dashboard</title>
+	<!-- core:css -->
+	<link rel="stylesheet" href="./vendors/core/core.css">
+	<!-- endinject -->
+   <!-- Bootstrap CSS -->
+   <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+   <!-- Bootstrap Msg CSS -->
+   <!-- plugin css for this page -->
+   <link rel="stylesheet" href="./vendors/select2/select2.min.css">
+  <link rel="stylesheet" href="./vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+  <link rel="stylesheet" href="./vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="./vendors/table-scroll-shadow/table-scroll-shadow.min.css">
+  <link rel="stylesheet" href="./vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css">
+	<!-- end plugin css for this page -->
+	<!-- inject:css -->
+	<link rel="stylesheet" href="./fonts/feather-font/css/iconfont.css">
+	<link rel="stylesheet" href="./vendors/flag-icon-css/css/flag-icon.min.css">
+	<!-- endinject -->
+  <!-- Layout styles -->  
+	<link rel="stylesheet" href="./css/demo_1/style.css">
+  <!-- End layout styles -->
+  <link rel="icon" type="image/x-icon" href="./images/icons/Logo United Transindo.ico">
+  <style>
+    .page-content {
+      padding-bottom: 0 !important;
+      display: grid;
+    }
+    .spinner-border {
+      position: absolute;
+      top: calc(50% + 30px);
+      left: calc(50% + 120px);
+    }
+    /* #myList .list-group-item-action:focus {
+      border: 1px solid rgba(0, 0, 0, 0.125);
+      opacity: 0.5;
+    } */
+    #filter-form {
+      & .form-group {
+        align-items: center;
+
+        & label {
+          margin-bottom: 0;
+        }
+      }
+      input, select {
+            border-color: #000;
+            border-radius: 4px;
+            color : #495057;
+        }
+        input[type="text"] {
+          border-width: 1px;
+        }
+        #filter-form-action {
+          margin-top: 3rem;
+          float: right;
+        }
+        input[type="submit"] {
+          color: #fff;
+        }
+        /* #clear {
+          background: #ff3366;
+        } */
+      & span.select2.select2-container {
+            /* margin-left: 0.75rem; */
+
+            & span.select2-selection.select2-selection--single {
+              /* display: inline-grid;
+              padding-right: 40px !important;
+              border: 1px solid;
+              border-radius: 4px; */
+
+              & span.select2-selection__arrow {
+                width: 100%;
+                height: 100%;
+                z-index: auto;
+
+                & b {
+                  left: unset;
+                  right: 14px;
+                  margin-top: -6px;
+                }
+              }
+
+              & .select2-selection__clear {
+                /* margin-left: 30px; */
+                left: -30px;
+                z-index: 100;
+              }
+            }
+          }
+      /* & .select2-container--default .select2-selection--single .select2-selection__clear {
+        margin-left: 30px;
+      }
+      & .select2-selection.select2-selection--single {
+        display: inline-grid;
+        padding-right: 40px !important;
+      }
+      & span.select2.select2-container {
+
+        & span.select2-selection.select2-selection--single {
+
+          & span.select2-selection__arrow {
+            width: 100%;
+            height: 100%;
+            z-index: auto;
+
+            & b {
+              left: unset;
+              right: 14px;
+              margin-top: -6px;
+            }
+          }
+
+          & .select2-selection__clear {
+            margin-left: 30px;
+            z-index: 100;
+          }
+        }
+      }
+      & span.select2.select2-container span.select2-selection.select2-selection--single {
+        display: inline-grid;
+        padding-right: 40px !important;
+        border: 1px solid;
+        border-radius: 4px;
+      }
+      & .my_select2_optgroup_selected {
+          background-color: #ddd;
+      }
+      & .my_select2_optgroup_hovered {
+          color: #FFF;
+          background-color: #5897fb !important;
+          cursor: pointer;
+      }
+      & strong.select2-results__group {
+          padding: 0 !important;
+      }
+      & .my_select2_optgroup {
+          display: block;
+          padding: 6px;
+      } */
+    }
+    .pager .pagination li.page-item.disabled {
+      .page-link {
+        color: rgba(33,37,41,0.75);
+        background-color: #adb5bd;
+      }
+    }
+
+    .table-outer {
+      /* border:1px solid #000; */
+      /* max-width: 25%;
+      max-width: 925px; */
+      /* max-width: 57.8125rem; */
+      /* overflow-x: scroll; */
+    }
+    .table{
+      /* table-layout: fixed;  */
+      /* margin:40px auto 0px auto; */
+      /* margin: 0 auto; */
+      /* width: 600px; */
+      /* width: 1140px;
+      max-width: 100%; */
+    }
+    .table, .table th, .table td{
+      border-collapse:collapse; 
+      border:1px solid #777;
+    }
+    .table th, .table td{
+      padding: 1px !important;
+      width: 100px;
+      line-height: unset;
+    }
+    .table th{
+      /* padding:20px 7px; 
+      font-size:15px;  */
+      color:#444; 
+      background:#66C2E0;
+      white-space: pre-wrap !important;
+      vertical-align: middle !important;
+      text-align: center;
+    }
+    .table td{
+      vertical-align: top;
+      text-align: center;
+      white-space: pre-wrap !important;
+    }
+  </style>
+</head>
+<body>
+	<div class="main-wrapper">
+
+		<!-- partial:partials/_sidebar.html -->
+    <%- include('./sidebar.ejs') %>
+		<!-- partial -->
+	
+		<div class="page-wrapper">
+					
+			<!-- partial:partials/_navbar.html -->
+      <%- include('./navbar.ejs') %>
+			<!-- partial -->
+
+			<div class="page-content">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+          <div>
+            <h4 class="mb-3 mb-md-0">History Job Order</h4>
+          </div>
+          <div class="d-flex align-items-center flex-wrap text-nowrap">
+            <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex" id="dashboardDate">
+              <span class="input-group-addon bg-transparent"><i data-feather="calendar" class=" text-primary"></i></span>
+              <input type="text" class="form-control">
+            </div>
+            <button type="button" class="btn btn-outline-info btn-icon-text mr-2 d-none d-md-block">
+              <i class="btn-icon-prepend" data-feather="download"></i>
+              Import
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
+              <i class="btn-icon-prepend" data-feather="printer"></i>
+              Print
+            </button>
+            <button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+              <i class="btn-icon-prepend" data-feather="download-cloud"></i>
+              Download Report
+            </button>
+          </div>
+        </div>
+
+        <div class="row" style="overflow-x:auto;">
+          <div class="col-12 col-xl-12 grid-margin stretch-card">
+            <div class="card overflow-hidden">
+              <div class="card-body">
+                <!-- <div class="d-flex justify-content-between align-items-baseline mb-4 mb-md-3" style="justify-content: end !important; margin: 0 !important;">
+                  <h6 class="card-title mb-0">Revenue</h6>
+                  <div class="dropdown">
+                    <button class="btn p-0" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                      <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
+                      <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
+                      <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
+                      <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
+                      <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                    </div>
+                  </div>
+                </div> -->
+
+                <button id="tableToExcel">Convert To Excel</button>
+                <button id="tableToCSV">Convert To CSV</button>
+                
+                
+                <div class="table-outer table-wrapper table-responsive">
+                  <div class="table-scroll">
+                    <table class="table inner table-hover mb-0" style="border-spacing: 0;">
+                      <thead>
+                        <% if (headerTable.length) { %>
+                          <tr>
+                            <% headerTable.forEach((header) => { %>
+                              <th class="pt-0"><%= header %></th>
+                            <% }) %>
+                          </tr>
+                        <% } %>
+                      </thead>
+                      <tbody>
+          
+                        <% if (contentTable.length) { 
+                          contentTable.forEach((content) => { %>
+                          <tr>
+                            <% if (headerTable.length) {
+                              headerTable.forEach((header) => {
+                                %>
+                              <td><%- content[header] %></td>
+                              <% })
+                            } %>
+                          </tr>
+                          <% 
+                              })
+                              } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                
+              </div>
+            </div>
+          </div>
+        </div> <!-- row -->
+
+			</div>
+
+			<!-- partial:partials/_footer.html -->
+      <%- include('./footer.ejs') %>
+			<!-- partial -->
+		
+		</div>
+	</div>
+
+	<!-- core:js -->
+	<script src="./vendors/core/core.js"></script>
+	<!-- endinject -->
+  <!-- plugin js for this page -->
+  <script src="./vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+  <script src="./vendors/select2/select2.min.js"></script>
+  <!-- <script src="./vendors/table-scroll-shadow/table-scroll-shadow.min.js"></script> -->
+  <!-- <script type="text/javascript" src="https://raw.github.com/sniku/jQuery-doubleScroll/master/jquery.doubleScroll.js"></script> -->
+   <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+   <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+   <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script> -->
+   <script src="./vendors/jquery-ui/jquery-ui.min.js"></script>
+   <script src="./vendors/moment/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/id.min.js" integrity="sha512-he8U4ic6kf3kustvJfiERUpojM8barHoz0WYpAUDWQVn61efpm3aVAD8RWL8OloaDDzMZ1gZiubF9OSdYBqHfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js"></script>
+	<!-- end plugin js for this page -->
+	<!-- inject:js -->
+	<script src="./vendors/feather-icons/feather.min.js"></script>
+	<script src="./js/template.js"></script>
+	<!-- endinject -->
+  <!-- custom js for this page -->
+  <script src="./js/datepicker.js"></script>
+  <script src="./js/ejs.min.js"></script>
+	<!-- end custom js for this page -->
+
+  <script>
+    (function () {
+      // Define the constructor
+      this.TableScrollShadow = function () {
+        // Define option defaults
+        let defaults = {
+          wrapperClass: '.table-wrapper',
+          scrollAreaClass: '.table-scroll',
+          throttleDelay: 75
+        }
+
+        // Create options by extending defaults with the passed in arugments
+        if (arguments[0] && typeof arguments[0] === 'object') {
+          this.options = extendDefaults(defaults, arguments[0])
+        } else {
+          this.options = defaults
+        }
+      }
+
+      // Public init method
+      TableScrollShadow.prototype.init = function () {
+        const tables = document.querySelectorAll(this.options.wrapperClass)
+
+        // Handling of overflow and shadows
+        const checkForOverflow = new ResizeObserver(
+          throttle((entries) => {
+            for (let entry of entries) {
+              const tableWrapper = entry.target
+              const scrollArea = tableWrapper.querySelector(this.options.scrollAreaClass)
+              const table = tableWrapper.querySelector('table')
+              let tableHasOverflow = false
+
+              // console.log("tableWrapper = ", tableWrapper);
+              // console.log("scrollArea = ", scrollArea);
+              // console.log("table = ", table);
+
+              // Override color css variable
+              if (this.options.shadowColor) {
+                tableWrapper.style.setProperty('--table-shadow-color', this.options.shadowColor)
+              }
+
+              // Override size css variable
+              if (this.options.shadowSize) {
+                tableWrapper.style.setProperty('--table-shadow-size', this.options.shadowSize)
+              }
+
+              // console.log("table clientWidth is = ", table.clientWidth);
+              // console.log("scrollArea clientWidth is = ", scrollArea.clientWidth);
+
+              if (table.clientWidth > scrollArea.clientWidth) {
+                // Handle overflow
+                tableHasOverflow = true
+                tableWrapper.classList.add('has-overflow')
+              } else {
+                tableHasOverflow = false
+                tableWrapper.classList.remove('has-overflow', 'has-shadow-left', 'has-shadow-right')
+              }
+
+              // Add horizontal shadows
+              if (tableHasOverflow) {
+                tableWrapper.classList.add('has-shadow-right')
+
+                scrollArea.addEventListener('scroll', () => {
+                  let scrollSize = table.clientWidth - scrollArea.clientWidth
+
+                  // console.log("");
+
+                  // console.log("start scroll");
+                  // console.log("scrollArea scrollLeft is = ", scrollArea.scrollLeft);
+
+                  // console.log("table clientWidth is = ", table.clientWidth);
+                  // console.log("scrollArea clientWidth is = ", scrollArea.clientWidth);
+                  // console.log("scrollSize is = ", scrollSize);
+
+                  // console.log("end scroll");
+
+                  // console.log("");
+
+                  // if (scrollArea.scrollLeft <= 0) {
+                  //   tableWrapper.classList.add('has-shadow-right')
+                  //   tableWrapper.classList.remove('has-shadow-left')
+                  // } else if (scrollArea.scrollLeft > 0 && scrollArea.scrollLeft !== scrollSize) {
+                  //   tableWrapper.classList.add('has-shadow-right', 'has-shadow-left')
+                  // } else if (scrollArea.scrollLeft >= scrollSize) {
+                  //   tableWrapper.classList.remove('has-shadow-right')
+                  //   tableWrapper.classList.add('has-shadow-left')
+                  // }
+
+                  if (scrollArea.scrollLeft > 0) {
+                    tableWrapper.classList.add('has-shadow-left')
+                  } else {
+                    tableWrapper.classList.remove('has-shadow-left')
+                  }
+                  if (scrollArea.scrollLeft < scrollSize) {
+                    tableWrapper.classList.add('has-shadow-right')
+                  } else {
+                    tableWrapper.classList.remove('has-shadow-right')
+                  }
+                })
+              }
+            }
+          }, this.options.throttleDelay)
+        )
+
+        // Observe the tables present on the page
+        tables.forEach((table) => {
+          checkForOverflow.observe(table)
+        })
+      }
+
+      // Utility method to extend defaults with options
+      const extendDefaults = (source, properties) => {
+        let property
+        for (property in properties) {
+          if (properties.hasOwnProperty(property)) {
+            source[property] = properties[property]
+          }
+        }
+        return source
+      }
+
+      // Utility to throttle callbacks
+      const throttle = (callback, delay) => {
+        let timer = 0
+        return function (...args) {
+          clearTimeout(timer)
+          timer = setTimeout(() => callback.apply(this, args), delay)
+        }
+      }
+    })()
+  </script>
+  
+  <script>
+    /*
+ * @name DoubleScroll
+ * @desc displays scroll bar on top and on the bottom of the div
+ * @requires jQuery, jQueryUI
+ *
+ * @author Pawel Suwala - http://suwala.eu/
+ * @version 0.3 (12-03-2014)
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ */
+ 
+(function($){
+    $.widget("suwala.doubleScroll", {
+		options: {
+            contentElement: undefined, // Widest element, if not specified first child element will be used
+			topScrollBarMarkup: '<div class="suwala-doubleScroll-scroll-wrapper" style="height: 20px; width: 100%;"><div class="suwala-doubleScroll-scroll" style="height: 20px;"></div></div>',
+			topScrollBarInnerSelector: '.suwala-doubleScroll-scroll',			
+			scrollCss: {                
+				'overflow-x': 'scroll',
+				'overflow-y':'hidden'
+            },
+			contentCss: {
+				'overflow-x': 'scroll',
+				'overflow-y':'hidden'
+			}
+        },		
+        _create : function() {
+            var self = this;
+			      var contentElement;
+
+            // add div that will act as an upper scroll
+			      var topScrollBar = $($(self.options.topScrollBarMarkup));
+            self.element.before(topScrollBar);
+
+            // find the content element (should be the widest one)			
+            if (self.options.contentElement !== undefined && self.element.find(self.options.contentElement).length !== 0) {
+                contentElement = self.element.find(self.options.contentElement);
+            }
+            else {
+                contentElement = self.element.find('>:first-child');
+            }
+
+            // bind upper scroll to bottom scroll
+            topScrollBar.scroll(function(){
+                self.element.scrollLeft(topScrollBar.scrollLeft());
+            });
+			
+            // bind bottom scroll to upper scroll
+            self.element.scroll(function(){
+                topScrollBar.scrollLeft(self.element.scrollLeft());
+            });
+
+            // apply css
+            topScrollBar.css(self.options.scrollCss);
+            self.element.css(self.options.contentCss);
+
+            // console.log("suwala doubleScroll _create");
+            // console.log("contentElement scrollWidth is = ", contentElement[0].scrollWidth);
+            // console.log("self element clientWidth is = ", self.element[0].clientWidth);
+
+            // set the width of the wrappers
+            // $(self.options.topScrollBarInnerSelector, topScrollBar).width(contentElement[0].scrollWidth);
+            // topScrollBar.width(self.element[0].clientWidth);
+
+            $(self.options.topScrollBarInnerSelector, topScrollBar).width(contentElement[0].scrollWidth);
+            topScrollBar.width("100%");
+        },
+        refresh: function(){
+            // this should be called if the content of the inner element changed.
+            // i.e. After AJAX data load
+            var self = this;
+			      var contentElement;
+            var topScrollBar = self.element.parent().find('.suwala-doubleScroll-scroll-wrapper');
+
+            // find the content element (should be the widest one)
+            if (self.options.contentElement !== undefined && self.element.find(self.options.contentElement).length !== 0) {
+                contentElement = self.element.find(self.options.contentElement);
+            }
+            else {
+                contentElement = self.element.find('>:first-child');
+            }
+
+            // console.log("suwala doubleScroll refresh");
+            // console.log("contentElement scrollWidth is = ", contentElement[0].scrollWidth);
+            // console.log("self element clientWidth is = ", self.element[0].clientWidth);
+
+            // set the width of the wrappers
+            $(self.options.topScrollBarInnerSelector, topScrollBar).width(contentElement[0].scrollWidth);
+            // topScrollBar.width(self.element[0].clientWidth);
+            topScrollBar.width("100%");
+        }
+    });
+
+    var user = <%- JSON.stringify(user) %>;
+    console.log("user in history job order = ", JSON.stringify(user, null, '\t'));
+
+    var headerTable = <%- JSON.stringify(headerTable) %>;
+    console.log("headerTable in history job order = ", JSON.stringify(headerTable, null, '\t'));
+    
+    var contentTable = <%- JSON.stringify(contentTable) %>;
+    console.log("contentTable in history job order = ", JSON.stringify(contentTable, null, '\t'));
+
+    var list_nama_pengirim = <%- JSON.stringify(listNamaPengirim) %>;
+    // console.log("list_nama_pengirim in job order = ", JSON.stringify(list_nama_pengirim, null, '\t'));
+    
+    var list_alamat_pengirim = <%- JSON.stringify(listAlamatPengirim) %>;
+    // console.log("list_alamat_pengirim in job order = ", JSON.stringify(list_alamat_pengirim, null, '\t'));
+
+    var list_kontak_pengirim = <%- JSON.stringify(listKontakPengirim) %>;
+    // console.log("list_kontak_pengirim in job order = ", JSON.stringify(list_kontak_pengirim, null, '\t'));
+
+    var list_nama_penerima = <%- JSON.stringify(listNamaPenerima) %>;
+    // console.log("list_nama_penerima in job order = ", JSON.stringify(list_nama_penerima, null, '\t'));
+
+    var list_alamat_penerima = <%- JSON.stringify(listAlamatPenerima) %>;
+    // console.log("list_alamat_penerima in job order = ", JSON.stringify(list_alamat_penerima, null, '\t'));
+
+    var list_kontak_penerima = <%- JSON.stringify(listKontakPenerima) %>;
+    // console.log("list_kontak_penerima in job order = ", JSON.stringify(list_kontak_penerima, null, '\t'));
+
+    var list_merk_unit = <%- JSON.stringify(listMerkUnit) %>;
+    // console.log("list_merk_unit in job order = ", JSON.stringify(list_merk_unit, null, '\t'));
+
+    var list_tipe_unit = <%- JSON.stringify(listTipeUnit) %>;
+    // console.log("list_tipe_unit in job order = ", JSON.stringify(list_tipe_unit, null, '\t'));
+
+    var list_warna_unit = <%- JSON.stringify(listWarnaUnit) %>;
+    // console.log("list_warna_unit in job order = ", JSON.stringify(list_warna_unit, null, '\t'));
+
+    var list_user_buat = <%- JSON.stringify(listCreatedBy) %>;
+    // console.log("list_user_buat in job order = ", JSON.stringify(list_user_buat, null, '\t'));
+
+    var list_user_setuju = <%- JSON.stringify(listApprovedBy) %>;
+    // console.log("list_user_setuju in job order = ", JSON.stringify(list_user_setuju, null, '\t'));
+
+})(jQuery);
+
+  </script>
+
+  <script>
+    /*
+*  jQuery table2excel - v1.1.1
+*  jQuery plugin to export an .xls file in browser from an HTML table
+*  https://github.com/rainabba/jquery-table2excel
+*
+*  Made by rainabba
+*  Under MIT License
+*/
+//table2excel.js
+; (function ($, window, document, undefined) {
+    var pluginName = "table2excel",
+
+    defaults = {
+        exclude: ".noExl",
+        name: "Table2Excel",
+        filename: "table2excel",
+        fileext: ".xls",
+        exclude_img: true,
+        exclude_links: true,
+        exclude_inputs: true
+    };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+        // jQuery has an extend method which merges the contents of two or
+        // more objects, storing the result in the first object. The first object
+        // is generally empty as we don't want to alter the default options for
+        // future instances of the plugin
+        //
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    Plugin.prototype = {
+        init: function () {
+            var e = this;
+
+            var utf8Heading = "<meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\">";
+            e.template = {
+                head: "<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">" + utf8Heading + "<head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets>",
+                sheet: {
+                    head: "<x:ExcelWorksheet><x:Name>",
+                    tail: "</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>"
+                },
+                mid: "</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>",
+                table: {
+                    head: "<table>",
+                    tail: "</table>"
+                },
+                foot: "</body></html>"
+            };
+
+            e.tableRows = [];
+
+            // get contents of table except for exclude
+            $(e.element).each(function (i, o) {
+                var tempRows = "";
+                $(o).find("tr").not(e.settings.exclude).each(function (i, p) {
+
+                    tempRows += "<tr>";
+                    $(p).find("td,th").not(e.settings.exclude).each(function (i, q) { // p did not exist, I corrected
+
+                        var rc = {
+                            rows: $(this).attr("rowspan"),
+                            cols: $(this).attr("colspan"),
+                            flag: $(q).find(e.settings.exclude)
+                        };
+
+                        if (rc.flag.length > 0) {
+                            tempRows += "<td> </td>"; // exclude it!!
+                        } else {
+                            if (rc.rows & rc.cols) {
+                                tempRows += "<td>" + $(q).html() + "</td>";
+                            } else {
+                                tempRows += "<td";
+                                if (rc.rows > 0) {
+                                    tempRows += " rowspan=\'" + rc.rows + "\' ";
+                                }
+                                if (rc.cols > 0) {
+                                    tempRows += " colspan=\'" + rc.cols + "\' ";
+                                }
+                                tempRows += "/>" + $(q).html() + "</td>";
+                            }
+                        }
+                    });
+
+                    tempRows += "</tr>";
+                    console.log(tempRows);
+
+                });
+                // exclude img tags
+                if (e.settings.exclude_img) {
+                    tempRows = exclude_img(tempRows);
+                }
+
+                // exclude link tags
+                if (e.settings.exclude_links) {
+                    tempRows = exclude_links(tempRows);
+                }
+
+                // exclude input tags
+                if (e.settings.exclude_inputs) {
+                    tempRows = exclude_inputs(tempRows);
+                }
+                e.tableRows.push(tempRows);
+            });
+
+            e.tableToExcel(e.tableRows, e.settings.name, e.settings.sheetName);
+        },
+
+        tableToExcel: function (table, name, sheetName) {
+            var e = this, fullTemplate = "", i, link, a;
+
+            e.format = function (s, c) {
+                return s.replace(/{(\w+)}/g, function (m, p) {
+                    return c[p];
+                });
+            };
+
+            sheetName = typeof sheetName === "undefined" ? "Sheet" : sheetName;
+
+            e.ctx = {
+                worksheet: name || "Worksheet",
+                table: table,
+                sheetName: sheetName
+            };
+
+            fullTemplate = e.template.head;
+
+            if ($.isArray(table)) {
+                for (i in table) {
+                    //fullTemplate += e.template.sheet.head + "{worksheet" + i + "}" + e.template.sheet.tail;
+                    fullTemplate += e.template.sheet.head + sheetName + i + e.template.sheet.tail;
+                }
+            }
+
+            fullTemplate += e.template.mid;
+
+            if ($.isArray(table)) {
+                for (i in table) {
+                    fullTemplate += e.template.table.head + "{table" + i + "}" + e.template.table.tail;
+                }
+            }
+
+            fullTemplate += e.template.foot;
+
+            for (i in table) {
+                e.ctx["table" + i] = table[i];
+            }
+            delete e.ctx.table;
+
+            var isIE = /*@cc_on!@*/false || !!document.documentMode; // this works with IE10 and IE11 both :)            
+            //if (typeof msie !== "undefined" && msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // this works ONLY with IE 11!!!
+            if (isIE) {
+                if (typeof Blob !== "undefined") {
+                    //use blobs if we can
+                    fullTemplate = e.format(fullTemplate, e.ctx); // with this, works with IE
+                    fullTemplate = [fullTemplate];
+                    //convert to array
+                    var blob1 = new Blob(fullTemplate, { type: "text/html" });
+                    window.navigator.msSaveBlob(blob1, getFileName(e.settings));
+                } else {
+                    //otherwise use the iframe and save
+                    //requires a blank iframe on page called txtArea1
+                    txtArea1.document.open("text/html", "replace");
+                    txtArea1.document.write(e.format(fullTemplate, e.ctx));
+                    txtArea1.document.close();
+                    txtArea1.focus();
+                    sa = txtArea1.document.execCommand("SaveAs", true, getFileName(e.settings));
+                }
+
+            } else {
+                var blob = new Blob([e.format(fullTemplate, e.ctx)], { type: "application/vnd.ms-excel" });
+                window.URL = window.URL || window.webkitURL;
+                link = window.URL.createObjectURL(blob);
+                a = document.createElement("a");
+                a.download = getFileName(e.settings);
+                a.href = link;
+
+                document.body.appendChild(a);
+
+                a.click();
+
+                document.body.removeChild(a);
+            }
+
+            return true;
+        }
+    };
+
+    function getFileName(settings) {
+        return (settings.filename ? settings.filename : "table2excel");
+    }
+
+    // Removes all img tags
+    function exclude_img(string) {
+        var _patt = /(\s+alt\s*=\s*"([^"]*)"|\s+alt\s*=\s*'([^']*)')/i;
+        return string.replace(/<img[^>]*>/gi, function myFunction(x) {
+            var res = _patt.exec(x);
+            if (res !== null && res.length >= 2) {
+                return res[2];
+            } else {
+                return "";
+            }
+        });
+    }
+
+    // Removes all link tags
+    function exclude_links(string) {
+        return string.replace(/<a[^>]*>|<\/a>/gi, "");
+    }
+
+    // Removes input params
+    function exclude_inputs(string) {
+        var _patt = /(\s+value\s*=\s*"([^"]*)"|\s+value\s*=\s*'([^']*)')/i;
+        return string.replace(/<input[^>]*>|<\/input>/gi, function myFunction(x) {
+            var res = _patt.exec(x);
+            if (res !== null && res.length >= 2) {
+                return res[2];
+            } else {
+                return "";
+            }
+        });
+    }
+
+    $.fn[pluginName] = function (options) {
+        var e = this;
+        e.each(function () {
+            if (!$.data(e, "plugin_" + pluginName)) {
+                $.data(e, "plugin_" + pluginName, new Plugin(this, options));
+            }
+        });
+
+        // chain jQuery functions
+        return e;
+    };
+
+})(jQuery, window, document);
+
+  </script>
+  
+
+  <script>
+    // console.log("session in dashboard = ", JSON.stringify(session, null, '\t'));
+
+    // var user = <%- JSON.stringify(user) %>;
+    // console.log("user in history job order = ", JSON.stringify(user, null, '\t'));
+
+    // var headerTable = <%- JSON.stringify(headerTable) %>;
+    // console.log("headerTable in history job order = ", JSON.stringify(headerTable, null, '\t'));
+    
+    // var contentTable = <%- JSON.stringify(contentTable) %>;
+    // console.log("contentTable in history job order = ", JSON.stringify(contentTable, null, '\t'));
+
+    // var list_nama_pengirim = <%- JSON.stringify(listNamaPengirim) %>;
+    // // console.log("list_nama_pengirim in job order = ", JSON.stringify(list_nama_pengirim, null, '\t'));
+    
+    // var list_alamat_pengirim = <%- JSON.stringify(listAlamatPengirim) %>;
+    // // console.log("list_alamat_pengirim in job order = ", JSON.stringify(list_alamat_pengirim, null, '\t'));
+
+    // var list_kontak_pengirim = <%- JSON.stringify(listKontakPengirim) %>;
+    // // console.log("list_kontak_pengirim in job order = ", JSON.stringify(list_kontak_pengirim, null, '\t'));
+
+    // var list_nama_penerima = <%- JSON.stringify(listNamaPenerima) %>;
+    // // console.log("list_nama_penerima in job order = ", JSON.stringify(list_nama_penerima, null, '\t'));
+
+    // var list_alamat_penerima = <%- JSON.stringify(listAlamatPenerima) %>;
+    // // console.log("list_alamat_penerima in job order = ", JSON.stringify(list_alamat_penerima, null, '\t'));
+
+    // var list_kontak_penerima = <%- JSON.stringify(listKontakPenerima) %>;
+    // // console.log("list_kontak_penerima in job order = ", JSON.stringify(list_kontak_penerima, null, '\t'));
+
+    // var list_merk_unit = <%- JSON.stringify(listMerkUnit) %>;
+    // // console.log("list_merk_unit in job order = ", JSON.stringify(list_merk_unit, null, '\t'));
+
+    // var list_tipe_unit = <%- JSON.stringify(listTipeUnit) %>;
+    // // console.log("list_tipe_unit in job order = ", JSON.stringify(list_tipe_unit, null, '\t'));
+
+    // var list_warna_unit = <%- JSON.stringify(listWarnaUnit) %>;
+    // // console.log("list_warna_unit in job order = ", JSON.stringify(list_warna_unit, null, '\t'));
+
+
+    // console.log(Object.keys( contentTable[0]));
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      function () {
+        const table = new TableScrollShadow({
+          shadowColor: 'rgba(0, 0, 0, 0.25)',
+          // throttleDelay: 100,
+          // size: '2em',
+          // wrapperClass: '.table-wrapper',
+          // scrollAreaClass: '.table-scroll',
+        })
+        table.init()
+//         if ($(`#nama_pengirim`).length) {
+// console.log("nama_pengirim DOMContentLoaded ready is available");
+      
+//       $(`#nama_pengirim`).select2({
+//           // placeholder: "",
+//           allowClear: true,
+//           // width: "style",
+//           // tags: true,
+//           closeOnSelect: true,
+//       });
+//     } else {
+//       console.log("nama_pengirim DOMContentLoaded ready is not found");
+//     }
+      },
+      false
+    );
+
+    $(function() {
+    // $(document).ready(function() {
+      // $('.table-outer').doubleScroll();
+      $('.table-scroll').doubleScroll();
+
+      
+      $('#tableToExcel').on("click", function (event) {
+        // var location = 'data:application/vnd.ms-excel;base64,';
+        // var excelTemplate = '<html> ' +
+        //   '<head> ' +
+        //   '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
+        //   '</head> ' +
+        //   '<body> ' +
+        //     $(".table.inner").html() +
+        //   '</body> ' +
+        //   '</html>'
+        // window.location.href = location + window.btoa(excelTemplate);
+        $(".table.inner").table2excel({
+                filename: "Data Job Order.xls"
+            });
+      });
+      $('#tableToCSV').on("click", function (event) {
+        // Variable to store the final csv data
+    let csv_data = [];
+
+// Get each row data
+let rows = document.getElementsByTagName('tr');
+for (let i = 0; i < rows.length; i++) {
+
+    // Get each column data
+    let cols = rows[i].querySelectorAll('td,th');
+
+    // Stores each csv row data
+    let csvrow = [];
+    for (let j = 0; j < cols.length; j++) {
+
+        // Get the text data of each cell of
+        // a row and push it to csvrow
+        csvrow.push(cols[j].innerHTML);
+    }
+
+    // Combine each column value with comma
+    csv_data.push(csvrow.join(","));
+}
+// Combine each row data with new line character
+csv_data = csv_data.join('\n');
+
+/* We will use this function later to download
+the data in a csv file downloadCSVFile(csv_data);
+*/
+
+// Create CSV file object and feed our
+    // csv_data into it
+    CSVFile = new Blob([csv_data], { type: "text/csv" });
+
+    // Create to temporary link to initiate
+    // download process
+    let temp_link = document.createElement('a');
+
+    // Download csv file
+    temp_link.download = "Data Job Order.csv";
+    let url = window.URL.createObjectURL(CSVFile);
+    temp_link.href = url;
+
+    // This link should not be displayed
+    temp_link.style.display = "none";
+    document.body.appendChild(temp_link);
+
+    // Automatically click the link to trigger download 
+    temp_link.click();
+    document.body.removeChild(temp_link);
+      })
+      // 
+      // function Export() {
+      //       $("#tblCustomers").table2excel({
+      //           filename: "Table.xls"
+      //       });
+      //   }
+
+    });
+  </script>
+</body>
+</html>
