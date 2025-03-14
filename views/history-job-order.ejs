@@ -305,6 +305,7 @@
                         <div class="form-group form-row">
                           <label for="kota">Kota</label> <span style="margin: 0 .75rem;">:</span>
                           <select name="kota" id="kota" class="kota">
+                            <option value="00">Semua</option>
                             <option value="01">Sidoarjo</option>
                             <option value="02">Cikarang</option>
                             <option value="03">Jakarta</option>
@@ -468,6 +469,7 @@
                         <div class="form-group form-row">
                           <label for="nominal">Nominal</label> <span style="margin: 0 .75rem;">:</span>
                           <select name="nominal" id="nominal" class="nominal">
+                            <option value="nominal_range_0">Semua</option>
                             <option value="nominal_range_1">Rp0 - Rp50.000</option>
                             <option value="nominal_range_2">Rp50.000 - Rp200.000</option>
                             <option value="nominal_range_3">Rp200.000 - Rp500.000</option>
@@ -956,10 +958,10 @@
           // console.log("list_warna_unit in job order = ", JSON.stringify(list_warna_unit, null, '\t'));
 
           var list_created_by = <%- JSON.stringify(listCreatedBy) %>;
-          // console.log("list_created_by in job order = ", JSON.stringify(list_created_by, null, '\t'));
+          console.log("list_created_by in job order = ", JSON.stringify(list_created_by, null, '\t'));
 
           var list_approved_by = <%- JSON.stringify(listApprovedBy) %>;
-          // console.log("list_approved_by in job order = ", JSON.stringify(list_approved_by, null, '\t'));
+          console.log("list_approved_by in job order = ", JSON.stringify(list_approved_by, null, '\t'));
 		
 
           // var list_kondisi = [{index: 1, value: ""}];
@@ -1207,7 +1209,7 @@
               #tgl_jm_dibuat-dari, 
               #tgl_jm_dibuat-hingga,
               #tgl_jm_disetujui-dari, 
-              #tgl_jm_disetujui-hingga`).datepicker('setDate', new Date());
+              #tgl_jm_disetujui-hingga`).datepicker('setDate', "");
 
             // console.log($('#hr_tgl_ambil').val());
 
@@ -1248,7 +1250,7 @@
             });
 
             list_created_by.forEach(created_by => {
-              $(`#dibuat_oleh`).append(`<option value="${created_by}">${created_by}</option>`);
+              $(`#dibuat_oleh`).append(`<option value="${created_by.username}">${created_by.username}</option>`);
             });
 
             $(`#dibuat_oleh`).val(null);
@@ -1260,7 +1262,7 @@
             });
 
             list_approved_by.forEach(approved_by => {
-              $(`#disetujui_oleh`).append(`<option value="${approved_by}">${approved_by}</option>`);
+              $(`#disetujui_oleh`).append(`<option value="${approved_by.username}">${approved_by.username}</option>`);
             });
 
             $(`#disetujui_oleh`).val(null);
