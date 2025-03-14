@@ -1233,7 +1233,9 @@ app.get("/input-job-order", checkUser, async(req, res) => {
 	// let { contentTable } = await readGoogleSheet("database");
 
 	console.log("res locals in get input-job-order called = ", res.locals);
-
+	if (res.locals.user.role !== "Marketing") {
+		return res.status(401).send("No Have Access To This Page");
+	}
 	let contentTable, list_no_joj;
 
 	// try {
@@ -1265,7 +1267,7 @@ app.get("/input-job-order", checkUser, async(req, res) => {
 
 	contentTable = await db.JobOrders.find().catch(err => res.status(500).send({message: err.message}))
 
-	console.log("contentTable is = ", contentTable);
+	// console.log("contentTable is = ", contentTable);
 
 	// list_no_joj = contentTable.map((data) => data["NO"][" JOJ"]).map((value) => Number(value));
 
@@ -1554,6 +1556,9 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 	// return res.status(200).render(`job-order/${newJobOrder.no_joj}`, { viewOnly: false, jobOrder })
 	// res.setHeader("Content-Type", "text/html");
 		// res.writeHead(200, { 'Content-Type':'text/html'});
+		res.locals.pathname = req.path
+	res.locals.saveFile = req.path.split("/").filter(Boolean)[0] === "approve-job-order" ? false : true;
+
 	res.set('Content-Type', 'text/html');
 	res.status(200).render(`job-order-detail`, { viewOnly: false, jobOrder: newJobOrder, }, (err, html) => {
 		if (err) {
