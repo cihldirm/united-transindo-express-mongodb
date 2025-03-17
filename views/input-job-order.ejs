@@ -254,6 +254,10 @@
               display: block;
               padding: 6px;
           }
+          .select2-dropdown, . {
+            width: 600px !important;
+            max-width: 600px !important;
+          }
           /* & span.select2.select2-container {
             margin-left: 0.75rem;
 
@@ -1736,6 +1740,9 @@
           var list_kontak_penerima = <%- JSON.stringify(listKontakPenerima) %>;
           // console.log("list_kontak_penerima in job order = ", JSON.stringify(list_kontak_penerima, null, '\t'));
 
+          var list_pengirim_penerima = <%- JSON.stringify(listPengirimPenerima) %>;
+          console.log("list_pengirim_penerima in job order = ", JSON.stringify(list_pengirim_penerima, null, '\t'));
+
           var list_merk_unit = <%- JSON.stringify(listMerkUnit) %>;
           // console.log("list_merk_unit in job order = ", JSON.stringify(list_merk_unit, null, '\t'));
 
@@ -2277,8 +2284,14 @@
             list_nama_pengirim.forEach(nama_pengirim => {
                 $(`#nama_pengirim`).append(`<option value="${nama_pengirim}">${nama_pengirim}</option>`);
             });
+            list_pengirim_penerima.forEach(pengirim_penerima => {
+                $(`#nama_pengirim`).append(`<option value="${pengirim_penerima.keyword}">${pengirim_penerima.keyword}</option>`);
+            });
 
             $(`#nama_pengirim`).val(null);
+
+            // let datasetInput = false;
+            var datasetIndex = -1, datasetAlamat, datasetKontak;
 
             /*
             * When you change the value the select via select2, it triggers
@@ -2293,10 +2306,14 @@
                 tags: true,
                 minimumInputLength: 3,
                 closeOnSelect: true,
+                dropdownAutoWidth : true,
             }).on("change", function(event) {
               console.log("on change this value nama pengirim = ", this.value);
 
               $(this).trigger('blur');
+
+              // console.log("is datasetInput inside nama pengirim = ", datasetInput);
+              console.log("datasetIndex inside nama pengirim = ", datasetIndex);
 
               $('#alamat_pengirim').prop('disabled', !this.value);
 
@@ -2308,6 +2325,8 @@
             }).on("select2:unselecting", function(e) {
               console.log("select2 unselecting");
               console.log("select unselecting value nama pengirim = ", this.value);
+
+              datasetIndex = -1;
 
               $(`#alamat_pengirim`).val(null).trigger('change');
               $(`#alamat_pengirim`).parent().removeClass('has-danger');
@@ -2327,11 +2346,31 @@
               console.log("select2 select");
               console.log("select input value nama pengirim = ", this.value);
 
-              if (list_nama_pengirim.findIndex(nama_pengirim => String(this.value).toLowerCase() === String(nama_pengirim).toLowerCase()) === -1) {
-                console.log(this.value, "added to dataset");
-                new_list_nama_pengirim.push(this.value);
-                list_nama_pengirim.push(this.value);
-                $(this).append(new Option(this.value, this.value, true, true));
+              datasetIndex = list_pengirim_penerima.findIndex(pengirim_penerima => String(this.value).toLowerCase() === String(pengirim_penerima.keyword).toLowerCase());
+              if (datasetIndex !== -1) {
+                console.log("dataset index is at = ", datasetIndex);
+                console.log("dataset by index iss = ", list_pengirim_penerima[datasetIndex]);
+                // datasetInput = true;
+                // console.log("is datasetInput inside chosen selected dataset = ", datasetInput);
+                console.log("dataset nama = ", list_pengirim_penerima[datasetIndex]["nama"]);
+                $(this).val(String(list_pengirim_penerima[datasetIndex].nama)).trigger('change');
+
+                $('#alamat_pengirim').prop('disabled', false);
+                console.log("dataset alamat = ", list_pengirim_penerima[datasetIndex]["alamat"]);
+                datasetAlamat = list_pengirim_penerima[datasetIndex]["alamat"];
+                console.log("datasetAlamat is before = ", datasetAlamat);
+                $(`#alamat_pengirim`).val(String(list_pengirim_penerima[datasetIndex]["alamat"])).trigger('change');
+
+                $('#kontak_pengirim').prop('disabled', false);
+                console.log("dataset kontak = ", list_pengirim_penerima[datasetIndex]["kontak"]);
+                $(`#kontak_pengirim`).val(String(list_pengirim_penerima[datasetIndex]["kontak"])).trigger('change');
+              } else {
+                if (list_nama_pengirim.findIndex(nama_pengirim => String(this.value).toLowerCase() === String(nama_pengirim).toLowerCase()) === -1) {
+                  console.log(this.value, "added to dataset");
+                  new_list_nama_pengirim.push(this.value);
+                  list_nama_pengirim.push(this.value);
+                  $(this).append(new Option(this.value, this.value, true, true));
+                }
               }
             });
 
@@ -2353,13 +2392,42 @@
                 width: "style",
                 tags: true,
                 closeOnSelect: true,
-                minimumInputLength: 3,
+                dropdownAutoWidth : true,
+                // minimumInputLength: 3,
             }).on("change", function(event) {
+              if (datasetIndex !== -1) {
+                console.log("event", event);
+                console.log("alamat has dataset");
+                this.value = list_pengirim_penerima[datasetIndex].alamat
+                this.value = datasetAlamat
+              }
               console.log("on change this value alamat pengirim = ", this.value);
+              console.log("on change this value 2 alamat pengirim = ", String(this.value));
 
               $(this).trigger('blur');
 
-              $('#kontak_pengirim').prop('disabled', !$('#nama_pengirim').val() || !this.value);
+              // console.log("is datasetInput inside alamat pengirim = ", datasetInput);
+              console.log("datasetIndex inside alamat pengirim = ", datasetIndex);
+
+              // if (!datasetInput) {
+              //   $('#kontak_pengirim').prop('disabled', !$('#nama_pengirim').val() || !this.value);
+              // }
+
+              console.log("list_pengirim_penerima[datasetIndex].alamat inside alamat pengirim = ", list_pengirim_penerima[datasetIndex].alamat);
+
+              console.log("if datasetIndex first = ", datasetIndex !== -1);
+
+              console.log("result conditional if inside alamat pengirim = ", (datasetIndex !== -1 && list_pengirim_penerima[datasetIndex].alamat));
+
+              // if (datasetIndex !== -1 && list_pengirim_penerima[datasetIndex].alamat) {
+              if (datasetIndex !== -1) {
+                // console.log("");
+                $(this).val(list_pengirim_penerima[datasetIndex].alamat).trigger('change.select2');
+                console.log("datasetAlamat after is = ", datasetAlamat);
+                $(this).val(datasetAlamat).trigger('change.select2');
+              } else {
+                $('#kontak_pengirim').prop('disabled', !$('#nama_pengirim').val() || !this.value);
+              }
               
               // $(`#alamat_pengirim`).parent().removeClass('has-danger');
               // $(`#alamat_pengirim`).removeClass('form-control-danger');
@@ -2405,9 +2473,21 @@
                 tags: true,
                 closeOnSelect: true,
             }).on("change", function(event) {
+              if (datasetIndex !== -1) this.value = list_pengirim_penerima[datasetIndex].kontak
               console.log("on change this value kontak pengirim = ", this.value);
 
+              // console.log("is datasetInput inside kontak pengirim = ", datasetInput);
+
               $(this).trigger('blur');
+
+              // if (datasetInput) datasetInput = false;
+
+              console.log("datasetIndex inside kontak pengirim = ", datasetIndex);
+
+              if (datasetIndex !== -1 && list_pengirim_penerima[datasetIndex].kontak) {
+                $(this).val(list_pengirim_penerima[datasetIndex].kontak).trigger('change.select2');
+                datasetIndex = -1;
+              }
               
               // $(`#kontak_pengirim`).parent().removeClass('has-danger');
               // $(`#kontak_pengirim`).removeClass('form-control-danger');
@@ -2518,7 +2598,7 @@
                 width: "style",
                 tags: true,
                 closeOnSelect: true,
-                minimumInputLength: 3,
+                // minimumInputLength: 3,
             }).on("change", function(event) {
               $(this).trigger('blur');
 

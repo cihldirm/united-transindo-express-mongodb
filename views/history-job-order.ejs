@@ -86,7 +86,7 @@
           margin-top: 3rem;
           float: right;
         }
-        input[type="submit"] {
+        input[type="button"] {
           color: #fff;
         }
         /* #clear {
@@ -828,12 +828,26 @@
                           </div>
                         </div>
                         <div id="filter-form-action">
-                          <input id="generate" class="btn btn-primary" type="submit" value="Generate">
-                          <input id="clear" class="btn btn-danger" type="submit" value="Clear Filter">
+                          <input id="generate" class="btn btn-primary" type="button" value="Generate">
+                          <input id="clear" class="btn btn-danger" type="button" value="Clear Filter">
                         </div>
     
                       <!-- </div> -->
                     </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-xl-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body" id="filter-page-result" style="display: none;">
+                    <div class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+
+                    
                   </div>
                 </div>
               </div>
@@ -899,7 +913,13 @@
     <script>
         $(document).ready(function() {
           var user = <%- JSON.stringify(user) %>;
-			    console.log("user in input job order = ", JSON.stringify(user, null, '\t'));
+			    console.log("user in history job order = ", JSON.stringify(user, null, '\t'));
+
+          var headerTable = <%- JSON.stringify(headerTable) %>;
+          console.log("headerTable in history job order = ", JSON.stringify(headerTable, null, '\t'));
+          
+          var contentTable = <%- JSON.stringify(contentTable) %>;
+          console.log("contentTable in history job order = ", JSON.stringify(contentTable, null, '\t'));
           
           
           // var timeInterval = null;
@@ -1273,78 +1293,78 @@
                 closeOnSelect: true,
             });
 
-            $("input:radio[name='tagihan']").on("click", function() {
-              console.log("tagihan value = ", $(this).val());
-              $("#tagihan_top").removeAttr("disabled");
-            });
+            // $("input:radio[name='tagihan']").on("click", function() {
+            //   console.log("tagihan value = ", $(this).val());
+            //   $("#tagihan_top").removeAttr("disabled");
+            // });
 
-            $("input:radio[name='tagihan']").on("click", function() {
-              console.log("tagihan value = ", $(this).val());
-              $("#tagihan_top").removeAttr("disabled");
-            });
+            // $("input:radio[name='tagihan']").on("click", function() {
+            //   console.log("tagihan value = ", $(this).val());
+            //   $("#tagihan_top").removeAttr("disabled");
+            // });
 
-            $("input:radio[name='asuransi']").on("click", function() {
-              console.log("asuransi value = ", $(this).val());
-              if ($(this).val() === "ada") {
-                $("#perincian_asuransi").removeAttr("disabled");
-              } else {
-                $("#perincian_asuransi").val("");
-                $("#perincian_asuransi").attr("disabled", "disabled");
-              }
-            });
+            // $("input:radio[name='asuransi']").on("click", function() {
+            //   console.log("asuransi value = ", $(this).val());
+            //   if ($(this).val() === "ada") {
+            //     $("#perincian_asuransi").removeAttr("disabled");
+            //   } else {
+            //     $("#perincian_asuransi").val("");
+            //     $("#perincian_asuransi").attr("disabled", "disabled");
+            //   }
+            // });
 
-            $("input:radio[name='biaya_koord']").on("click", function() {
-              console.log("biaya_koord value = ", $(this).val());
-              if ($(this).val() === "ada") {
-                $("#keterangan_biaya_koord").removeAttr("disabled");
-              } else {
-                $("#keterangan_biaya_koord").val("");
-                $("#keterangan_biaya_koord").attr("disabled", "disabled");
-              }
-            });
+            // $("input:radio[name='biaya_koord']").on("click", function() {
+            //   console.log("biaya_koord value = ", $(this).val());
+            //   if ($(this).val() === "ada") {
+            //     $("#keterangan_biaya_koord").removeAttr("disabled");
+            //   } else {
+            //     $("#keterangan_biaya_koord").val("");
+            //     $("#keterangan_biaya_koord").attr("disabled", "disabled");
+            //   }
+            // });
 
-            $("input:radio[name='penawaran_kontrak']").on("click", function() {
-              console.log("penawaran_kontrak value = ", $(this).val());
-              if ($(this).val() === "ada") {
-                $(this).parents("div.form-group.form-row").css("height", "unset");
-                $('input:radio[name="opsi_penawaran_kontrak"][value="surat_penawaran"]').prop('checked', true);
-                $("#no_opsi_penawaran_kontrak").val("");
-                $("div#opsi_penawaran_kontrak").show();
-                $("div#opsi_penawaran_kontrak").css({
-                  display: "grid",
-                  gap: "0.5rem",
-                  margin: 0,
-                  marginLeft: "1rem",
-                  // marginTop: "0.5rem",
-                });
-              } else {
-                $(this).parents("div.form-group.form-row").css("height", "2.1875rem");
-                $("div#opsi_penawaran_kontrak").hide();
-                $("div#opsi_penawaran_kontrak").css({
-                  display: "none",
-                });
-              }
-            });
+            // $("input:radio[name='penawaran_kontrak']").on("click", function() {
+            //   console.log("penawaran_kontrak value = ", $(this).val());
+            //   if ($(this).val() === "ada") {
+            //     $(this).parents("div.form-group.form-row").css("height", "unset");
+            //     $('input:radio[name="opsi_penawaran_kontrak"][value="surat_penawaran"]').prop('checked', true);
+            //     $("#no_opsi_penawaran_kontrak").val("");
+            //     $("div#opsi_penawaran_kontrak").show();
+            //     $("div#opsi_penawaran_kontrak").css({
+            //       display: "grid",
+            //       gap: "0.5rem",
+            //       margin: 0,
+            //       marginLeft: "1rem",
+            //       // marginTop: "0.5rem",
+            //     });
+            //   } else {
+            //     $(this).parents("div.form-group.form-row").css("height", "2.1875rem");
+            //     $("div#opsi_penawaran_kontrak").hide();
+            //     $("div#opsi_penawaran_kontrak").css({
+            //       display: "none",
+            //     });
+            //   }
+            // });
 
-            $("input:radio[name='handling']").on("click", function() {
-              console.log("handling value = ", $(this).val());
-              // $("#tagihan_top").removeAttr("disabled");
-              if ($(this).val() === "ada") {
-                $(this).parents("div.form-group.form-row").css("height", "unset");
-                $("#nominal_handling").val("");
-                $("#nama_penerima_handling").val("");
-                $("#form_handling").show();
-                $("#form_handling").css({
-                  display: "grid",
-                  gap: "0.5rem",
-                  margin: 0,
-                  marginLeft: "1rem",
-                  // marginTop: "0.5rem",
-                });
-              } else {
-                $("#form_handling").hide();
-              }
-            });
+            // $("input:radio[name='handling']").on("click", function() {
+            //   console.log("handling value = ", $(this).val());
+            //   // $("#tagihan_top").removeAttr("disabled");
+            //   if ($(this).val() === "ada") {
+            //     $(this).parents("div.form-group.form-row").css("height", "unset");
+            //     $("#nominal_handling").val("");
+            //     $("#nama_penerima_handling").val("");
+            //     $("#form_handling").show();
+            //     $("#form_handling").css({
+            //       display: "grid",
+            //       gap: "0.5rem",
+            //       margin: 0,
+            //       marginLeft: "1rem",
+            //       // marginTop: "0.5rem",
+            //     });
+            //   } else {
+            //     $("#form_handling").hide();
+            //   }
+            // });
           };
 
           loadData();
@@ -1352,6 +1372,185 @@
           $(".spinner-border").hide();
 
           $("#filter-page").show();
+
+          $("#clear").on("click", function() {
+            $("#no_jo").val("")
+            $("#nopol_noka_unit").val("")
+            $("#moda").val("")
+            $("#invoice").val("")
+            $("#transfer_by").val("")
+            $(`#hr_tgl_ambil-dari, 
+              #hr_tgl_ambil-hingga, 
+              #tgl_jm_dibuat-dari, 
+              #tgl_jm_dibuat-hingga,
+              #tgl_jm_disetujui-dari, 
+              #tgl_jm_disetujui-hingga`).datepicker('setDate', "");
+            $(`#nama_pengirim`).select2("val", "");
+            $(`#alamat_pengirim`).select2("val", "");
+            $(`#kontak_pengirim`).val(null);
+            $(`#nama_penerima`).val(null);
+            $(`#alamat_penerima`).val(null);
+            $(`#kontak_penerima`).val(null);
+            $(`#merk_unit`).val(null);
+            $(`#tipe_unit`).val(null);
+            $(`#warna_unit`).val(null);
+            $(`#dibuat_oleh`).val(null);
+            $(`#disetujui_oleh`).val(null);
+            $("#kota").val("00").change();
+            $("#nominal").val("nominal_range_0").change();
+            $('input[name="status_unit"]').prop('checked', false);
+            $('input[name="kondisi_surat_unit"]').prop('checked', false);
+            $('input[name="tagihan"]').prop('checked', false);
+            $('input[name="penawaran_kontrak"]').prop('checked', false);
+            $('input[name="handling"]').prop('checked', false);
+            $('input[name="asuransi"]').prop('checked', false);
+            $('input[name="biaya_koordinasi"]').prop('checked', false);
+            $('input[name="note"]').prop('checked', false);
+          });
+
+          $("#generate").on("click", async function(e) {
+            e.preventDefault();
+            $("#filter-page-result").show();
+
+            const form = document.forms.namedItem("filter-form");
+            const formData = new FormData(form);
+            console.log("formData is = ", formData);
+
+            let filterParam = {};
+            // List key/value pairs
+            for (let [name, value] of formData) {
+                console.log("List key/value pairs in formData");
+                console.log(`${name} = ${value}`);
+
+                // filterParam.name = value;
+                // filterParam[name] = value;
+                console.log(typeof name);
+                console.log(typeof value);
+              if (
+                name == "hr_tgl_ambil-dari" || 
+                name == "hr_tgl_ambil-hingga" || 
+                name == "tgl_jm_dibuat-dari" || 
+                name == "tgl_jm_dibuat-hingga" || 
+                name == "tgl_jm_disetujui-dari" || 
+                name == "tgl_jm_disetujui-hingga" 
+              ) {
+                console.log(value);
+                console.log($("#"+name).datepicker("getDate"));
+                filterParam[name] = $("#"+name).datepicker("getDate");
+              } else filterParam[name] = value;
+            }
+
+
+
+            try {
+                const response = await fetch("/history-job-order", {
+                  method: "POST",
+                  body: JSON.stringify(filterParam),
+                  // body: formData,
+                  // body: JSON.stringify(formData),
+                  // body: jso
+                  // body: JSON.parse({formData}),
+                  // body: JSON.stringify({ 
+                  //   no_jo,
+                  //   kota,
+                  //   tgl_wkt_dibuat: new Date(),
+                  //   nama_pengirim,
+                  //   alamat_pengirim,
+                  //   kontak_pengirim,
+                  //   nama_penerima,
+                  //   alamat_penerima,
+                  //   kontak_penerima,
+                  //   hr_tgl_ambil,
+                  //   qty,
+                  //   merk,
+                  //   tipe,
+                  //   nopol_noka,
+                  //   warna,
+                  //   status,
+                  //   kondisi,
+                  //   lainnya,
+                  //   new_list_nama_pengirim,
+                  //   new_list_alamat_pengirim,
+                  //   new_list_kontak_pengirim,
+                  //   new_list_nama_penerima,
+                  //   new_list_alamat_penerima,
+                  //   new_list_kontak_penerima,
+                  //   new_list_merk_unit,
+                  //   new_list_tipe_unit,
+                  //   new_list_warna_unit,
+                  //   nominal,
+                  //   moda,
+                  //   invoice,
+                  //   transfer_by,
+                  //   tagihan,
+                  //   tagihan_top,
+                  //   opsi_tagihan_top,
+                  //   penawaran_kontrak,
+                  //   opsi_penawaran_kontrak,
+                  //   no_opsi_penawaran_kontrak,
+                  //   handling,
+                  //   nominal_handling,
+                  //   nama_penerima_handling,
+                  //   asuransi,
+                  //   perincian_asuransi,
+                  //   biaya_koord,
+                  //   keterangan_biaya_koord,
+                  //   note,
+                  //   dibuat_oleh: user.username,
+                  //   ttd_dibuat_oleh,
+                  //  }),
+
+                  headers: {'Content-Type': 'application/json', "Accept":"text/html"},
+                  credentials: 'same-origin',
+                });
+                console.log("response of filterDataJO = ", response);
+
+                console.log("response body is = ", response.body);
+
+                if (response.status == 200 || response.ok) {
+                  var tableFilterResult = "";
+                  const loadResultTable = async () => {
+                    tableFilterResult+= `<button id="tableToExcel">Convert To Excel</button>
+                <button id="tableToCSV">Convert To CSV</button>
+                
+                
+                <div class="table-outer table-wrapper table-responsive">
+                  <div class="table-scroll">
+                    <table class="table inner table-hover mb-0" style="border-spacing: 0;" data-excel-name="Data Job Order">
+                      <thead><tr>`;
+                        headerTable.forEach((header) => {
+                          tableFilterResult+=`<th class="pt-0">${header}</th>`
+                        });
+                        tableFilterResult+=`</tr>
+                      </thead>
+                      <tbody><tr>`
+                        contentTable.forEach((content) => {
+                          tableFilterResult+=`<td class="pt-0">${content[header]}</td>`
+                        });
+                        tableFilterResult+=`</tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>`
+                $("#filter-page-result").append(tableFilterResult)
+                
+                  }
+
+                }
+
+                await loadResultTable();
+                
+                $("#filter-page-result .spinner-border").hide();
+
+                $("#filter-page-result").show();
+
+              } catch (err) {
+                console.error(err)
+              }
+            
+
+            // $("#filter-page-result .spinner-border").hide();
+          });
 
           // function render(templateId, data) {
           //   // Get the template content

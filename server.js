@@ -516,6 +516,17 @@ async function readGoogleSheet(sheet) {
   });
   
   const kontakPenerimaModel = mongoose.model("kontak-penerima", kontakPenerimaSchema);
+
+  const pengirimPenerimaSchema = new mongoose.Schema({
+	nama: String,
+	alamat: String,
+	kontak: String,
+	keyword: String
+  }, {
+	collection: "pengirim-penerima"
+  });
+  
+  const pengirimPenerimaModel = mongoose.model("pengirim-penerima", pengirimPenerimaSchema);
   
   const merkUnitSchema = new mongoose.Schema({
 	field: String
@@ -1314,6 +1325,11 @@ app.get("/input-job-order", checkUser, async(req, res) => {
       getData = false;
       console.log(err);
     });
+	let listPengirimPenerima = await pengirimPenerimaModel.find({}).select({"_id": 0})
+    .catch(function(err) {
+      getData = false;
+      console.log(err);
+    });
   let listMerkUnit = await merkUnitModel.find({}).select({"field": 1, "_id": 0})
     .catch(function(err) {
       getData = false;
@@ -1353,6 +1369,7 @@ app.get("/input-job-order", checkUser, async(req, res) => {
       listNamaPenerima,
       listAlamatPenerima,
       listKontakPenerima,
+	  listPengirimPenerima,
       listMerkUnit,
       listTipeUnit,
       listWarnaUnit,
@@ -2026,6 +2043,689 @@ app.get("/history-job-order", checkUser, async(req, res) => {
 		listApprovedBy,
     });
   }
+});
+
+app.post("/history-job-order", checkUser, async(req, res) => {
+	console.log("res locals in post history-job-order called = ", res.locals);
+	console.log("req body of post history-job-order = ", req.body);
+  
+	// let {
+	// 	no_joj,
+	// 	city_code,
+	// 	tgl_wkt_dibuat,
+	// 	nama_pengirim,
+	// 	alamat_pengirim,
+	// 	kontak_pengirim,
+	// 	nama_penerima,
+	// 	alamat_penerima,
+	// 	kontak_penerima,
+	// 	hr_tgl_ambil,
+	// 	qty,
+	// 	merk,
+	// 	tipe,
+	// 	nopol_noka,
+	// 	warna,
+	// 	status,
+	// 	kondisi,
+	// 	lainnya,
+	// 	new_list_nama_pengirim,
+	// 	new_list_alamat_pengirim,
+	// 	new_list_kontak_pengirim,
+	// 	new_list_nama_penerima,
+	// 	new_list_alamat_penerima,
+	// 	new_list_kontak_penerima,
+	// 	new_list_merk_unit,
+	// 	new_list_tipe_unit,
+	// 	new_list_warna_unit,
+	// 	nominal,
+	// 	moda,
+	// 	invoice,
+	// 	transfer_by,
+	// 	tagihan,
+	// 	tagihan_top,
+	// 	opsi_tagihan_top,
+	// 	penawaran_kontrak,
+	// 	opsi_penawaran_kontrak,
+	// 	no_opsi_penawaran_kontrak,
+	// 	handling,
+	// 	nominal_handling,
+	// 	nama_penerima_handling,
+	// 	asuransi,
+	// 	perincian_asuransi,
+	// 	biaya_koord,
+	// 	keterangan_biaya_koord,
+	// 	note,
+	// 	dibuat_oleh,
+	// 	ttd_dibuat_oleh
+	// } = req.body;
+	// // let dbo = mongoose.db
+  
+	// var newJobOrder = {
+	// 	no_joj,
+	// 	city_code,
+	// 	tgl_wkt_dibuat,
+	// 	nama_pengirim,
+	// 	alamat_pengirim,
+	// 	kontak_pengirim,
+	// 	nama_penerima,
+	// 	alamat_penerima,
+	// 	kontak_penerima,
+	// 	hr_tgl_ambil,
+	// 	qty,
+	// 	merk,
+	// 	tipe,
+	// 	nopol_noka,
+	// 	warna,
+	// 	status,
+	// 	kondisi,
+	// 	lainnya,
+	// 	nominal,
+	// 	moda,
+	// 	invoice,
+	// 	transfer_by,
+	// 	tagihan,
+	// 	tagihan_top,
+	// 	opsi_tagihan_top,
+	// 	penawaran_kontrak,
+	// 	opsi_penawaran_kontrak,
+	// 	no_opsi_penawaran_kontrak,
+	// 	handling,
+	// 	nominal_handling,
+	// 	nama_penerima_handling,
+	// 	asuransi,
+	// 	perincian_asuransi,
+	// 	biaya_koord,
+	// 	keterangan_biaya_koord,
+	// 	note,
+	// 	dibuat_oleh,
+	// 	ttd_dibuat_oleh
+	// }
+
+	let contentTable = await db.JobOrders.find().catch(err => res.status(500).send({message: err.message})),
+		headerTable = [
+			'No. Job Order',
+			'Kota',
+			'Nama Pengirim',
+			'Alamat Pengirim',
+			'Kontak Pengirim',
+			'Nama Penerima',
+			'Alamat Penerima',
+			'Kontak Penerima',
+			'Hari / Tanggal Pengambilan',
+			'Merk Unit',
+			'Type Unit',
+			'Nopol / Noka Unit',
+			'Warna Unit',
+			'Status Unit',
+			'Kondisi Surat Unit',
+			// 'Keterangan Lainnya',
+			'Nominal',
+			'Moda',
+			'Invoice a.n.',
+			'Transfer By',
+			'Tagihan',
+			'TOP Tagihan',
+			'Penawaran / Kontrak',
+			'No. Penawaran / Kontrak',
+			// 'Keterangan Penawaran / Kontrak',
+			// 'Handling',
+			// 'Keterangan Handling',
+			'Nominal Handling',
+			'Nama Penerima Handling',
+			'Asuransi',
+			// 'Rincian Asuransi',
+			'Biaya Koordinasi / Kawal',
+			'Note',
+			'Dibuat Oleh',
+			'Tanggal Jam Dibuat',
+			'Disetujui Oleh',
+			'Tanggal Jam Disetujui',
+		],
+		dataTable = []
+		// list_no_joj = contentTable.map((data) => data.toObject()["no_joj"]).map((value) => Number(value));
+
+	// contentTable = 
+
+	// console.log("key bfr = ", Object.keys(contentTable[0]));
+	// console.log("key aft = ", Object.keys(contentTable[0].toObject()));
+	
+	// headerTable.splice(headerTable.indexOf("_id"), 1);
+
+	// headerTable.splice(headerTable.indexOf("PENGIRIM"), 0, ...["NAMA PENGIRIM", "ALAMAT PENGIRIM", "KONTAK PENGIRIM"]);
+
+	// headerTable.splice(headerTable.indexOf("PENGIRIM"), 1);
+
+	// headerTable.splice(headerTable.indexOf("PENERIMA"), 0, ...["NAMA PENERIMA", "ALAMAT PENERIMA", "KONTAK PENERIMA"]);
+
+	// headerTable.splice(headerTable.indexOf("PENERIMA"), 1);
+
+	// console.log("result of headerTable is = ", headerTable);
+
+	// const phoneExp = /(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/img;
+
+	contentTable.forEach((content) => {
+		content = content.toObject();
+		delete content["_id"];
+		
+		for (let index = 0; index < Number(content['qty']); index++) {
+
+			if (req.body.no_jo && content['no_joj'] !== req.body.no_jo) {
+				return;
+			}
+	
+			if (req.body.kota !== "00") {
+				if (content['city_code']) {
+					if (content['city_code'] !== req.body.kota) {
+						return;
+					}
+				} 
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.nama_pengirim) {
+				if (content['nama_pengirim']) {
+					if (content['nama_pengirim'] !== req.body.nama_pengirim) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.alamat_pengirim) {
+				if (content['alamat_pengirim']) {
+					if (content['alamat_pengirim'] !== req.body.alamat_pengirim) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.kontak_pengirim) {
+				if (content['kontak_pengirim']) {
+					if (content['kontak_pengirim'] !== req.body.kontak_pengirim) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.nama_penerima) {
+				if (content['nama_penerima']) {
+					if (content['nama_penerima'] !== req.body.nama_penerima) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.alamat_penerima) {
+				if (content['alamat_penerima']) {
+					if (content['alamat_penerima'] !== req.body.alamat_penerima) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.kontak_penerima) {
+				if (content['kontak_penerima']) {
+					if (content['kontak_penerima'] !== req.body.kontak_penerima) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body['hr_tgl_ambil-dari'] && req.body['hr_tgl_ambil-hingga']) {
+				if (moment(content['hr_tgl_ambil']) < moment(req.body['hr_tgl_ambil-dari'])) return
+				else {
+					if (moment(content['hr_tgl_ambil']) > moment(req.body['hr_tgl_ambil-hingga'])) return
+				}
+			}
+	
+			if (req.body.nominal !== "nominal_range_0") {
+	
+				if (content["nominal"]) {
+					// if (req.body.nominal === "nominal_range_1" && Number(content["nominal"]) >= 0 && Number(content["nominal"]) <= 50000) {
+					if (req.body.nominal === "nominal_range_1" && Number(content["nominal"]) > 50000) {
+						return
+					} else if (req.body.nominal === "nominal_range_2" && Number(content["nominal"]) < 50000 && Number(content["nominal"]) > 200000) {
+						return
+					} else if (req.body.nominal === "nominal_range_3" && Number(content["nominal"]) < 200000 && Number(content["nominal"]) > 500000) {
+						return
+					} else if (req.body.nominal === "nominal_range_4" && Number(content["nominal"]) < 500000 && Number(content["nominal"]) > 1000000) {
+						return
+					} else if (req.body.nominal === "nominal_range_5" && Number(content["nominal"]) < 1000000 && Number(content["nominal"]) > 5000000) {
+						return
+					} else if (req.body.nominal === "nominal_range_6" && Number(content["nominal"]) < 5000000 && Number(content["nominal"]) > 10000000) {
+						return
+					} else if (req.body.nominal === "nominal_range_7" && Number(content["nominal"]) < 10000000 && Number(content["nominal"]) > 25000000) {
+						return
+					} else if (req.body.nominal === "nominal_range_8" && Number(content["nominal"]) < 25000000 && Number(content["nominal"]) > 50000000) {
+						return
+					} else if (req.body.nominal === "nominal_range_9" && Number(content["nominal"]) < 50000000 && Number(content["nominal"]) > 100000000) {
+						return
+					} else if (req.body.nominal === "nominal_range_10" && Number(content["nominal"]) < 100000000) {
+						return
+					}
+				} else {
+					return
+				}
+			}
+	
+	
+	
+			if (req.body.moda) {
+				if (content['moda']) {
+					if (content['moda'] !== req.body.moda) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.invoice) {
+				if (content['invoice']) {
+					if (content['invoice'] !== req.body.invoice) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.transfer_by) {
+				if (content['transfer_by']) {
+					if (content['transfer_by'] !== req.body.transfer_by) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.tagihan) {
+				if (content['tagihan']) {
+					if (content['tagihan'] !== req.body.tagihan) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.penawaran_kontrak) {
+				if (content['penawaran_kontrak']) {
+					if (content['penawaran_kontrak'] !== req.body.penawaran_kontrak) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.handling) {
+				if (content['handling']) {
+					if (content['handling'] !== req.body.handling) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.asuransi) {
+				if (content['asuransi']) {
+					if (content['asuransi'] !== req.body.asuransi) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.biaya_koordinasi) {
+				if (content['biaya_koord']) {
+					if (content['biaya_koord'] !== req.body.biaya_koordinasi) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body.note) {
+				if (req.body.note === "ada" && !content['note']) {
+					return;
+				}
+				else if (req.body.note === "tidak_ada" && content['note']) {
+					return;
+				}
+			}
+	
+			if (req.body.dibuat_oleh) {
+				if (content['dibuat_oleh']) {
+					if (content['dibuat_oleh'] !== req.body.dibuat_oleh) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+	
+			if (req.body['tgl_jm_dibuat-dari'] && req.body['tgl_jm_dibuat-hingga']) {
+				if (content['tgl_wkt_dibuat']) {
+					if (moment(content['tgl_wkt_dibuat']) < moment(req.body['tgl_jm_dibuat-dari'])) return
+					else {
+						if (moment(content['tgl_wkt_dibuat']) > moment(req.body['tgl_jm_dibuat-hingga'])) return
+					}
+				}
+				else {
+					return;
+				}
+				
+			}
+	
+			if (req.body['tgl_jm_disetujui-dari'] && req.body['tgl_jm_disetujui-hingga']) {
+				if (content['tgl_wkt_disetujui']) {
+					if (moment(content['tgl_wkt_disetujui']) < moment(req.body['tgl_jm_disetujui-dari'])) return
+					else {
+						if (moment(content['tgl_wkt_disetujui']) > moment(req.body['tgl_jm_disetujui-hingga'])) return
+					}
+				}
+				else {
+					return;
+				}
+				
+			}
+	
+			
+			
+	
+			if (req.body.disetujui_oleh) {
+				if (content['disetujui_oleh']) {
+					if (content['disetujui_oleh'] !== req.body.disetujui_oleh) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+
+
+			if (req.body.merk_unit) {
+				if (content['merk'][index]) {
+					if (content['merk'][index] !== req.body.merk_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			if (req.body.tipe_unit) {
+				if (content['tipe'][index]) {
+					if (content['tipe'][index] !== req.body.tipe_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			if (req.body.nopol_noka_unit) {
+				if (content['nopol_noka'][index]) {
+					if (content['nopol_noka'][index] !== req.body.nopol_noka_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			if (req.body.warna_unit) {
+				if (content['warna'][index]) {
+					if (content['warna'][index] !== req.body.warna_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			if (req.body.status_unit) {
+				if (content['status'][index]) {
+					if (content['status'][index] !== req.body.status_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			// if (content['kondisi'] && content['kondisi'][index]) {
+			// 	if (content['kondisi'][index] === "lainnya") {
+			// 		if (content['lainnya'][index]) {
+			// 			data['Kondisi Surat Unit'] = content['lainnya'][index];
+			// 		} else {
+			// 			data['Kondisi Surat Unit'] = "lainnya";
+			// 		}
+			// 	} else {
+			// 		data['Kondisi Surat Unit'] = content['kondisi'][index];
+			// 	}
+			// } else {
+			// 	data['Kondisi Surat Unit'] = "-";
+			// }
+
+			if (req.body.kondisi_surat_unit) {
+				if (content['kondisi'] && content['kondisi'][index]) {
+					
+					// if (content['kondisi'][index] !== req.body.kondisi_surat_unit) {
+					// 	continue;
+					// }
+					if (req.body.kondisi_surat_unit === "lainnya") {
+						if (content['kondisi'][index] === "ada") {
+							// skip = true;
+							continue;
+						} else if (!content['lainnya'][index]) {
+							// skip = true;
+							continue;
+						}
+					} else {
+						if (content['kondisi'][index] !== req.body.kondisi_surat_unit) {
+							// skip = true;
+							continue;
+						}
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+			
+			dataTable.push(content);
+		}
+		return content;
+	});
+
+	
+
+	console.log("dataTable length = ", dataTable.length);
+
+	for (let index = 0; index < dataTable.length; index++) {
+		console.log(dataTable[index]["no_joj"]);
+
+	}
+
+	let resTable = [];
+
+	dataTable.forEach((data) => {
+		for (let index = 0; index < Number(data['qty']); index++) {
+			let dataObj = {};
+			
+			dataObj['No. Job Order'] = data['no_joj'] ? data['no_joj'] : "-";
+			if (data['city_code']) {
+				switch (data['city_code']) {
+					case "01":
+						dataObj['Kota'] = "Sidoarjo";
+						break;
+					case "02":
+						dataObj['Kota'] = "Cikarang";
+						break;
+					case "03":
+						dataObj['Kota'] = "Jakarta";
+						break;
+					case "04":
+						dataObj['Kota'] = "Makassar";
+						break;
+				}
+			} else {
+				dataObj['Kota'] = "-";
+			}
+			dataObj['Nama Pengirim'] = data['nama_pengirim'] ? data['nama_pengirim'] : "-";
+			dataObj['Alamat Pengirim'] = data['alamat_pengirim'] ? data['alamat_pengirim'] : "-";
+			dataObj['Kontak Pengirim'] = data['kontak_pengirim'] ? data['kontak_pengirim'] : "-";
+			dataObj['Nama Penerima'] = data['nama_penerima'] ? data['nama_penerima'] : "-";
+			dataObj['Alamat Penerima'] = data['alamat_penerima'] ? data['alamat_penerima'] : "-";
+			dataObj['Kontak Penerima'] = data['kontak_penerima'] ? data['kontak_penerima'] : "-";
+			dataObj['Hari / Tanggal Pengambilan'] = data['hr_tgl_ambil'] ? data['hr_tgl_ambil'] : "-";
+			dataObj['Merk Unit'] = data['merk'] && data['merk'][index] ? data['merk'][index] : "-";
+			dataObj['Type Unit'] = data['tipe'] && data['tipe'][index] ? data['tipe'][index] : "-";
+			dataObj['Nopol / Noka Unit'] = data['nopol_noka'] && data['nopol_noka'][index] ? data['nopol_noka'][index] : "-";
+			dataObj['Warna Unit'] = data['warna'] && data['warna'][index] ? data['warna'][index] : "-";
+			dataObj['Status Unit'] = data['status'] && data['status'][index] ? data['status'][index] : "-";
+	
+			if (data['kondisi'] && data['kondisi'][index]) {
+				if (data['kondisi'][index] === "lainnya") {
+					if (data['lainnya'][index]) {
+						dataObj['Kondisi Surat Unit'] = data['lainnya'][index];
+					} else {
+						dataObj['Kondisi Surat Unit'] = "lainnya";
+					}
+				} else {
+					dataObj['Kondisi Surat Unit'] = data['kondisi'][index];
+				}
+			} else {
+				dataObj['Kondisi Surat Unit'] = "-";
+			}
+			dataObj['Nominal'] = data['nominal'] ? data['nominal'] : "0";
+			dataObj['Moda'] = data['moda'] ? data['moda'] : "-";
+			dataObj['Invoice a.n.'] = data['invoice'] ? data['invoice'] : "-";
+			dataObj['Transfer By'] = data['transfer_by'] ? data['transfer_by'] : "T/A";
+			dataObj['Tagihan'] = data['tagihan'] ? data['tagihan'] : "T/A";
+			if (data['tagihan_top']) {
+				if (data['opsi_tagihan_top'] === "hari_kerja") {
+					dataObj['TOP Tagihan'] = data['tagihan_top'] + " hari kerja";
+				} else if (data['opsi_tagihan_top'] === "kalender") {
+					dataObj['TOP Tagihan'] = data['tagihan_top'] + " hari kalender";
+				}
+			} else {
+				dataObj['TOP Tagihan'] = "T/A";
+			}
+			if (data['penawaran_kontrak'] === "ada") {
+				if (data['opsi_penawaran_kontrak'] === "penawaran") {
+					dataObj['Penawaran / Kontrak'] = "Surat Penawaran";
+				} else if (data['opsi_penawaran_kontrak'] === "kontrak") {
+					dataObj['Penawaran / Kontrak'] = "Kontrak";
+				} else if (data['opsi_penawaran_kontrak'] === "ban") {
+					dataObj['Penawaran / Kontrak'] = "BAN (Berita Acara Negosiasi)";
+				}
+				// if (data['no_opsi_penawaran_kontrak']) {
+				// 	dataObj['Penawaran / Kontrak'] += "<br>No. " + data['no_opsi_penawaran_kontrak'];
+				// }
+			} else {
+				dataObj['Penawaran / Kontrak'] = "T/A";
+			}
+			dataObj['No. Penawaran / Kontrak'] = data['no_opsi_penawaran_kontrak'] ? data['no_opsi_penawaran_kontrak'] : "T/A";
+	
+			if (data['handling'] === "ada") {
+				// if (!data['nominal_handling'] && !data['nama_penerima_handling']) {
+	
+				// }
+				dataObj['Nominal Handling'] = data['nominal_handling'] ? data['nominal_handling'] : "0";
+				dataObj['Nama Penerima Handling'] = data['nama_penerima_handling'] ? data['nama_penerima_handling'] : "-";
+			} else {
+				dataObj['Nominal Handling'] = "T/A";
+				dataObj['Nama Penerima Handling'] = "T/A";
+			}
+	
+			if (data['asuransi'] === "ada") {
+				dataObj['Asuransi'] = data['perincian_asuransi'] ? data['perincian_asuransi'] : "ada";
+			} else {
+				dataObj['Asuransi'] = "T/A";
+			}
+	
+			if (data['biaya_koord'] === "ada") {
+				dataObj['Biaya Koordinasi / Kawal'] = data['keterangan_biaya_koord'] ? data['keterangan_biaya_koord'] : "0";
+			} else {
+				dataObj['Biaya Koordinasi / Kawal'] = "T/A";
+			}
+	
+			dataObj['Note'] = data['note'] ? data['note'] : "-";
+			dataObj['Dibuat Oleh'] = data['dibuat_oleh'] ? data['dibuat_oleh'] : "-";
+			// dataObj['Tanggal Jam Dibuat Oleh'] = data['tgl_wkt_dibuat'] ? data['tgl_wkt_dibuat'] : "-";
+			dataObj['Tanggal Jam Dibuat'] = data['tgl_wkt_dibuat'] ? `${moment(data['tgl_wkt_dibuat']).format('DD MMMM YYYY')} ${moment(data['tgl_wkt_dibuat']).format('HH:mm')}` : "-";
+			dataObj['Disetujui Oleh'] = data['disetujui_oleh'] ? data['disetujui_oleh'] : "-";
+			// dataObj['Tanggal Jam Disetujui Oleh'] = data['tgl_wkt_disetujui'] ? data['tgl_wkt_disetujui'] : "-";
+			dataObj['Tanggal Jam Disetujui'] = data['tgl_wkt_disetujui'] ? `${moment(data['tgl_wkt_disetujui']).format('DD MMMM YYYY')} ${moment(data['tgl_wkt_disetujui']).format('HH:mm')}` : "-";
+			resTable.push(dataObj);
+		}
+		return data;
+	});
+
+
+
+	// console.log("dataTable result is = ", dataTable);
+	// console.log("dataTable result is = ", dataTable);
+	
+	res.locals.headerTable = headerTable
+	res.locals.contentTable = resTable
+	
+	return res.status(200).json({
+		headerTable,
+		contentTable: resTable,
+	});
 });
 
 app.get("/job-order-history-table", checkUser, async(req, res) => {
