@@ -9,9 +9,10 @@ const secret_key = process.env.SECRET_KEY
 // Set up session middleware
 app.use(session({
     secret: secret_key, // used to sign the session ID cookie
-    resave: false, // do not save the session if it's not modified
+    resave: true, // do not save the session if it's not modified
     // do not save new sessions that have not been modified
-    saveUninitialized: false
+    saveUninitialized: true,
+	cookie: { secure: true }
 }));
 const path = require("path")
 const moment = require('moment');
@@ -25,7 +26,7 @@ const jwt = require('jsonwebtoken');
 const db = require("./models")
 const userRoute = require("./routes/userRoute")
 const jobOrderRoute = require("./routes/jobOrderRoute")
-const corsOptions = {origin: "*"}
+const corsOptions = {origin: "*", credentials: true,}
 
 // For each request, provide wildcard Access-Control-* headers via OPTIONS call
 app.use(cors(corsOptions))
@@ -185,9 +186,10 @@ db.mongoose.connect(db.url, mongooseConfig)
 		console.log("Connected to MongoDB");
 		await client.connect();         
 		console.log('Connected successfully to server');
-		console.log("client is = ", client);
+		// console.log("client is = ", client);
 		dbo = client.db("united-transindo");
-		console.log("dbo is = ", dbo);
+		// console.log("dbo is = ", dbo);
+
 		// let server = app.listen(port, (err) => {
 		// 	if (err) {
 		// 		return console.log("ERROR", err);
@@ -617,9 +619,14 @@ const checkUser = (req, res, next) => {
 	console.log("checkUser called");
 	// res.locals.user = "edwinnn"
 	console.log("req originalUrl is = ", req.originalUrl)
-	console.log("res locals before in checkUser called = ", res.locals);
+	// console.log("res locals before in checkUser called = ", res.locals);
+	// console.log("req session in checkUser is = ", req.session);
 // const setUserInfo = (req, res, next) => {
-	const token = req.cookies.jwt;
+	// const token = req.cookies.jwt;
+	const token = req.cookies.userToken;
+	// const token = req.session.token;
+	// const token = app.locals.token;
+	
 	console.log("token in checkUser = ", token);
 
 	// making sure token exists in the cookies
@@ -918,10 +925,30 @@ app.post("/sign-up", async(req, res) => {
 	
 					console.log('New users sucessfully registered =>', result);
 
-					const token = jwt.sign(newUser, secret_key, {expiresIn: 3600 * 1000});
+					// const token = jwt.sign(newUser, secret_key, {expiresIn: 3600 * 1000});
+					const token = jwt.sign({username, email}, secret_key, {expiresIn: 3600 * 1000});
 					console.log("jwt token user sign up = ", token);
 					
-					res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+					// res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+					res.cookie('userToken', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+					// res.cookie('authcookie', token, {maxAge:2000,httpOnly:true});
+					// res.cookie('authcookie',token,{maxAge:2000,httpOnly:true}) 
+
+					// try {
+					// 	await client.connect();
+					
+						let statusUser = await dbo.collection('user').updateOne({email},{$set:{"loggedIn": true}});
+						console.log('statusUser is =>', statusUser);
+					//   } catch (err) {
+					// 	console.error(err);
+					// 	  errorResult = {message: "Approve job order failed"};
+					// 	  return res.status(400).json({errors: errorResult});
+					//   } finally {
+					// 	await client.close();
+					//   }
+
+					app.locals.user = userExist;
+					app.locals.token = token;
 
 					res.locals = {
 						user: newUser,
@@ -1034,23 +1061,41 @@ app.post("/sign-in", async(req, res) => {
 				throw new Error('Decryption Failed Invalid Key')
 			}
 
-			const token = jwt.sign(userExist, secret_key, {expiresIn: 3600 * 1000});
-			console.log("jwt token user sign in = ", token);
+			// console.log("userExist is = ", userExist);
+			// console.log("userExist keys is = ", Object.keys(userExist));
+
+			// const token = jwt.sign(userExist, secret_key, {expiresIn: 3600 * 1000});
+			const token = jwt.sign({username: userExist.username, email}, secret_key, {expiresIn: 3600 * 1000});
+			// console.log("jwt token user sign in = ", token);
+
 			// res.session.user = userExist;
 			// res.session.token = token;
 			// req.session = {
 			// 	user: userExist,
 			// 	token
 			// }
-			res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+			res.cookie('userToken', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+			// res.cookie('authcookie', token, {maxAge:2000,httpOnly:true});
+			// res.cookie('cookieName', 'cookieValue', { sameSite: 'none', secure: true})  sameSite: 'strict',
+
+			await client.connect();
+
+			let statusUser = await dbo.collection('user').updateOne({email:userExist.email},{$set:{"loggedIn": true}});
+			console.log('statusUser is =>', statusUser);
+
+			req.session.token = token;
+			req.session.save();
+
+			console.log("req session in sign in is = ", req.session);
 
 			app.locals.user = userExist;
+			app.locals.token = token;
 
 			res.locals = {
 				user: userExist,
 				token
 			}
-			console.log("res locals = ", res.locals);
+			// console.log("res locals = ", res.locals);
 
 			res.status(200).json({ user: userExist })
 
@@ -1088,7 +1133,8 @@ app.get("/sign-out", async(req, res) => {
     //     }
     // });
 	// res.render("home");
-	res.cookie('jwt', '', { maxAge: 1 });
+	// res.cookie('jwt', '', { maxAge: 1 });
+	res.cookie('userToken', '', { maxAge: 1 });
   	res.redirect('/');
 });
 
@@ -1239,7 +1285,8 @@ app.get("/profile", checkUser, async(req, res) => {
 	});
 });
 
-app.get("/input-job-order", checkUser, async(req, res) => {
+app.get(["/input-job-order", "/edit-job-order/:no_joj"], checkUser, async(req, res) => {
+// app.get("/input-job-order", checkUser, async(req, res) => {
 	// console.log(await readGoogleSheet("database"));
 	// let { contentTable } = await readGoogleSheet("database");
 
@@ -1247,7 +1294,15 @@ app.get("/input-job-order", checkUser, async(req, res) => {
 	if (res.locals.user.role !== "Marketing") {
 		return res.status(401).send("No Have Access To This Page");
 	}
-	let contentTable, list_no_joj;
+
+	console.log("req path is = ", req.path);
+
+	let typePath = req.path.split("/").filter(Boolean)[0]
+
+	res.locals.typePath = typePath;
+
+	let contentTable, list_no_joj, no_joj;
+	const findMax = value => value.reduce((res, cur) => res < cur ? cur : res, -Infinity);
 
 	// try {
 	// 	// Connect to the MongoDB client
@@ -1276,23 +1331,37 @@ app.get("/input-job-order", checkUser, async(req, res) => {
 	// 	.then(data => res.send(data))
 	// 	.catch(err => res.status(500).send({message: err.message}))
 
-	contentTable = await db.JobOrders.find().catch(err => res.status(500).send({message: err.message}))
+	if (typePath === "input-job-order") {
+		console.log("a");
 
-	// console.log("contentTable is = ", contentTable);
+		contentTable = await db.JobOrders.find().catch(err => res.status(500).send({message: err.message}))
 
-	// list_no_joj = contentTable.map((data) => data["NO"][" JOJ"]).map((value) => Number(value));
+		// console.log("contentTable is = ", contentTable);
 
-	// console.log("headerTable from read google sheet is = ", headerTable);
+		// list_no_joj = contentTable.map((data) => data["NO"][" JOJ"]).map((value) => Number(value));
 
-	// let list_no_joj = contentTable.map((data) => data["NO. JOJ"]).map((value) => Number(value));
+		// console.log("headerTable from read google sheet is = ", headerTable);
 
-	list_no_joj = contentTable.map((data) => data.toObject()["no_joj"]).map((value) => Number(value));
+		// let list_no_joj = contentTable.map((data) => data["NO. JOJ"]).map((value) => Number(value));
 
-	console.log("list_no_joj is = ", list_no_joj);
+		list_no_joj = contentTable.map((data) => data.toObject()["no_joj"]).map((value) => Number(value));
 
-	const findMax = value => value.reduce((res, cur) => res < cur ? cur : res, -Infinity);
+		console.log("list_no_joj is = ", list_no_joj);
 
-	console.log("find max of no joj = ", findMax(list_no_joj));
+		// findMax = value => value.reduce((res, cur) => res < cur ? cur : res, -Infinity);
+
+		console.log("find max of no joj = ", findMax(list_no_joj));
+	} else {
+		console.log("c");
+		no_joj = req.params.no_joj
+		contentTable = await db.JobOrders.findOne({ no_joj })
+				.then(data => {return data.toObject();})
+				.catch(function(err) {
+					console.log(err);
+				});
+		// console.log("get jobOrder by no joj in job-order-detail called is = ", jobOrder);
+	}
+	console.log("no_joj bfr is = ",no_joj);
 
 	let getData = true;
   let listNamaPengirim = await namaPengirimModel.find({}).select({"field": 1, "_id": 0})
@@ -1359,31 +1428,70 @@ app.get("/input-job-order", checkUser, async(req, res) => {
   if (!getData) {
     return res.status(500).send("Request Timeout - Internal Server Error \n There is problem when getting data");
   } else {
-    return res.status(200).render("input-job-order", {
-      // contentTable,
-      no_joj: Number(findMax(list_no_joj)) + 1,
-    //   no_joj: 6385,
-      listNamaPengirim,
-      listAlamatPengirim,
-      listKontakPengirim,
-      listNamaPenerima,
-      listAlamatPenerima,
-      listKontakPenerima,
-	  listPengirimPenerima,
-      listMerkUnit,
-      listTipeUnit,
-      listWarnaUnit,
-      // listNopolNokaUnit,
-    //   message:"",
-    //   errorMessage:"",
-    //   resultArr:[]
-    });
+	let result = {
+		// contentTable,
+		// no_joj: Number(findMax(list_no_joj)) + 1,
+	  //   no_joj: 6385,
+		listNamaPengirim,
+		listAlamatPengirim,
+		listKontakPengirim,
+		listNamaPenerima,
+		listAlamatPenerima,
+		listKontakPenerima,
+		listPengirimPenerima,
+		listMerkUnit,
+		listTipeUnit,
+		listWarnaUnit,
+		// listNopolNokaUnit,
+	  //   message:"",
+	  //   errorMessage:"",
+	  //   resultArr:[]
+	  };
+	if (typePath === "input-job-order") {
+		console.log("e");
+		result.no_joj = Number(findMax(list_no_joj)) + 1;
+		// result.contentTable = contentTable
+		res.locals.contentTable = list_no_joj
+	} else {
+		console.log("g");
+		result.no_joj = no_joj;
+		// result.contentTable = contentTable
+		res.locals.contentTable = contentTable
+	}
+	console.log("no_joj aft is = ",no_joj);
+	// res.locals.contentTable = contentTable
+	console.log("res is = ", result);
+    return res.status(200).render("input-job-order", result);
   }
+});
+
+app.post("/no-job-order", checkUser, async(req, res, next) => {
+	let {no_joj} = req.body;
+	let contentTable = await db.JobOrders.find().catch(err => res.status(500).send({message: err.message}))
+
+	// console.log("contentTable is = ", contentTable);
+
+	// list_no_joj = contentTable.map((data) => data["NO"][" JOJ"]).map((value) => Number(value));
+
+	// console.log("headerTable from read google sheet is = ", headerTable);
+
+	// let list_no_joj = contentTable.map((data) => data["NO. JOJ"]).map((value) => Number(value));
+
+	let list_no_joj = contentTable.map((data) => data.toObject()["no_joj"]).map((value) => Number(value));
+
+	for (let index = 0; index < list_no_joj.length; index++) {
+		if (list_no_joj[index] == no_joj) {
+			return res.status(400).json({errors: {message: "No Job Order is already Exist"}});
+		}
+	}
+	return res.status(200).json({message: "OK"});
 });
 
 app.post("/input-job-order", checkUser, async(req, res, next) => {
 	console.log("res locals in post input-job-order called = ", res.locals);
 	console.log("req body of post input-job-order = ", req.body);
+
+	let errorResult = {}
   
 	let {
 		no_joj,
@@ -1476,9 +1584,27 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 		dibuat_oleh,
 		ttd_dibuat_oleh
 	}
+
+	// let contentTable = await db.JobOrders.find().catch(err => res.status(500).send({message: err.message}))
+
+	// 	// console.log("contentTable is = ", contentTable);
+
+	// 	// list_no_joj = contentTable.map((data) => data["NO"][" JOJ"]).map((value) => Number(value));
+
+	// 	// console.log("headerTable from read google sheet is = ", headerTable);
+
+	// 	// let list_no_joj = contentTable.map((data) => data["NO. JOJ"]).map((value) => Number(value));
+
+	// 	let list_no_joj = contentTable.map((data) => data.toObject()["no_joj"]).map((value) => Number(value));
+
+	// 	for (let index = 0; index < list_no_joj.length; index++) {
+	// 		if (list_no_joj[index] == no_joj) {
+	// 			errorResult = {message: "No Job Order is already Exist"};
+	// 			return res.status(400).json({errors: errorResult});
+	// 		}
+	// 	}
   
 	try {
-	  // Connect to the MongoDB client
 	  await client.connect();
 
 		if (new_list_nama_pengirim.length) {
@@ -1510,65 +1636,19 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 	  await dbo.collection('warna-unit').insertMany(new_list_warna_unit);
 	  }
   
-	  // Insert operation after successful connection
 	  const result = await dbo.collection('job-order').insertOne(newJobOrder);
 	  
-	  // Insert into collection
 	  console.log('Inserted Job Order =>', result);
 	} catch (err) {
 	  console.error(err);
 		errorResult = {message: "Add new job order failed"};
 		return res.status(400).json({errors: errorResult});
 	} finally {
-	  // Ensure the client is closed when done
 	  await client.close();
 	}
 
-	// checkUser(req, res, next);
-
 	console.log("req cookies before render to jo detail = ", req.cookies);
 	console.log("res locals before render to jo detail = ", res.locals);
-
-	// const token = req.cookies.jwt;
-	// console.log("token in checkUser = ", token);
-
-	// // making sure token exists in the cookies
-	// if (token) {
-	// 	// verify the token signature
-	//   jwt.verify(token, secret_key, async (err, decodedToken) => {
-	// 	// wrong jwt token ( token has been tampered with or has expired )
-	// 	// set user to null
-	// 	if (err) {
-	// 	  res.locals.user = null;
-	// 	}
-	// 	// best case scenario ( everything is perfect )
-	// 	else {
-	// 		// find user in db, populate user info
-	// 		// let user = await db.Users.findById(decodedToken.id);
-	// 		// let user = await db.Users.find({email: decodedToken.email});
-	// 		let user = await db.Users.findOne({email: decodedToken.email});
-	// 		console.log("findById user in checkUser = ", user);
-	// 		res.locals.user = user.toObject();
-	// 	}
-	// 	// next();
-	//   });
-	// }
-	// // if token does not exist in cookies, then set user to null, and go to next middleware
-	// else {
-	//   res.locals.user = null;
-	// //   next();
-	// }
-
-	// console.log("res locals after when to render to jo detail = ", res.locals);
-
-	// req.session = false;
-
-	// req.session = {
-	// 	user: userExist,
-	// 	token
-	// }
-
-	// let pathname = req.path
 
 	// return res.status(200).render(`job-order/${newJobOrder.no_joj}`, { viewOnly: false, jobOrder })
 	// res.setHeader("Content-Type", "text/html");
@@ -1588,25 +1668,17 @@ app.post("/input-job-order", checkUser, async(req, res, next) => {
 		// res.json({success : true})
 		// console.log("in render method");
 	  })
-
-	//   response.render('the_vacation.ejs', { vacations : vacations, current_user : new_current_user }, function() {
-	// 	response.json({success : true});
-	// 	console.log("in render method");
-	//   }); 
-
-	// jobOrders.create(req.body)
-	// 	.then(() => res.send({message: "Tersimpan"}))
-	// 	.catch(err => res.status(500).send({message: err.message}))
 });
 
 app.put("/input-job-order/:no_joj", checkUser, async(req, res, next) => {
-	console.log("req body of update input-job-order = ", req.body);
+	console.log("req body of approve input-job-order = ", req.body);
 	const {no_joj} = req.params
 	let errorResult = {}
   
 	let {
 		disetujui_oleh,
-		ttd_disetujui_oleh
+		ttd_disetujui_oleh,
+		tgl_wkt_disetujui
 	} = req.body;
 	// let dbo = mongoose.db
 
@@ -1614,12 +1686,38 @@ app.put("/input-job-order/:no_joj", checkUser, async(req, res, next) => {
 		await client.connect();
 	
 		const result = await dbo.collection('job-order').updateOne({no_joj},{$set:{disetujui_oleh,
-			ttd_disetujui_oleh}});
+			ttd_disetujui_oleh,tgl_wkt_disetujui}});
 		
-		console.log('Updated Job Order =>', result);
+		console.log('Approved Job Order =>', result);
 	  } catch (err) {
 		console.error(err);
-		  errorResult = {message: "Update job order failed"};
+		  errorResult = {message: "Approve job order failed"};
+		  return res.status(400).json({errors: errorResult});
+	  } finally {
+		await client.close();
+	  }
+});
+
+app.put("/edit-job-order/:no_joj", checkUser, async(req, res) => {
+	console.log("res locals in put edit-job-order called = ", res.locals);
+	console.log("req body of put edit-job-order = ", req.body);
+
+	
+});
+
+app.put("/cancel-job-order/:no_joj", checkUser, async(req, res, next) => {
+	// console.log("req body of cancel-job-order = ", req.body);
+	const {no_joj} = req.params
+
+	try {
+		await client.connect();
+	
+		const result = await dbo.collection('job-order').updateOne({no_joj},{$set:{cancelled: true}});
+		
+		console.log('Cancelled Job Order =>', result);
+	  } catch (err) {
+		console.error(err);
+		  errorResult = {message: "Cancelled Job Order failed"};
 		  return res.status(400).json({errors: errorResult});
 	  } finally {
 		await client.close();
@@ -1675,8 +1773,6 @@ app.get(["/job-order/:no_joj", "/approve-job-order/:no_joj"], checkUser, async(r
 });
 
 app.get("/waitlist-approve-job-order", checkUser, async(req, res) => {
-	// res.locals.user = null;
-	
 	const { user } = res.locals
 	console.log("user in waitlist = ", user);
 
@@ -1684,9 +1780,10 @@ app.get("/waitlist-approve-job-order", checkUser, async(req, res) => {
 
 	if (user.role === "Marketing") {
 		waitlistJobOrder = await db.JobOrders.find({
-			dibuat_oleh: res.locals.user.username, 
-			disetujui_oleh: null
-		})
+			dibuat_oleh: user.username, 
+			disetujui_oleh: null,
+			cancelled: false
+		}).sort({tgl_wkt_dibuat: -1})
 		.catch(function(err) {
 			console.log(err);
 		});
@@ -1701,17 +1798,22 @@ app.get("/waitlist-approve-job-order", checkUser, async(req, res) => {
           } else if (user.location === "Makassar") {
             city_code = "04";
           }
-			waitlistJobOrder = await db.JobOrders.find({city_code, disetujui_oleh: null})
+			waitlistJobOrder = await db.JobOrders.find({city_code, disetujui_oleh: null, cancelled: false})
+				.sort({tgl_wkt_dibuat: -1})
 				.catch(function(err) {
 				console.log(err);
 				});
 	}
-
 	 
 	console.log("waitlistJobOrder is = ", waitlistJobOrder.length);
 
-	return res.status(200).render("waitlist-approve-job-order", {
-		waitlistJobOrder
+	res.locals.listType = "Waitlist Approve"
+	res.locals.listJobOrder = waitlistJobOrder
+
+	return res.status(200).render("job-order-list", {
+		// listType: "waitlist-approve",
+		// waitlistJobOrder
+		// listJobOrder: waitlistJobOrder
 	});
 });
 
@@ -1944,8 +2046,8 @@ app.get("/history-job-order", checkUser, async(req, res) => {
 		return content;
 	});
 	
-	res.locals.headerTable = headerTable
-	res.locals.contentTable = dataTable
+	// res.locals.headerTable = headerTable
+	// res.locals.contentTable = dataTable
 
 	// return res.status(200).render("history-job-order", {
 	// 	headerTable,
@@ -2049,55 +2151,55 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 	console.log("res locals in post history-job-order called = ", res.locals);
 	console.log("req body of post history-job-order = ", req.body);
   
-	// let {
-	// 	no_joj,
-	// 	city_code,
-	// 	tgl_wkt_dibuat,
-	// 	nama_pengirim,
-	// 	alamat_pengirim,
-	// 	kontak_pengirim,
-	// 	nama_penerima,
-	// 	alamat_penerima,
-	// 	kontak_penerima,
-	// 	hr_tgl_ambil,
-	// 	qty,
-	// 	merk,
-	// 	tipe,
-	// 	nopol_noka,
-	// 	warna,
-	// 	status,
-	// 	kondisi,
-	// 	lainnya,
-	// 	new_list_nama_pengirim,
-	// 	new_list_alamat_pengirim,
-	// 	new_list_kontak_pengirim,
-	// 	new_list_nama_penerima,
-	// 	new_list_alamat_penerima,
-	// 	new_list_kontak_penerima,
-	// 	new_list_merk_unit,
-	// 	new_list_tipe_unit,
-	// 	new_list_warna_unit,
-	// 	nominal,
-	// 	moda,
-	// 	invoice,
-	// 	transfer_by,
-	// 	tagihan,
-	// 	tagihan_top,
-	// 	opsi_tagihan_top,
-	// 	penawaran_kontrak,
-	// 	opsi_penawaran_kontrak,
-	// 	no_opsi_penawaran_kontrak,
-	// 	handling,
-	// 	nominal_handling,
-	// 	nama_penerima_handling,
-	// 	asuransi,
-	// 	perincian_asuransi,
-	// 	biaya_koord,
-	// 	keterangan_biaya_koord,
-	// 	note,
-	// 	dibuat_oleh,
-	// 	ttd_dibuat_oleh
-	// } = req.body;
+	let {
+		no_joj,
+		city_code,
+		tgl_wkt_dibuat,
+		nama_pengirim,
+		alamat_pengirim,
+		kontak_pengirim,
+		nama_penerima,
+		alamat_penerima,
+		kontak_penerima,
+		hr_tgl_ambil,
+		qty,
+		merk,
+		tipe,
+		nopol_noka,
+		warna,
+		status,
+		kondisi,
+		lainnya,
+		new_list_nama_pengirim,
+		new_list_alamat_pengirim,
+		new_list_kontak_pengirim,
+		new_list_nama_penerima,
+		new_list_alamat_penerima,
+		new_list_kontak_penerima,
+		new_list_merk_unit,
+		new_list_tipe_unit,
+		new_list_warna_unit,
+		nominal,
+		moda,
+		invoice,
+		transfer_by,
+		tagihan,
+		tagihan_top,
+		opsi_tagihan_top,
+		penawaran_kontrak,
+		opsi_penawaran_kontrak,
+		no_opsi_penawaran_kontrak,
+		handling,
+		nominal_handling,
+		nama_penerima_handling,
+		asuransi,
+		perincian_asuransi,
+		biaya_koord,
+		keterangan_biaya_koord,
+		note,
+		dibuat_oleh,
+		ttd_dibuat_oleh
+	} = req.body;
 	// // let dbo = mongoose.db
   
 	// var newJobOrder = {
@@ -2203,15 +2305,38 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 
 	// const phoneExp = /(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?/img;
 
+	// if (hr_tgl_ambil-dari === null &&
+	// hr_tgl_ambil-hingga === null &&
+	// invoice === "" &&
+	// kota === "00" &&
+	// moda === "" &&
+	// no_jo === "" &&
+	// nominal === "nominal_range_0" &&
+	// nopol_noka_unit === "" &&
+	// tgl_jm_dibuat-dari === null &&
+	// tgl_jm_dibuat-hingga === null &&
+	// tgl_jm_disetujui-dari === null &&
+	// tgl_jm_disetujui-hingga === null &&
+	// transfer_by === "") {
+	// 	return res.status(200).json({
+	// 		// headerTable,
+	// 		// contentTable: resTable,
+	// 		resultFilterTable: dataTable,
+	// 	});
+	// }
+
 	contentTable.forEach((content) => {
 		content = content.toObject();
 		delete content["_id"];
 		
 		for (let index = 0; index < Number(content['qty']); index++) {
+			let data = {};
 
 			if (req.body.no_jo && content['no_joj'] !== req.body.no_jo) {
 				return;
 			}
+
+			data['No. Job Order'] = content['no_joj']
 	
 			if (req.body.kota !== "00") {
 				if (content['city_code']) {
@@ -2223,6 +2348,51 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			switch (content['city_code']) {
+				case "01":
+					data['Kota'] = "Sidoarjo";
+					break;
+				case "02":
+					data['Kota'] = "Cikarang";
+					break;
+				case "03":
+					data['Kota'] = "Jakarta";
+					break;
+				case "04":
+					data['Kota'] = "Makassar";
+					break;
+			}
+			// dataObj['Nama Pengirim'] = data['nama_pengirim'] ? data['nama_pengirim'] : "-";
+			// dataObj['Alamat Pengirim'] = data['alamat_pengirim'] ? data['alamat_pengirim'] : "-";
+			// dataObj['Kontak Pengirim'] = data['kontak_pengirim'] ? data['kontak_pengirim'] : "-";
+			// dataObj['Nama Penerima'] = data['nama_penerima'] ? data['nama_penerima'] : "-";
+			// dataObj['Alamat Penerima'] = data['alamat_penerima'] ? data['alamat_penerima'] : "-";
+			// dataObj['Kontak Penerima'] = data['kontak_penerima'] ? data['kontak_penerima'] : "-";
+			// dataObj['Hari / Tanggal Pengambilan'] = data['hr_tgl_ambil'] ? data['hr_tgl_ambil'] : "-";
+			// dataObj['Merk Unit'] = data['merk'] && data['merk'][index] ? data['merk'][index] : "-";
+			// dataObj['Type Unit'] = data['tipe'] && data['tipe'][index] ? data['tipe'][index] : "-";
+			// dataObj['Nopol / Noka Unit'] = data['nopol_noka'] && data['nopol_noka'][index] ? data['nopol_noka'][index] : "-";
+			// dataObj['Warna Unit'] = data['warna'] && data['warna'][index] ? data['warna'][index] : "-";
+			// dataObj['Status Unit'] = data['status'] && data['status'][index] ? data['status'][index] : "-";
+			// dataObj['Kondisi Surat Unit'] = "-";
+			// dataObj['Nominal'] = data['nominal'] ? data['nominal'] : "0";
+			// dataObj['Moda'] = data['moda'] ? data['moda'] : "-";
+			// dataObj['Invoice a.n.'] = data['invoice'] ? data['invoice'] : "-";
+			// dataObj['Transfer By'] = data['transfer_by'] ? data['transfer_by'] : "T/A";
+			// dataObj['Tagihan'] = data['tagihan'] ? data['tagihan'] : "T/A";
+			// dataObj['TOP Tagihan'] = "T/A";
+			// dataObj['Penawaran / Kontrak'] = "T/A";
+			// dataObj['No. Penawaran / Kontrak'] = data['no_opsi_penawaran_kontrak'] ? data['no_opsi_penawaran_kontrak'] : "T/A";
+			// dataObj['Nominal Handling'] = data['nominal_handling'] ? data['nominal_handling'] : "0";
+			// dataObj['Nama Penerima Handling'] = data['nama_penerima_handling'] ? data['nama_penerima_handling'] : "-";
+			// dataObj['Asuransi'] = "T/A";
+			// dataObj['Biaya Koordinasi / Kawal'] = "T/A";
+			// dataObj['Note'] = data['note'] ? data['note'] : "-";
+			// dataObj['Dibuat Oleh'] = data['dibuat_oleh'] ? data['dibuat_oleh'] : "-";
+			// dataObj['Tanggal Jam Dibuat'] = data['tgl_wkt_dibuat'] ? `${moment(data['tgl_wkt_dibuat']).format('DD MMMM YYYY')} ${moment(data['tgl_wkt_dibuat']).format('HH:mm')}` : "-";
+			// dataObj['Disetujui Oleh'] = data['disetujui_oleh'] ? data['disetujui_oleh'] : "-";
+			// dataObj['Tanggal Jam Disetujui'] = data['tgl_wkt_disetujui'] ? `${moment(data['tgl_wkt_disetujui']).format('DD MMMM YYYY')} ${moment(data['tgl_wkt_disetujui']).format('HH:mm')}` : "-";
 	
 			if (req.body.nama_pengirim) {
 				if (content['nama_pengirim']) {
@@ -2234,6 +2404,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Nama Pengirim'] = content['nama_pengirim']
 	
 			if (req.body.alamat_pengirim) {
 				if (content['alamat_pengirim']) {
@@ -2245,6 +2417,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Alamat Pengirim'] = content['alamat_pengirim']
 	
 			if (req.body.kontak_pengirim) {
 				if (content['kontak_pengirim']) {
@@ -2256,6 +2430,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Kontak Pengirim'] = content['kontak_pengirim']
 	
 			if (req.body.nama_penerima) {
 				if (content['nama_penerima']) {
@@ -2267,6 +2443,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Nama Penerima'] = content['nama_penerima']
 	
 			if (req.body.alamat_penerima) {
 				if (content['alamat_penerima']) {
@@ -2278,6 +2456,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Alamat Penerima'] = content['alamat_penerima']
 	
 			if (req.body.kontak_penerima) {
 				if (content['kontak_penerima']) {
@@ -2289,6 +2469,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Kontak Penerima'] = content['kontak_penerima']
 	
 			if (req.body['hr_tgl_ambil-dari'] && req.body['hr_tgl_ambil-hingga']) {
 				if (moment(content['hr_tgl_ambil']) < moment(req.body['hr_tgl_ambil-dari'])) return
@@ -2296,11 +2478,156 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					if (moment(content['hr_tgl_ambil']) > moment(req.body['hr_tgl_ambil-hingga'])) return
 				}
 			}
+
+			data['Hari / Tanggal Pengambilan'] = content['hr_tgl_ambil']
+
+			if (req.body.merk_unit) {
+				if (content['merk'] && content['merk'][index]) {
+					if (content['merk'][index] !== req.body.merk_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			data['Merk Unit'] = content['merk'][index]
+
+			if (req.body.tipe_unit) {
+				if (content['tipe'] && content['tipe'][index]) {
+					if (content['tipe'][index] !== req.body.tipe_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			data['Type Unit'] = content['tipe'][index]
+
+			if (req.body.nopol_noka_unit) {
+				if (content['nopol_noka'] && content['nopol_noka'][index]) {
+					if (content['nopol_noka'][index] !== req.body.nopol_noka_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			data['Nopol / Noka Unit'] = content['nopol_noka'][index]
+
+			if (req.body.warna_unit) {
+				if (content['warna'] && content['warna'][index]) {
+					if (content['warna'][index] !== req.body.warna_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			data['Warna Unit'] = content['warna'][index]
+
+			if (req.body.status_unit) {
+				if (content['status'] && content['status'][index]) {
+					if (content['status'][index] !== req.body.status_unit) {
+						// skip = true;
+						continue;
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			data['Status Unit'] = content['status'][index]
+
+			// if (content['kondisi'] && content['kondisi'][index]) {
+			// 	if (content['kondisi'][index] === "lainnya") {
+			// 		if (content['lainnya'][index]) {
+			// 			data['Kondisi Surat Unit'] = content['lainnya'][index];
+			// 		} else {
+			// 			data['Kondisi Surat Unit'] = "lainnya";
+			// 		}
+			// 	} else {
+			// 		data['Kondisi Surat Unit'] = content['kondisi'][index];
+			// 	}
+			// } else {
+			// 	data['Kondisi Surat Unit'] = "-";
+			// }
+
+			if (req.body.kondisi_surat_unit) {
+				// if (content['kondisi'] && content['kondisi'][index]) {
+				if (content['kondisi']) {
+					
+					// if (content['kondisi'][index] !== req.body.kondisi_surat_unit) {
+					// 	continue;
+					// }
+					if (req.body.kondisi_surat_unit === "lainnya") {
+						if (content['kondisi'][index] && content['kondisi'][index] === "ada") {
+							// skip = true;
+							continue;
+						} 
+						// else if (!content['lainnya'][index]) {
+						// 	// skip = true;
+						// 	continue;
+						// }
+					} else {
+						if (content['kondisi'][index] && content['kondisi'][index] !== req.body.kondisi_surat_unit) {
+							// skip = true;
+							continue;
+						}
+					}
+				}
+				else {
+					// skip = true;
+					continue;
+				}
+			}
+
+			if (content['kondisi'][index] === "ada") {
+				data['Kondisi Surat Unit'] = content['kondisi'][index]
+			} else if (content['kondisi'][index] === "lainnya") {
+				if (content['lainnya'][index]) {
+					data['Kondisi Surat Unit'] = content['lainnya'][index]
+				} else {
+					data['Kondisi Surat Unit'] = "lainnya";
+				}
+			}
+
+			// if (data['kondisi'] && data['kondisi'][index]) {
+			// 	if (data['kondisi'][index] === "lainnya") {
+			// 		if (data['lainnya'][index]) {
+			// 			dataObj['Kondisi Surat Unit'] = data['lainnya'][index];
+			// 		} else {
+			// 			dataObj['Kondisi Surat Unit'] = "lainnya";
+			// 		}
+			// 	} else {
+			// 		dataObj['Kondisi Surat Unit'] = data['kondisi'][index];
+			// 	}
+			// } else {
+			// 	dataObj['Kondisi Surat Unit'] = "-";
+			// }
+
+			// data['Kondisi Surat Unit'] = "-";
 	
 			if (req.body.nominal !== "nominal_range_0") {
 	
 				if (content["nominal"]) {
-					// if (req.body.nominal === "nominal_range_1" && Number(content["nominal"]) >= 0 && Number(content["nominal"]) <= 50000) {
 					if (req.body.nominal === "nominal_range_1" && Number(content["nominal"]) > 50000) {
 						return
 					} else if (req.body.nominal === "nominal_range_2" && Number(content["nominal"]) < 50000 && Number(content["nominal"]) > 200000) {
@@ -2327,7 +2654,7 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 				}
 			}
 	
-	
+			data['Nominal'] = content["nominal"]
 	
 			if (req.body.moda) {
 				if (content['moda']) {
@@ -2339,6 +2666,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Moda'] = content['moda']
 	
 			if (req.body.invoice) {
 				if (content['invoice']) {
@@ -2350,6 +2679,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Invoice a.n.'] = content['invoice']
 	
 			if (req.body.transfer_by) {
 				if (content['transfer_by']) {
@@ -2361,6 +2692,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Transfer By'] = content['transfer_by']
 	
 			if (req.body.tagihan) {
 				if (content['tagihan']) {
@@ -2371,6 +2704,18 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 				else {
 					return;
 				}
+			}
+
+			data['Tagihan'] = content['tagihan']
+
+			if (content['tagihan_top']) {
+				if (content['opsi_tagihan_top'] === "hari_kerja") {
+					data['TOP Tagihan'] = content['tagihan_top'] + " hari kerja";
+				} else if (content['opsi_tagihan_top'] === "kalender") {
+					data['TOP Tagihan'] = content['tagihan_top'] + " hari kalender";
+				}
+			} else {
+				data['TOP Tagihan'] = "T/A";
 			}
 	
 			if (req.body.penawaran_kontrak) {
@@ -2383,6 +2728,23 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			if (content['penawaran_kontrak'] === "ada") {
+				if (content['opsi_penawaran_kontrak'] === "penawaran") {
+					data['Penawaran / Kontrak'] = "Surat Penawaran";
+				} else if (content['opsi_penawaran_kontrak'] === "kontrak") {
+					data['Penawaran / Kontrak'] = "Kontrak";
+				} else if (content['opsi_penawaran_kontrak'] === "ban") {
+					data['Penawaran / Kontrak'] = "BAN (Berita Acara Negosiasi)";
+				}
+				// if (data['no_opsi_penawaran_kontrak']) {
+				// 	data['Penawaran / Kontrak'] += "<br>No. " + data['no_opsi_penawaran_kontrak'];
+				// }
+			} else {
+				data['Penawaran / Kontrak'] = "T/A";
+			}
+
+			data['No. Penawaran / Kontrak'] = content['no_opsi_penawaran_kontrak'] ? content['no_opsi_penawaran_kontrak'] : "T/A";
 	
 			if (req.body.handling) {
 				if (content['handling']) {
@@ -2395,6 +2757,14 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 				}
 			}
 	
+			if (content['handling'] === "ada") {
+				data['Nominal Handling'] = content['nominal_handling'] ? content['nominal_handling'] : "0";
+				data['Nama Penerima Handling'] = content['nama_penerima_handling'] ? content['nama_penerima_handling'] : "-";
+			} else {
+				data['Nominal Handling'] = "T/A";
+				data['Nama Penerima Handling'] = "T/A";
+			}
+	
 			if (req.body.asuransi) {
 				if (content['asuransi']) {
 					if (content['asuransi'] !== req.body.asuransi) {
@@ -2404,6 +2774,12 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 				else {
 					return;
 				}
+			}
+
+			if (content['asuransi'] === "ada") {
+				data['Asuransi'] = content['perincian_asuransi'] ? content['perincian_asuransi'] : "ada";
+			} else {
+				data['Asuransi'] = "T/A";
 			}
 	
 			if (req.body.biaya_koordinasi) {
@@ -2416,6 +2792,12 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			if (content['biaya_koord'] === "ada") {
+				data['Biaya Koordinasi / Kawal'] = content['keterangan_biaya_koord'] ? content['keterangan_biaya_koord'] : "0";
+			} else {
+				data['Biaya Koordinasi / Kawal'] = "T/A";
+			}
 	
 			if (req.body.note) {
 				if (req.body.note === "ada" && !content['note']) {
@@ -2425,6 +2807,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data["Note"] = content['note'] ? content['note'] : "-";
 	
 			if (req.body.dibuat_oleh) {
 				if (content['dibuat_oleh']) {
@@ -2436,6 +2820,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 					return;
 				}
 			}
+
+			data['Dibuat Oleh'] = content['dibuat_oleh'] ? content['dibuat_oleh'] : "-";
 	
 			if (req.body['tgl_jm_dibuat-dari'] && req.body['tgl_jm_dibuat-hingga']) {
 				if (content['tgl_wkt_dibuat']) {
@@ -2447,24 +2833,8 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 				else {
 					return;
 				}
-				
 			}
-	
-			if (req.body['tgl_jm_disetujui-dari'] && req.body['tgl_jm_disetujui-hingga']) {
-				if (content['tgl_wkt_disetujui']) {
-					if (moment(content['tgl_wkt_disetujui']) < moment(req.body['tgl_jm_disetujui-dari'])) return
-					else {
-						if (moment(content['tgl_wkt_disetujui']) > moment(req.body['tgl_jm_disetujui-hingga'])) return
-					}
-				}
-				else {
-					return;
-				}
-				
-			}
-	
-			
-			
+			data['Tanggal Jam Dibuat'] = `${moment(content['tgl_wkt_dibuat']).format('DD MMMM YYYY')} ${moment(content['tgl_wkt_dibuat']).format('HH:mm')}`;
 	
 			if (req.body.disetujui_oleh) {
 				if (content['disetujui_oleh']) {
@@ -2477,114 +2847,24 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 				}
 			}
 
+			data['Disetujui Oleh'] = content['disetujui_oleh'] ? content['disetujui_oleh'] : "-";
 
-			if (req.body.merk_unit) {
-				if (content['merk'][index]) {
-					if (content['merk'][index] !== req.body.merk_unit) {
-						// skip = true;
-						continue;
+			if (req.body['tgl_jm_disetujui-dari'] && req.body['tgl_jm_disetujui-hingga']) {
+				if (content['tgl_wkt_disetujui']) {
+					if (moment(content['tgl_wkt_disetujui']) < moment(req.body['tgl_jm_disetujui-dari'])) return
+					else {
+						if (moment(content['tgl_wkt_disetujui']) > moment(req.body['tgl_jm_disetujui-hingga'])) return
 					}
 				}
 				else {
-					// skip = true;
-					continue;
+					return;
 				}
 			}
 
-			if (req.body.tipe_unit) {
-				if (content['tipe'][index]) {
-					if (content['tipe'][index] !== req.body.tipe_unit) {
-						// skip = true;
-						continue;
-					}
-				}
-				else {
-					// skip = true;
-					continue;
-				}
-			}
-
-			if (req.body.nopol_noka_unit) {
-				if (content['nopol_noka'][index]) {
-					if (content['nopol_noka'][index] !== req.body.nopol_noka_unit) {
-						// skip = true;
-						continue;
-					}
-				}
-				else {
-					// skip = true;
-					continue;
-				}
-			}
-
-			if (req.body.warna_unit) {
-				if (content['warna'][index]) {
-					if (content['warna'][index] !== req.body.warna_unit) {
-						// skip = true;
-						continue;
-					}
-				}
-				else {
-					// skip = true;
-					continue;
-				}
-			}
-
-			if (req.body.status_unit) {
-				if (content['status'][index]) {
-					if (content['status'][index] !== req.body.status_unit) {
-						// skip = true;
-						continue;
-					}
-				}
-				else {
-					// skip = true;
-					continue;
-				}
-			}
-
-			// if (content['kondisi'] && content['kondisi'][index]) {
-			// 	if (content['kondisi'][index] === "lainnya") {
-			// 		if (content['lainnya'][index]) {
-			// 			data['Kondisi Surat Unit'] = content['lainnya'][index];
-			// 		} else {
-			// 			data['Kondisi Surat Unit'] = "lainnya";
-			// 		}
-			// 	} else {
-			// 		data['Kondisi Surat Unit'] = content['kondisi'][index];
-			// 	}
-			// } else {
-			// 	data['Kondisi Surat Unit'] = "-";
-			// }
-
-			if (req.body.kondisi_surat_unit) {
-				if (content['kondisi'] && content['kondisi'][index]) {
-					
-					// if (content['kondisi'][index] !== req.body.kondisi_surat_unit) {
-					// 	continue;
-					// }
-					if (req.body.kondisi_surat_unit === "lainnya") {
-						if (content['kondisi'][index] === "ada") {
-							// skip = true;
-							continue;
-						} else if (!content['lainnya'][index]) {
-							// skip = true;
-							continue;
-						}
-					} else {
-						if (content['kondisi'][index] !== req.body.kondisi_surat_unit) {
-							// skip = true;
-							continue;
-						}
-					}
-				}
-				else {
-					// skip = true;
-					continue;
-				}
-			}
+			data['Tanggal Jam Disetujui'] = `${moment(content['tgl_wkt_disetujui']).format('DD MMMM YYYY')} ${moment(content['tgl_wkt_disetujui']).format('HH:mm')}`;
 			
-			dataTable.push(content);
+			// dataTable.push(content);
+			dataTable.push(data);
 		}
 		return content;
 	});
@@ -2593,138 +2873,142 @@ app.post("/history-job-order", checkUser, async(req, res) => {
 
 	console.log("dataTable length = ", dataTable.length);
 
-	for (let index = 0; index < dataTable.length; index++) {
-		console.log(dataTable[index]["no_joj"]);
+	console.log("dataTable first data = ", dataTable[0]);
 
-	}
+	// for (let index = 0; index < dataTable.length; index++) {
+	// 	console.log(dataTable[index]["no_joj"]);
+	// 	console.log(dataTable[index]["merk"]);
+	// }
 
-	let resTable = [];
+	// let resTable = [];
 
-	dataTable.forEach((data) => {
-		for (let index = 0; index < Number(data['qty']); index++) {
-			let dataObj = {};
+	// dataTable.forEach((data) => {
+	// 	for (let index = 0; index < Number(data['qty']); index++) {
+	// 		let dataObj = {};
 			
-			dataObj['No. Job Order'] = data['no_joj'] ? data['no_joj'] : "-";
-			if (data['city_code']) {
-				switch (data['city_code']) {
-					case "01":
-						dataObj['Kota'] = "Sidoarjo";
-						break;
-					case "02":
-						dataObj['Kota'] = "Cikarang";
-						break;
-					case "03":
-						dataObj['Kota'] = "Jakarta";
-						break;
-					case "04":
-						dataObj['Kota'] = "Makassar";
-						break;
-				}
-			} else {
-				dataObj['Kota'] = "-";
-			}
-			dataObj['Nama Pengirim'] = data['nama_pengirim'] ? data['nama_pengirim'] : "-";
-			dataObj['Alamat Pengirim'] = data['alamat_pengirim'] ? data['alamat_pengirim'] : "-";
-			dataObj['Kontak Pengirim'] = data['kontak_pengirim'] ? data['kontak_pengirim'] : "-";
-			dataObj['Nama Penerima'] = data['nama_penerima'] ? data['nama_penerima'] : "-";
-			dataObj['Alamat Penerima'] = data['alamat_penerima'] ? data['alamat_penerima'] : "-";
-			dataObj['Kontak Penerima'] = data['kontak_penerima'] ? data['kontak_penerima'] : "-";
-			dataObj['Hari / Tanggal Pengambilan'] = data['hr_tgl_ambil'] ? data['hr_tgl_ambil'] : "-";
-			dataObj['Merk Unit'] = data['merk'] && data['merk'][index] ? data['merk'][index] : "-";
-			dataObj['Type Unit'] = data['tipe'] && data['tipe'][index] ? data['tipe'][index] : "-";
-			dataObj['Nopol / Noka Unit'] = data['nopol_noka'] && data['nopol_noka'][index] ? data['nopol_noka'][index] : "-";
-			dataObj['Warna Unit'] = data['warna'] && data['warna'][index] ? data['warna'][index] : "-";
-			dataObj['Status Unit'] = data['status'] && data['status'][index] ? data['status'][index] : "-";
+	// 		dataObj['No. Job Order'] = data['no_joj'] ? data['no_joj'] : "-";
+	// 		if (data['city_code']) {
+	// 			switch (data['city_code']) {
+	// 				case "01":
+	// 					dataObj['Kota'] = "Sidoarjo";
+	// 					break;
+	// 				case "02":
+	// 					dataObj['Kota'] = "Cikarang";
+	// 					break;
+	// 				case "03":
+	// 					dataObj['Kota'] = "Jakarta";
+	// 					break;
+	// 				case "04":
+	// 					dataObj['Kota'] = "Makassar";
+	// 					break;
+	// 			}
+	// 		} else {
+	// 			dataObj['Kota'] = "-";
+	// 		}
+	// 		dataObj['Nama Pengirim'] = data['nama_pengirim'] ? data['nama_pengirim'] : "-";
+	// 		dataObj['Alamat Pengirim'] = data['alamat_pengirim'] ? data['alamat_pengirim'] : "-";
+	// 		dataObj['Kontak Pengirim'] = data['kontak_pengirim'] ? data['kontak_pengirim'] : "-";
+	// 		dataObj['Nama Penerima'] = data['nama_penerima'] ? data['nama_penerima'] : "-";
+	// 		dataObj['Alamat Penerima'] = data['alamat_penerima'] ? data['alamat_penerima'] : "-";
+	// 		dataObj['Kontak Penerima'] = data['kontak_penerima'] ? data['kontak_penerima'] : "-";
+	// 		dataObj['Hari / Tanggal Pengambilan'] = data['hr_tgl_ambil'] ? data['hr_tgl_ambil'] : "-";
+	// 		dataObj['Merk Unit'] = data['merk'] && data['merk'][index] ? data['merk'][index] : "-";
+	// 		dataObj['Type Unit'] = data['tipe'] && data['tipe'][index] ? data['tipe'][index] : "-";
+	// 		dataObj['Nopol / Noka Unit'] = data['nopol_noka'] && data['nopol_noka'][index] ? data['nopol_noka'][index] : "-";
+	// 		dataObj['Warna Unit'] = data['warna'] && data['warna'][index] ? data['warna'][index] : "-";
+	// 		dataObj['Status Unit'] = data['status'] && data['status'][index] ? data['status'][index] : "-";
 	
-			if (data['kondisi'] && data['kondisi'][index]) {
-				if (data['kondisi'][index] === "lainnya") {
-					if (data['lainnya'][index]) {
-						dataObj['Kondisi Surat Unit'] = data['lainnya'][index];
-					} else {
-						dataObj['Kondisi Surat Unit'] = "lainnya";
-					}
-				} else {
-					dataObj['Kondisi Surat Unit'] = data['kondisi'][index];
-				}
-			} else {
-				dataObj['Kondisi Surat Unit'] = "-";
-			}
-			dataObj['Nominal'] = data['nominal'] ? data['nominal'] : "0";
-			dataObj['Moda'] = data['moda'] ? data['moda'] : "-";
-			dataObj['Invoice a.n.'] = data['invoice'] ? data['invoice'] : "-";
-			dataObj['Transfer By'] = data['transfer_by'] ? data['transfer_by'] : "T/A";
-			dataObj['Tagihan'] = data['tagihan'] ? data['tagihan'] : "T/A";
-			if (data['tagihan_top']) {
-				if (data['opsi_tagihan_top'] === "hari_kerja") {
-					dataObj['TOP Tagihan'] = data['tagihan_top'] + " hari kerja";
-				} else if (data['opsi_tagihan_top'] === "kalender") {
-					dataObj['TOP Tagihan'] = data['tagihan_top'] + " hari kalender";
-				}
-			} else {
-				dataObj['TOP Tagihan'] = "T/A";
-			}
-			if (data['penawaran_kontrak'] === "ada") {
-				if (data['opsi_penawaran_kontrak'] === "penawaran") {
-					dataObj['Penawaran / Kontrak'] = "Surat Penawaran";
-				} else if (data['opsi_penawaran_kontrak'] === "kontrak") {
-					dataObj['Penawaran / Kontrak'] = "Kontrak";
-				} else if (data['opsi_penawaran_kontrak'] === "ban") {
-					dataObj['Penawaran / Kontrak'] = "BAN (Berita Acara Negosiasi)";
-				}
-				// if (data['no_opsi_penawaran_kontrak']) {
-				// 	dataObj['Penawaran / Kontrak'] += "<br>No. " + data['no_opsi_penawaran_kontrak'];
-				// }
-			} else {
-				dataObj['Penawaran / Kontrak'] = "T/A";
-			}
-			dataObj['No. Penawaran / Kontrak'] = data['no_opsi_penawaran_kontrak'] ? data['no_opsi_penawaran_kontrak'] : "T/A";
+	// 		if (data['kondisi'] && data['kondisi'][index]) {
+	// 			if (data['kondisi'][index] === "lainnya") {
+	// 				if (data['lainnya'][index]) {
+	// 					dataObj['Kondisi Surat Unit'] = data['lainnya'][index];
+	// 				} else {
+	// 					dataObj['Kondisi Surat Unit'] = "lainnya";
+	// 				}
+	// 			} else {
+	// 				dataObj['Kondisi Surat Unit'] = data['kondisi'][index];
+	// 			}
+	// 		} else {
+	// 			dataObj['Kondisi Surat Unit'] = "-";
+	// 		}
+	// 		dataObj['Nominal'] = data['nominal'] ? data['nominal'] : "0";
+	// 		dataObj['Moda'] = data['moda'] ? data['moda'] : "-";
+	// 		dataObj['Invoice a.n.'] = data['invoice'] ? data['invoice'] : "-";
+	// 		dataObj['Transfer By'] = data['transfer_by'] ? data['transfer_by'] : "T/A";
+	// 		dataObj['Tagihan'] = data['tagihan'] ? data['tagihan'] : "T/A";
+	// 		if (data['tagihan_top']) {
+	// 			if (data['opsi_tagihan_top'] === "hari_kerja") {
+	// 				dataObj['TOP Tagihan'] = data['tagihan_top'] + " hari kerja";
+	// 			} else if (data['opsi_tagihan_top'] === "kalender") {
+	// 				dataObj['TOP Tagihan'] = data['tagihan_top'] + " hari kalender";
+	// 			}
+	// 		} else {
+	// 			dataObj['TOP Tagihan'] = "T/A";
+	// 		}
+	// 		if (data['penawaran_kontrak'] === "ada") {
+	// 			if (data['opsi_penawaran_kontrak'] === "penawaran") {
+	// 				dataObj['Penawaran / Kontrak'] = "Surat Penawaran";
+	// 			} else if (data['opsi_penawaran_kontrak'] === "kontrak") {
+	// 				dataObj['Penawaran / Kontrak'] = "Kontrak";
+	// 			} else if (data['opsi_penawaran_kontrak'] === "ban") {
+	// 				dataObj['Penawaran / Kontrak'] = "BAN (Berita Acara Negosiasi)";
+	// 			}
+	// 			// if (data['no_opsi_penawaran_kontrak']) {
+	// 			// 	dataObj['Penawaran / Kontrak'] += "<br>No. " + data['no_opsi_penawaran_kontrak'];
+	// 			// }
+	// 		} else {
+	// 			dataObj['Penawaran / Kontrak'] = "T/A";
+	// 		}
+	// 		dataObj['No. Penawaran / Kontrak'] = data['no_opsi_penawaran_kontrak'] ? data['no_opsi_penawaran_kontrak'] : "T/A";
 	
-			if (data['handling'] === "ada") {
-				// if (!data['nominal_handling'] && !data['nama_penerima_handling']) {
+	// 		if (data['handling'] === "ada") {
+	// 			// if (!data['nominal_handling'] && !data['nama_penerima_handling']) {
 	
-				// }
-				dataObj['Nominal Handling'] = data['nominal_handling'] ? data['nominal_handling'] : "0";
-				dataObj['Nama Penerima Handling'] = data['nama_penerima_handling'] ? data['nama_penerima_handling'] : "-";
-			} else {
-				dataObj['Nominal Handling'] = "T/A";
-				dataObj['Nama Penerima Handling'] = "T/A";
-			}
+	// 			// }
+	// 			dataObj['Nominal Handling'] = data['nominal_handling'] ? data['nominal_handling'] : "0";
+	// 			dataObj['Nama Penerima Handling'] = data['nama_penerima_handling'] ? data['nama_penerima_handling'] : "-";
+	// 		} else {
+	// 			dataObj['Nominal Handling'] = "T/A";
+	// 			dataObj['Nama Penerima Handling'] = "T/A";
+	// 		}
 	
-			if (data['asuransi'] === "ada") {
-				dataObj['Asuransi'] = data['perincian_asuransi'] ? data['perincian_asuransi'] : "ada";
-			} else {
-				dataObj['Asuransi'] = "T/A";
-			}
+	// 		if (data['asuransi'] === "ada") {
+	// 			dataObj['Asuransi'] = data['perincian_asuransi'] ? data['perincian_asuransi'] : "ada";
+	// 		} else {
+	// 			dataObj['Asuransi'] = "T/A";
+	// 		}
 	
-			if (data['biaya_koord'] === "ada") {
-				dataObj['Biaya Koordinasi / Kawal'] = data['keterangan_biaya_koord'] ? data['keterangan_biaya_koord'] : "0";
-			} else {
-				dataObj['Biaya Koordinasi / Kawal'] = "T/A";
-			}
+	// 		if (data['biaya_koord'] === "ada") {
+	// 			dataObj['Biaya Koordinasi / Kawal'] = data['keterangan_biaya_koord'] ? data['keterangan_biaya_koord'] : "0";
+	// 		} else {
+	// 			dataObj['Biaya Koordinasi / Kawal'] = "T/A";
+	// 		}
 	
-			dataObj['Note'] = data['note'] ? data['note'] : "-";
-			dataObj['Dibuat Oleh'] = data['dibuat_oleh'] ? data['dibuat_oleh'] : "-";
-			// dataObj['Tanggal Jam Dibuat Oleh'] = data['tgl_wkt_dibuat'] ? data['tgl_wkt_dibuat'] : "-";
-			dataObj['Tanggal Jam Dibuat'] = data['tgl_wkt_dibuat'] ? `${moment(data['tgl_wkt_dibuat']).format('DD MMMM YYYY')} ${moment(data['tgl_wkt_dibuat']).format('HH:mm')}` : "-";
-			dataObj['Disetujui Oleh'] = data['disetujui_oleh'] ? data['disetujui_oleh'] : "-";
-			// dataObj['Tanggal Jam Disetujui Oleh'] = data['tgl_wkt_disetujui'] ? data['tgl_wkt_disetujui'] : "-";
-			dataObj['Tanggal Jam Disetujui'] = data['tgl_wkt_disetujui'] ? `${moment(data['tgl_wkt_disetujui']).format('DD MMMM YYYY')} ${moment(data['tgl_wkt_disetujui']).format('HH:mm')}` : "-";
-			resTable.push(dataObj);
-		}
-		return data;
-	});
+	// 		dataObj['Note'] = data['note'] ? data['note'] : "-";
+	// 		dataObj['Dibuat Oleh'] = data['dibuat_oleh'] ? data['dibuat_oleh'] : "-";
+	// 		// dataObj['Tanggal Jam Dibuat Oleh'] = data['tgl_wkt_dibuat'] ? data['tgl_wkt_dibuat'] : "-";
+	// 		dataObj['Tanggal Jam Dibuat'] = data['tgl_wkt_dibuat'] ? `${moment(data['tgl_wkt_dibuat']).format('DD MMMM YYYY')} ${moment(data['tgl_wkt_dibuat']).format('HH:mm')}` : "-";
+	// 		dataObj['Disetujui Oleh'] = data['disetujui_oleh'] ? data['disetujui_oleh'] : "-";
+	// 		// dataObj['Tanggal Jam Disetujui Oleh'] = data['tgl_wkt_disetujui'] ? data['tgl_wkt_disetujui'] : "-";
+	// 		dataObj['Tanggal Jam Disetujui'] = data['tgl_wkt_disetujui'] ? `${moment(data['tgl_wkt_disetujui']).format('DD MMMM YYYY')} ${moment(data['tgl_wkt_disetujui']).format('HH:mm')}` : "-";
+	// 		resTable.push(dataObj);
+	// 	}
+	// 	return data;
+	// });
 
 
 
 	// console.log("dataTable result is = ", dataTable);
 	// console.log("dataTable result is = ", dataTable);
 	
-	res.locals.headerTable = headerTable
-	res.locals.contentTable = resTable
+	// res.locals.headerTable = headerTable
+	// res.locals.contentTable = resTable
+	// res.locals.contentTable = dataTable
 	
 	return res.status(200).json({
-		headerTable,
-		contentTable: resTable,
+		// headerTable,
+		// contentTable: resTable,
+		resultFilterTable: dataTable,
 	});
 });
 
@@ -3011,6 +3295,31 @@ app.get("/job-order-history-table", checkUser, async(req, res) => {
 		listApprovedBy,
     });
   }
+});
+
+app.get("/cancelled-job-order", checkUser, async(req, res) => {
+	const { user } = res.locals
+	console.log("user in cancelled list = ", user);
+
+	let cancelledJobOrder = [];
+
+	cancelledJobOrder = await db.JobOrders.find({
+		dibuat_oleh: user.username,
+		cancelled: true
+	}).sort({tgl_wkt_dibuat: -1})
+	.catch(function(err) {
+		console.log(err);
+	});
+	 
+	console.log("cancelledJobOrder is = ", cancelledJobOrder.length);
+
+	res.locals.listType = "Cancelled"
+	res.locals.listJobOrder = cancelledJobOrder
+
+	return res.status(200).render("job-order-list", {
+		// listType: "cancelled",
+		// listJobOrder: cancelledJobOrder
+	});
 });
 
 // app.listen(port, () => {

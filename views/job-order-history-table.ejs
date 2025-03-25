@@ -362,9 +362,9 @@
               const table = tableWrapper.querySelector('table')
               let tableHasOverflow = false
 
-              // console.log("tableWrapper = ", tableWrapper);
-              // console.log("scrollArea = ", scrollArea);
-              // console.log("table = ", table);
+              console.log("tableWrapper = ", tableWrapper);
+              console.log("scrollArea = ", scrollArea);
+              console.log("table = ", table);
 
               // Override color css variable
               if (this.options.shadowColor) {
@@ -376,8 +376,8 @@
                 tableWrapper.style.setProperty('--table-shadow-size', this.options.shadowSize)
               }
 
-              // console.log("table clientWidth is = ", table.clientWidth);
-              // console.log("scrollArea clientWidth is = ", scrollArea.clientWidth);
+              console.log("table clientWidth is = ", table.clientWidth);
+              console.log("scrollArea clientWidth is = ", scrollArea.clientWidth);
 
               if (table.clientWidth > scrollArea.clientWidth) {
                 // Handle overflow

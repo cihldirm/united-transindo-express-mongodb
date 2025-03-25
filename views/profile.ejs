@@ -62,6 +62,23 @@
 		cursor: pointer;
 		border: solid 1px #BA68C8
 	}
+
+	/*This is the div within which the signature canvas is fitted*/
+	& #signature {
+            height: 100px;
+            /* position: relative; */
+			border: 1px solid;
+			/* padding: 0; */
+			/* display: block; */
+
+
+            & div img {
+              display: none !important;
+            }
+            
+            & canvas.jSignature {
+            }
+        }
   </style>
 </head>
 <body>
@@ -178,6 +195,16 @@
 										<label class="labels">Password</label>
 										<input type="password" id="password" name="password" class="form-control" placeholder="enter password" value="">
 									</div> 
+									<div class="col-md-12">
+										<label class="labels">Signature</label>
+										<!-- <div style="height: 100px; align-content: center;">
+											<input type="text" name="" id="">
+											<input type="button" value="Submit">
+										</div> -->
+										<div id="signature" name="signature">
+										</div>
+				  
+									</div>
 									<!-- <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="enter phone number" value=""></div>
 									<div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" placeholder="enter address line 1" value=""></div>
 									<div class="col-md-12"><label class="labels">Address Line 2</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
@@ -502,6 +529,12 @@
 	<script src="/vendors/jquery-ui/jquery-ui.min.js"></script>
 	<!-- Bootstrap JS --> 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="/vendors/jSignature/src/jSignature.js"></script>
+    <script src="/vendors/jSignature/src/plugins/jSignature.CompressorBase30.js"></script>
+    <script src="/vendors/jSignature/src/plugins/jSignature.CompressorSVG.js"></script>
+    <script src="/vendors/jSignature/src/plugins/jSignature.UndoButton.js"></script> 
+    <script src="/vendors/jSignature/src/plugins/signhere/jSignature.SignHere.js"></script> 
+    <script src="https://willowsystems.github.io/jSignature/js/libs/jSignature.min.js"></script>
 	<!-- end plugin js for this page -->
 	<!-- inject:js -->
 	<script src="./vendors/feather-icons/feather.min.js"></script>
@@ -616,6 +649,46 @@
 			document.querySelector("#role").value = user.role;
 			document.querySelector("#location").value = user.location;
 			document.querySelector("#password").value = userPassword;
+
+			$(`#signature`).jSignature({
+                'UndoButton': true,
+                'decor-color': 'transparent',
+                'color': '#000',
+                'width': '100%',
+                'height': '100',
+                'lineWidth': 1,
+              });
+
+			  
+
+			  if (user.signature) {
+                let data = user.signature.split(",");
+                console.log("data from ttd_dibuat_oleh = ", data);
+                let img = new Image();
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.objectFit = "contain";
+                img.setAttribute("draggable", false);
+                img.src = 'data:' + data[0] + ',' + data[1];
+                console.log("img is = ", img);
+				// $("#signature").jSignature('getData', 'data:' + data[0] + ',' + data[1]);
+                $(img).appendTo($('#signature'));
+
+
+                // $("#signature span").html(`${moment(jobOrders.tgl_wkt_dibuat).format('DD-MMM-YYYY')}<br/>${moment(jobOrders.tgl_wkt_dibuat).format('HH:mm')}`);
+              }
+
+		// 	$("#signature").bind('change', function(event) {
+        //     $("#signature canvas").css({
+        //       border: "none",
+        //     });
+        //     $("#sig-error").hide();
+        //     if ($("#signature").jSignature('getData', 'native').length != 0) {
+        //       $("#signature span").show();
+        //     } else {
+        //       $("#signature span").hide();
+        //     }
+        //   });
 		});
 	</script>
 </body>

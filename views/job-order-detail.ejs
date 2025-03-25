@@ -1296,10 +1296,10 @@ let ratio = widthRatio > heightRatio ? heightRatio : widthRatio
               try {
                 const response = await fetch(`/input-job-order/${jobOrder.no_joj}`, {
                   method: "PUT",
-                  // body: formData,
                   body: JSON.stringify({ 
                     disetujui_oleh: user.username,
                     ttd_disetujui_oleh,
+                    tgl_wkt_disetujui: new Date(),
                    }),
                   headers: {'Content-Type': 'application/json', "Accept":"text/html"},
                   credentials: 'same-origin',

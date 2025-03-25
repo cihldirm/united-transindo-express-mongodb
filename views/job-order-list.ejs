@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="initial-scale=1.0, target-densitydpi=device-dpi" /><!-- this is for mobile (Android) Chrome -->
     <meta name="viewport" content="initial-scale=1.0, width=device-height"><!--  mobile Safari, FireFox, Opera Mobile  -->
-    <script type="text/javascript" src="/vendors/jSignature/libs/modernizr.js"></script>
+    <!-- <script type="text/javascript" src="/vendors/jSignature/libs/modernizr.js"></script> -->
     <title>United Transindo Admin Dashboard</title>
     <link rel="icon" type="image/x-icon" href="/images/icons/Logo United Transindo.ico">
     <!-- core:css -->
@@ -50,82 +50,36 @@
       .page-content {
         padding-bottom: 0 !important;
         display: grid;
+        flex-grow: unset !important;
       }
       .spinner-border {
         position: absolute;
         top: calc(50% + 30px);
         left: calc(50% + 120px);
       }
-      #myList .list-group-item-action:focus {
-        border: 1px solid rgba(0, 0, 0, 0.125);
-        opacity: 0.5;
+      #myList .list-group-item-action {
+        &:hover {
+          /* z-index: 1; */
+          color: #495057;
+          text-decoration: none;
+          background-color: #f8f9fa;
+          cursor: pointer;
+        }
+        &:focus {
+          border: 1px solid rgba(0, 0, 0, 0.125);
+          opacity: 0.5;
+        }
+      }
+      .pagination {
+        margin: 0;
       }
       .pager .pagination li.page-item.disabled {
         .page-link {
           /* background-color: #e9ecef; */
-          color: rgba(33,37,41,0.75);
           background-color: #adb5bd;
+          color: rgba(33,37,41,0.75);
         }
       }
-
-      /* .alert-div > div.alert.alert-danger{
-        font-weight: bold;
-        text-align: center;
-        width: fit-content;
-        margin: auto;
-        transition: 1s;
-      }
-      div.alert{
-        display: flex;
-        font-weight: bold;
-        width: fit-content;
-        margin: auto;
-        transition: 1s;
-        label{
-          margin: 0;
-        }
-        button.close{
-          padding: 0;
-          top: unset;
-          right: 1.25rem;
-        }
-      }
-      .alert.show{
-        animation: show_slide 1.2s ease forwards;
-      }
-
-      .alert.hide{
-        animation: hide_slide 1.2s ease forwards;
-      }
-
-      @keyframes show_slide{
-        0%{
-          transform: translateX(100%);
-        }
-        45%{
-          transform: translateX(-5%);
-          opacity: 0.4;
-        }
-        75%{
-          transform: translateX(2%);
-          opacity: 0.8;
-        }
-        100%{
-          transform: translateX(-2%);
-          opacity: 1;
-        }
-      }
-
-      @keyframes hide_slide{
-        0%{
-          opacity: 1;
-          transform: translateX(0%);
-        }
-        100%{
-          opacity: 0;
-          transform: translateX(100%);
-        }
-      } */
     </style>
     <!-- End layout styles -->
     <link
@@ -145,12 +99,12 @@
         <!-- partial -->
 
         <div class="page-content">
-        
+          
           <nav class="page-breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="#">Marketing</a></li>
+              <li class="breadcrumb-item"><a href="#"><%= user.role %></a></li>
               <li class="breadcrumb-item active" aria-current="page">
-                Waitlist Approve Job Order
+                <%= listType %> Job Order
               </li>
             </ol>
           </nav>
@@ -159,85 +113,24 @@
             <span class="sr-only">Loading...</span>
           </div>
 
-          <!-- <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">List group item heading</h5>
-                <small>3 days ago</small>
-              </div>
-              <p class="mb-1">Some placeholder content in a paragraph.</p>
-              <small>And some small print.</small>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">List group item heading</h5>
-                <small class="text-muted">3 days ago</small>
-              </div>
-              <p class="mb-1">Some placeholder content in a paragraph.</p>
-              <small class="text-muted">And some muted small print.</small>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">List group item heading</h5>
-                <small class="text-muted">3 days ago</small>
-              </div>
-              <p class="mb-1">Some placeholder content in a paragraph.</p>
-              <small class="text-muted">And some muted small print.</small>
-            </a>
-          </div>
-
-          <div id="waitlist-approve" class="row">
-            <div class="col-12">
-              <div class="list-group" id="list-tab" role="tablist">
-                <a class="list-group-item list-group-item-action" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">Home</a>
-                <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">Profile</a>
-                <a class="list-group-item list-group-item-action" id="list-messages-list" data-bs-toggle="list" href="#list-messages" role="tab" aria-controls="list-messages">Messages</a>
-                <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings" role="tab" aria-controls="list-settings">Settings</a>
-              </div>
-            </div>
-            <div class="col-8">
-              <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">this is home</div>
-                <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">profile this is </div>
-                <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">this message is </div>
-                <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">this settings is </div>
-              </div>
-            </div>
-          </div> -->
-
-          <div id="waitlist-content" style="display: none;">
-            <!-- <div class="col-12"> -->
-              <h3>Waitlist Approve Job Order</h3>
-              <!-- <div class="panel panel-default">
-                <div class="panel-heading">Panel heading</div> -->
-                <div id="myList" class="list-group mt-3"></div>
-
-                <div class="pager mt-5">
-                  <!-- <span class="previous"><a href="" onclick="prevPage(); return false;">«</a></span>
-                  <span class="next"><a href="" onclick="nextPage(); return false;">»</a></span> -->
-
-                  <!-- <ul class="pagination pagination-rounded pagination-sm justify-content-end">
-                    <li class="page-item disabled">
-                      <a class="page-link" href="" onclick="prevPage(); return false;" tabindex="-1" aria-disabled="true">«</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                      <a class="page-link" href="" onclick="nextPage(); return false;">»</a>
-                    </li>
-                  </ul> -->
-                  <ul class="pagination pagination-rounded pagination-sm justify-content-end"></ul>
+          <div class="row">
+            <div class="col-12 col-xl-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body" id="list-content" style="display: none;">
+                  <h3><%= listType %> Job Order</h3>
+                    <% if (listJobOrder.length) { %>
+                      <div id="myList" class="list-group mt-3"></div>
+                      <div class="pager mt-5">
+                        <ul class="pagination pagination-rounded pagination-sm justify-content-end"></ul>
+                      </div>
+                    <% } else { %>
+                      <div class="content mt-5" style="text-align: center;">
+                        There are no records to display <%= listType %> Job Order
+                      </div>
+                    <% } %>
                 </div>
-
-                <!-- <nav id="pag_nav">
-                  <ul class="pagination">
-                  </ul>
-                </nav> -->
-
-
-              <!-- </div> -->
-            <!-- </div> -->
+              </div>
+            </div>
           </div>
 
         </div>
@@ -255,36 +148,36 @@
     <!-- jQuery -->
     <!-- <script src="/vendors/jSignature/libs/jquery.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
-    <script src="/vendors/jquery.autosize.input/jquery.autosize.input.js"></script>
+    <!-- <script src="/vendors/jquery.autosize.input/jquery.autosize.input.js"></script> -->
     <!-- Bootstrap JS -->
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Bootsrap Msg Js -->
     <!-- <script src="/js/bootstrap-msg.js"></script> -->
-    <script src="/vendors/chartjs/Chart.min.js"></script>
+    <!-- <script src="/vendors/chartjs/Chart.min.js"></script>
     <script src="/vendors/jquery.flot/jquery.flot.js"></script>
     <script src="/vendors/jquery.flot/jquery.flot.resize.js"></script>
-    <script src="/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script> -->
     <!-- <script src="https://github.com/jquery/jquery-ui/blob/main/ui/i18n/datepicker-id.js" type='text/javascript'></script> -->
-    <script src="/vendors/apexcharts/apexcharts.min.js"></script>
+    <!-- <script src="/vendors/apexcharts/apexcharts.min.js"></script>
     <script src="/vendors/progressbar.js/progressbar.min.js"></script>
-    <script src="/vendors/select2/select2.min.js"></script>
+    <script src="/vendors/select2/select2.min.js"></script> -->
     <script src="/vendors/sweetalert2/sweetalert2.min.js"></script>
-    <script src="/vendors/promise-polyfill/polyfill.min.js"></script>
+    <!-- <script src="/vendors/promise-polyfill/polyfill.min.js"></script> -->
     <!-- Optional:  polyfill for ES6 Promises for IE11 and Android browser -->
     <script src="/vendors/moment/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/id.min.js" integrity="sha512-he8U4ic6kf3kustvJfiERUpojM8barHoz0WYpAUDWQVn61efpm3aVAD8RWL8OloaDDzMZ1gZiubF9OSdYBqHfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js"></script>
+    <!-- <script src="/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js"></script>
     <script src="/vendors/inputmask/jquery.inputmask.min.js"></script>
-    <script src="/vendors/jquery-validation/jquery.validate.min.js"></script>
+    <script src="/vendors/jquery-validation/jquery.validate.min.js"></script> -->
     <!-- <script src="/vendors/jSignature/src/jSignature.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.CompressorBase30.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.CompressorSVG.js"></script>
     <script src="/vendors/jSignature/src/plugins/jSignature.UndoButton.js"></script> 
     <script src="/vendors/jSignature/src/plugins/signhere/jSignature.SignHere.js"></script> 
     <script src="https://willowsystems.github.io/jSignature/js/libs/jSignature.min.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script> -->
     <!-- end plugin js for this page -->
     <!-- inject:js -->
     <script src="/vendors/feather-icons/feather.min.js"></script>
@@ -298,14 +191,19 @@
     <!-- end custom js for this page -->
 
     <script>
-      var waitlistJobOrder = <%- JSON.stringify(waitlistJobOrder) %>;
-      console.log("waitlistJobOrder is = ", JSON.stringify(waitlistJobOrder, null, '\t'));
+      const listType = "<%= listType %>";
+      console.log("listType in list job order = ", listType);
+
+      var listJobOrder = <%- JSON.stringify(listJobOrder) %>;
+      console.log("listJobOrder is = ", JSON.stringify(listJobOrder, null, '\t'));
 
         var pager = {};
-        pager.items = waitlistJobOrder;
+        pager.items = listJobOrder;
         pager.itemsPerPage = 3;
         pager.currentPage = 0;
-        pagerInit(pager);
+        if (listJobOrder.length > 0) {
+          pagerInit(pager);
+        }
 
         function bindList() {
             let pgItems = pager.pagedItems[pager.currentPage];
@@ -337,19 +235,32 @@
               }
 
               let option = `
-                <a href="" class="list-group-item list-group-item-action">
+                <li class="list-group-item list-group-item-action">
                   <div class="d-flex w-100 justify-content-between">
                     <h5 id="no_jo" class="mb-1">Job Order No. ${pgItems[i].city_code + String(moment(new Date(pgItems[i].tgl_wkt_dibuat)).format('YY')) + pgItems[i].no_joj}</h5>
                     <small class="text-muted">${city}, tanggal ${moment(pgItems[i].tgl_wkt_dibuat).format('DD MMMM YYYY')} jam ${moment(pgItems[i].tgl_wkt_dibuat).format('HH:mm')}</small>
                   </div>
-                  <p class="mb-1">Dari ${pgItems[i].nama_pengirim} kepada ${pgItems[i].nama_penerima}</p>
+                  <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-1">Dari ${pgItems[i].nama_pengirim} kepada ${pgItems[i].nama_penerima}</p>
+                    <div>
+                      <button type="button" id="edit" class="btn btn-warning btn-icon-text">
+                        <i data-feather="edit" class="btn-icon-prepend"></i> Edit
+                      </button>
+                      <button type="button" id="cancel" class="btn btn-danger btn-icon-text">
+                        <i data-feather="x-circle" class="btn-icon-prepend"></i> Cancel
+                      </button>
+                    </div>
+                  </div>
                   <small class="text-muted">Pengambilan Unit pada hari ${pgItems[i].hr_tgl_ambil.split(" / ")[0]} tanggal ${pgItems[i].hr_tgl_ambil.split(" / ")[1]}</small>
-                </a>
+                </li>
               `;
 
               // console.log("option is = ", option);
 
               $("#myList").append(option);
+
+              // Enable feather-icons with SVG markup
+              feather.replace();
             }
         }
 
@@ -430,30 +341,156 @@
 
             $(".spinner-border").hide();
 
-            $("#waitlist-content").show();
+            $("#list-content").show();
 
-            $('#myList').on('click', '.list-group-item-action', async function(event) {
+            $('#myList').on('click', 'li.list-group-item-action button#cancel.btn', function(event) {
               event.preventDefault();
-              let no_jo = waitlistJobOrder[pager.currentPage * pager.itemsPerPage + $(this).index()].no_joj;
-              // console.log("no_jo is = ", no_jo);
-              // console.log($(this).data('wpurl'));
-              // event.originalEvent.currentTarget.href = `/job-order/${no_jo}`;
-              // console.log(event.originalEvent.currentTarget.href);
+              let no_jo = listJobOrder[pager.currentPage * pager.itemsPerPage + $(this).closest("li.list-group-item-action").index()].no_joj;
+
+              const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                  confirmButton: 'btn btn-success',
+                  cancelButton: 'btn btn-danger mr-2'
+                },
+                buttonsStyling: false,
+              })
+              
+              swalWithBootstrapButtons.fire({
+                title: `Continue to Cancel Job Order ${no_jo}?`,
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonClass: 'mr-2',
+                confirmButtonText: 'Yes, cancel it',
+                cancelButtonText: 'No, back to list',
+                reverseButtons: true
+              }).then(async(result) => {
+                console.log("result = ", result);
+                if (result.value) {
+                  swalWithBootstrapButtons.fire(
+                    'Cancelled!',
+                    `Job Order ${no_jo} has been cancelled.`,
+                    'success'
+                  )
+                  const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-start',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                  });
+                  try {
+                    const response = await fetch(`/cancel-job-order/${no_jo}`, {
+                      method: "PUT",
+                      // body: formData,
+                      // body: JSON.stringify({ 
+                      //   disetujui_oleh: user.username,
+                      //   ttd_disetujui_oleh,
+                      // }),
+                      headers: {'Content-Type': 'application/json', "Accept":"text/html"},
+                      credentials: 'same-origin',
+                    });
+                    console.log("response of cancelData = ", response);
+
+                    // console.log("response body is = ", response.body);
+
+                    if (response.status == 200 || response.ok) {
+                      console.log('Promise resolved and HTTP status is successful');
+                      // const result = response.json();
+                      // console.log("result from response of cancelData = ", result);
+                      
+                      let indexJO = listJobOrder.findIndex(jobOrder => jobOrder.no_joj === no_jo);
+                      if (indexJO !== -1) {
+                        listJobOrder.splice(indexJO, 1);
+                        pager.items = listJobOrder;
+                        if (listJobOrder.length > 0) {
+                          pagerInit(pager);
+                        }
+                        bindList();
+                      }
+
+                      Toast.fire({
+                        icon: 'success',
+                        html: `<label>Cancel Job Order ${no_jo} Success</label>`,
+                      });
+                    } else {
+                      console.log('error: ', response.status, response.statusText);
+                      console.error('Promise resolved but HTTP status failed');
+                        
+                      Toast.fire({
+                        icon: 'error',
+                        html: `<label>There are some errors when cancel Job Order ${no_jo}</label>`,
+                      });
+                      /* Handle the error returned by the HTTP request */
+                      return {error: {status: response.status, statusText: response.statusText}};
+                    }
+                  } catch (err) {
+                    console.error(err)
+                      
+                    Toast.fire({
+                      icon: 'error',
+                      html: `<label>Submit Form Failed</label>`,
+                    });
+                  }
+                } 
+                // else if (
+                //   // Read more about handling dismissals
+                //   result.dismiss === Swal.DismissReason.cancel
+                // ) {
+                //   swalWithBootstrapButtons.fire(
+                //     'Cancelled',
+                //     'Your imaginary file is safe :)',
+                //     'error'
+                //   )
+                // }
+              })
+              event.stopImmediatePropagation();
+            });
+
+            $('#myList').on('click', 'li.list-group-item-action button#edit.btn', function(event) {
+              // alert($(this).closest("li.list-group-item-action").index());
+              event.preventDefault();
+              let no_jo = listJobOrder[pager.currentPage * pager.itemsPerPage + $(this).closest("li.list-group-item-action").index()].no_joj;
+              location.replace(`/edit-job-order/${no_jo}`);
+              event.stopImmediatePropagation();
+            })
+
+            $('#myList').on('click', 'li.list-group-item-action', function(event) {
+              // alert($(this).index());
+              event.preventDefault();
+              let no_jo = listJobOrder[pager.currentPage * pager.itemsPerPage + $(this).index()].no_joj;
               if (user.role === "Marketing") {
                 location.replace(`/job-order/${no_jo}`);
               } else if (user.role === "Operational") {
                 location.replace(`/approve-job-order/${no_jo}`);
               }
-              // return await fetch(`/job-order/${no_jo}`, {
-              //       method: "GET",
-              //       headers: {
-              //         "Content-Type": "application/json",
-              //       },
-              //     });
-              // return false;
-              // event.preventDefault();
-              // return;
-            });
+            })
+
+            // $('#myList').on('click', '.list-group-item-action', async function(event) {
+            //   console.log($(this).index());
+            //   alert("link detail jo 1")
+            // //   console.log($(this).index());
+            // //   event.preventDefault();
+            // //   let no_jo = listJobOrder[pager.currentPage * pager.itemsPerPage + $(this).index()].no_joj;
+            // //   // console.log("no_jo is = ", no_jo);
+            // //   // console.log($(this).data('wpurl'));
+            // //   // event.originalEvent.currentTarget.href = `/job-order/${no_jo}`;
+            // //   // console.log(event.originalEvent.currentTarget.href);
+            // //   if (user.role === "Marketing") {
+            // //     location.replace(`/job-order/${no_jo}`);
+            // //   } else if (user.role === "Operational") {
+            // //     location.replace(`/approve-job-order/${no_jo}`);
+            // //   }
+            // //   // return await fetch(`/job-order/${no_jo}`, {
+            // //   //       method: "GET",
+            // //   //       headers: {
+            // //   //         "Content-Type": "application/json",
+            // //   //       },
+            // //   //     });
+            // //   return false;
+            // //   // event.preventDefault();
+            // //   return;
+            // });
 
             $('.pager .pagination').on('click', 'li:not(.prev):not(.next)', function() {
               $('.pager .pagination li').removeClass('active');

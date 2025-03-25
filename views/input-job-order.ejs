@@ -1686,24 +1686,53 @@
     <!-- <script src="/js/timepicker.js"></script> -->
     <!-- end custom js for this page -->
 
+    <% if (typeof contentTable != "undefined" && contentTable) { %>
+      <script>
+            // var jobOrders = <%- JSON.stringify(contentTable) %>;
+            // console.log("jobOrders in input job order = ", JSON.stringify(jobOrders, null, '\t'));
+            // console.log(jobOrders.city_code);
+      </script>
+    <% } %>
     <script>
         $(document).ready(function() {
           var user = <%- JSON.stringify(user) %>;
 			    console.log("user in input job order = ", JSON.stringify(user, null, '\t'));
+
+          var jobOrders = <%- JSON.stringify(contentTable) %>;
+          console.log("jobOrders in input job order = ", JSON.stringify(jobOrders, null, '\t'));
           
+          const typePath = "<%= typePath %>";
+          console.log("typePath in input job order = ", typePath);
+
+          // if (typePath === "edit-job-order") {
+          //   for (let index = 0; index < Number(jobOrders.qty); index++) {
+          //     jobOrders.merk.push(jobOrders.merk[index])
+          //     jobOrders.tipe.push(jobOrders.tipe[index])
+          //     jobOrders.nopol_noka.push(jobOrders.nopol_noka[index])
+          //     jobOrders.warna.push(jobOrders.warna[index])
+          //     jobOrders.status.push(jobOrders.status[index])
+          //     jobOrders.kondisi.push(jobOrders.kondisi[index])
+          //     jobOrders.lainnya.push(jobOrders.lainnya[index])
+          //   }
+          //   jobOrders.qty = String(jobOrders.merk.length)
+          //   console.log("jobOrders aft ins = ", JSON.stringify(jobOrders, null, '\t'));
+          // }
           
           // var timeInterval = null;
           var timeInterval = 
+            typePath === "input-job-order" ?
             setInterval(function() {
               // $("#signature-made-by span").text(moment().format('DD-MMM-YYYY HH:mm'));
               $("#signature-made-by span").html(`${moment().format('DD-MMM-YYYY')}<br/>${moment().format('HH:mm')}`);
-            }, 1000);
+            }, 1000) : null;
 
           var date = new Date(),
               today = new Date(date.getFullYear(), date.getMonth(), date.getDate()),
               // city,
               city_code,
+              city_name,
               // database,
+              // jobOrders,
               list_nama_pengirim,
               list_alamat_pengirim,
               list_kontak_pengirim,
@@ -1717,10 +1746,9 @@
               rowIndex
           ;
 
-          // console.log("contentTable in job order = ", JSON.stringify(database, null, '\t'));
 
-          const init_no_joj = <%- JSON.stringify(no_joj) %>;
-          // console.log("no_joj in job order = ", no_joj);
+          const init_no_joj = "<%= no_joj %>";
+          console.log("no_joj in job order = ", init_no_joj);
 
           var list_nama_pengirim = <%- JSON.stringify(listNamaPengirim) %>;
           // console.log("list_nama_pengirim in job order = ", JSON.stringify(list_nama_pengirim, null, '\t'));
@@ -1741,7 +1769,7 @@
           // console.log("list_kontak_penerima in job order = ", JSON.stringify(list_kontak_penerima, null, '\t'));
 
           var list_pengirim_penerima = <%- JSON.stringify(listPengirimPenerima) %>;
-          console.log("list_pengirim_penerima in job order = ", JSON.stringify(list_pengirim_penerima, null, '\t'));
+          // console.log("list_pengirim_penerima in job order = ", JSON.stringify(list_pengirim_penerima, null, '\t'));
 
           var list_merk_unit = <%- JSON.stringify(listMerkUnit) %>;
           // console.log("list_merk_unit in job order = ", JSON.stringify(list_merk_unit, null, '\t'));
@@ -1783,24 +1811,33 @@
             weekStart: 0
           };
 
-          // if (user.role === "Operational") {
-          //   $("#nominal-row").hide();
-          //   $("#invoice-row").hide();
-          //   $("#detail-pembayaran-1").hide();
-          // } else {
-          //   $("#nominal-row").show();
-          //   $("#invoice-row").show();
-          //   $("#detail-pembayaran-1").show();
-          // }
-
-          if (user.location === "Sidoarjo") {
-            city_code = "01";
-          } else if (user.location === "Cikarang") {
-            city_code = "02";
-          } else if (user.location === "Jakarta") {
-            city_code = "03";
-          } else if (user.location === "Makassar") {
-            city_code = "04";
+          if (typePath === "input-job-order") {
+            if (user.location === "Sidoarjo") {
+              city_code = "01";
+            } else if (user.location === "Cikarang") {
+              city_code = "02";
+            } else if (user.location === "Jakarta") {
+              city_code = "03";
+            } else if (user.location === "Makassar") {
+              city_code = "04";
+            }
+          } else {
+            // city_code = jobOrders.city_code;
+            
+            switch (jobOrders.city_code) {
+              case "01":
+                city_name = "Sidoarjo";
+                break;
+              case "02":
+                city_name = "Cikarang";
+                break;
+              case "03":
+                city_name = "Jakarta";
+                break;
+              case "04":
+                city_name = "Makassar";
+                break;
+            }
           }
 
           $("#signature-made-by").bind('change', function(event) {
@@ -1815,13 +1852,14 @@
             }
           });
 
-          const generateTable = async () => {
+          const generateTable = async (qty) => {
             // list_kondisi = [{index: 1, value: ""}];
             // list_lainnya = [{index: 1, value: ""}];
             list_kondisi = [];
             list_lainnya = [];
             $("#jo-template #data-kendaraan table tbody").empty();
-            for (let index = 1; index <= Number($('#qty').val()); index++) {
+            // for (let index = 1; index <= Number($('#qty').val()); index++) {
+            for (let index = 1; index <= qty; index++) {
               list_kondisi.push({index, value: ""})
               list_lainnya.push({index, value: ""})
               $("#jo-template #data-kendaraan table tbody").append(`
@@ -1915,6 +1953,20 @@
                   </td>
                 </tr>
               `);
+              if (typePath === "edit-job-order") {
+                if (jobOrders.status[index - 1]) {
+                  $(`input:radio[name="status[${index - 1}]"]`).prop('disabled', false);
+                  $(`input:radio[name="status[${index - 1}]"][value="${jobOrders.status[index - 1]}"]`).prop('checked', true);
+                }
+                if (jobOrders.kondisi[index - 1]) {
+                  $(`input:radio[name="kondisi[${index - 1}]"]`).prop('disabled', false);
+                  $(`input:radio[name="kondisi[${index - 1}]"][value="${jobOrders.kondisi[index - 1]}"]`).prop('checked', true);
+                }
+                if (jobOrders.lainnya[index - 1]) {
+                  $(`[name="lainnya[${index - 1}]"]`).prop('disabled', false);
+                  $(`[name="lainnya[${index - 1}]"]`).val(jobOrders.lainnya[index - 1]);
+                }
+              }
             }
 
             console.log("list_kondisi after init = ", list_kondisi);
@@ -1942,11 +1994,10 @@
 
           const generateFieldTable = async () => {
             $(`[name^="merk"]`).append(`<option></option>`);
-            list_merk_unit.forEach(merk => {
+            list_merk_unit.forEach((merk, index) => {
                 $(`[name^="merk"]`).append(`<option value="${merk}">${merk}</option>`);
             });
 
-            $(`[name^="merk"]`).val(null);
 
             $(`[name^="merk"]`).select2({
                 placeholder: "PILIH SALAH SATU",
@@ -2006,13 +2057,20 @@
               }
             });
 
-            $('[name^="merk"]').each(function(e) {
+            $('[name^="merk"]').each(function(i,e) {
+              // console.log("i = ", i);
+              // console.log("e = ", e);
+              // console.log("e id = ", e.id);
+              // console.log("this = ", $(this));
               $(this).rules('add', {
                 required: true,
                 messages: {
                   required: "Mohon Isi Field Merk Unit",
                 },
               });
+              if (typePath === "edit-job-order") {
+                $(this).val(jobOrders.merk[i]).trigger("change")
+              }
             });
 
             $(`[name^="tipe"]`).append(`<option></option>`);
@@ -2021,8 +2079,6 @@
             });
 
             $(`[name^="tipe"]`).val(null);
-
-            // $(`[name^="tipe"]`).val("jie83jwjd");
 
             $(`[name^="tipe"]`).select2({
                 placeholder: "PILIH SALAH SATU",
@@ -2132,7 +2188,7 @@
               $(this).data('select2').dropdown.$search.val(this.value);
             });
 
-            $('[name^="tipe"]').each(function(e) {
+            $('[name^="tipe"]').each(function(i,e) {
               $(this).rules('add', {
                 required: true,
                 messages: {
@@ -2140,7 +2196,18 @@
                   
                 },
               });
+              if (typePath === "edit-job-order") {
+                $(this).prop('disabled', false);
+                $(this).val(jobOrders.tipe[i]).trigger("change")
+              }
             });
+
+            if (typePath === "edit-job-order") {
+              $('[name^="nopol_noka"]').prop('disabled', false);
+              $('[name^="nopol_noka"]').each(function(i,e) {
+                $(this).val(jobOrders.nopol_noka[i]).trigger("change")
+              });
+            }
 
             $(`[name^="warna"]`).append(`<option></option>`);
             list_warna_unit.forEach(warna => {
@@ -2182,6 +2249,13 @@
                 $(this).append(new Option(this.value, this.value, true, true));
               }
             });
+            
+            if (typePath === "edit-job-order") {
+              $('[name^="warna"]').prop('disabled', false);
+              $('[name^="warna"]').each(function(i,e) {
+                $(this).val(jobOrders.warna[i]).trigger("change")
+              });
+            }
 
             $("[name^='status']").on("click", function(e) {
               rowIndex = $(this).attr("name").match(/\d+/)[0];
@@ -2191,8 +2265,9 @@
               $(`[name="kondisi[${rowIndex}]"]`).prop('disabled', false);
             });
 
-            $('[name^="status"]').each(function(e) {
-              console.log("each status = ", $(this));
+            $('[name^="status"]').each(function(i,e) {
+              // console.log("each status = ", $(this));
+              // console.log("i = ", i);
               $(this).rules('add', {
                 required: true,
                 messages: {
@@ -2218,6 +2293,18 @@
               list_lainnya[list_lainnya.findIndex(obj => obj.index - 1 == rowIndex)].value = this.value
               // console.log("list_lainnya after input lainnya = ", JSON.stringify(list_lainnya, null, '\t'));
             });
+
+            // if (typePath === "edit-job-order") {
+            //   for (let index = 0; index < Number(jobOrders.qty); index++) {
+            //     console.log("ind = ", index);
+            //     console.log("merk by index = ", jobOrders.merk[index]);
+            //     console.log(`[name="merk[${index}]"]`);
+            //     // $('[name="merk[0]"]').val()
+            //     // $(`[name='merk[${index}]']`).val(jobOrders.merk[index])
+            //     $(`[name="merk[${index}]"]`).val(jobOrders.merk[index])
+            //     // $(`[name="tipe[${rowIndex}]"]`).
+            //   }
+            // }
           };
 
           // $('#hr_tgl_ambil').datepicker('option', 'onSelect', function(dateText, inst) { 
@@ -2227,9 +2314,19 @@
           //    });
 
           const loadData = async () => {
-            $("#jo-template #content > #header div:nth-child(1) h6").text(`${user.location}, ${moment(new Date()).format('DD MMMM YYYY')}`.toUpperCase());
 
-            $("#jo-template #content > #header div:nth-child(2) span").html(`No. JO : ${city_code + String(moment(new Date()).format('YY'))}<span id="no_joj" contenteditable="true">${String(init_no_joj).padStart(6, '0')}</span>`);
+            
+
+            if (typePath === "input-job-order") {
+              $("#jo-template #content > #header div:nth-child(1) h6").text(`${user.location}, ${moment(new Date()).format('DD MMMM YYYY')}`.toUpperCase());
+              $("#jo-template #content > #header div:nth-child(2) span").html(`No. JO : ${city_code + String(moment(new Date()).format('YY'))}<span id="no_joj" contenteditable="true">${String(init_no_joj).padStart(6, '0')}</span>`);
+            } else {
+              // console.log("jobOrders tgl_wkt_dibuat is = ", jobOrders.tgl_wkt_dibuat);
+              // console.log("jobOrders tgl_wkt_dibuat 1 is = ", new Date(jobOrders.tgl_wkt_dibuat));
+              // console.log("jobOrders tgl_wkt_dibuat 2 is = ", moment(new Date(jobOrders.tgl_wkt_dibuat)));
+              $("#jo-template #content > #header div:nth-child(1) h6").text(`${city_name}, ${moment(new Date(jobOrders.tgl_wkt_dibuat)).format('DD MMMM YYYY')}`.toUpperCase());
+              $("#jo-template #content > #header div:nth-child(2) span").html(`No. JO : ${jobOrders.city_code +String(moment(new Date(jobOrders.tgl_wkt_dibuat)).format('YY'))}<span id="no_joj" contenteditable="false">${String(init_no_joj).padStart(6, '0')}</span>`);
+            }
 
             $("#no_joj").inputmask({
               mask: "999999",
@@ -2248,7 +2345,7 @@
             $(`#hr_tgl_ambil`).datepicker({
               format: "DD / dd MM yyyy",
               language: "id",
-              startDate: today,
+              // startDate: today,
               todayHighlight: true,
               autoclose: true,
             })
@@ -2276,9 +2373,13 @@
 
             // console.log($.datepicker.formatDate('DD / dd MM yyyy',  $("#hr_tgl_ambil").datepicker('getDate')));
 
-            $("#hr_tgl_ambil").datepicker('setDate', new Date());
-
-            // console.log($('#hr_tgl_ambil').val());
+            if (typePath === "input-job-order") {
+              $("#hr_tgl_ambil").datepicker('setStartDate', today);
+              $("#hr_tgl_ambil").datepicker('setDate', today);
+            } else {
+              $("#hr_tgl_ambil").datepicker('setStartDate', new Date(jobOrders.tgl_wkt_dibuat));
+              $("#hr_tgl_ambil").datepicker('setDate', new Date(jobOrders.hr_tgl_ambil));
+            }
 
             $(`#nama_pengirim`).append(`<option></option>`);
             list_nama_pengirim.forEach(nama_pengirim => {
@@ -2288,7 +2389,11 @@
                 $(`#nama_pengirim`).append(`<option value="${pengirim_penerima.keyword}">${pengirim_penerima.keyword}</option>`);
             });
 
-            $(`#nama_pengirim`).val(null);
+            if (typePath === "input-job-order") {
+              $(`#nama_pengirim`).val(null);
+            } else {
+              $(`#nama_pengirim`).val(jobOrders.nama_pengirim);
+            }
 
             // let datasetInput = false;
             var datasetIndex = -1, datasetAlamat, datasetKontak;
@@ -2384,7 +2489,7 @@
                 $(`#alamat_pengirim`).append(`<option value="${alamat_pengirim}">${alamat_pengirim}</option>`);
             });
 
-            $(`#alamat_pengirim`).val(null);
+            $(`#alamat_pengirim`).val(typePath === "input-job-order" ? null : jobOrders.alamat_pengirim);
 
             $(`#alamat_pengirim`).select2({
                 placeholder: "PILIH SALAH SATU",
@@ -2395,14 +2500,14 @@
                 dropdownAutoWidth : true,
                 // minimumInputLength: 3,
             }).on("change", function(event) {
-              if (datasetIndex !== -1) {
-                console.log("event", event);
-                console.log("alamat has dataset");
-                this.value = list_pengirim_penerima[datasetIndex].alamat
-                this.value = datasetAlamat
-              }
-              console.log("on change this value alamat pengirim = ", this.value);
-              console.log("on change this value 2 alamat pengirim = ", String(this.value));
+              // if (datasetIndex !== -1) {
+              //   console.log("event", event);
+              //   console.log("alamat has dataset");
+              //   this.value = list_pengirim_penerima[datasetIndex].alamat
+              //   this.value = datasetAlamat
+              // }
+              // console.log("on change this value alamat pengirim = ", this.value);
+              // console.log("on change this value 2 alamat pengirim = ", String(this.value));
 
               $(this).trigger('blur');
 
@@ -2413,18 +2518,18 @@
               //   $('#kontak_pengirim').prop('disabled', !$('#nama_pengirim').val() || !this.value);
               // }
 
-              console.log("list_pengirim_penerima[datasetIndex].alamat inside alamat pengirim = ", list_pengirim_penerima[datasetIndex].alamat);
+              // console.log("list_pengirim_penerima[datasetIndex].alamat inside alamat pengirim = ", list_pengirim_penerima[datasetIndex].alamat);
 
-              console.log("if datasetIndex first = ", datasetIndex !== -1);
+              // console.log("if datasetIndex first = ", datasetIndex !== -1);
 
-              console.log("result conditional if inside alamat pengirim = ", (datasetIndex !== -1 && list_pengirim_penerima[datasetIndex].alamat));
+              // console.log("result conditional if inside alamat pengirim = ", (datasetIndex !== -1 && list_pengirim_penerima[datasetIndex].alamat));
 
               // if (datasetIndex !== -1 && list_pengirim_penerima[datasetIndex].alamat) {
               if (datasetIndex !== -1) {
                 // console.log("");
                 $(this).val(list_pengirim_penerima[datasetIndex].alamat).trigger('change.select2');
-                console.log("datasetAlamat after is = ", datasetAlamat);
-                $(this).val(datasetAlamat).trigger('change.select2');
+                // console.log("datasetAlamat after is = ", datasetAlamat);
+                // $(this).val(datasetAlamat).trigger('change.select2');
               } else {
                 $('#kontak_pengirim').prop('disabled', !$('#nama_pengirim').val() || !this.value);
               }
@@ -2459,12 +2564,15 @@
               }
             });
 
+            // $('#alamat_pengirim').select2(typePath === "input-job-order" ? 'disable' : 'enable');
+            $('#alamat_pengirim').prop('disabled', typePath === "input-job-order");
+
             $(`#kontak_pengirim`).append(`<option></option>`);
             list_kontak_pengirim.forEach(kontak_pengirim => {
                 $(`#kontak_pengirim`).append(`<option value="${kontak_pengirim}">${kontak_pengirim}</option>`);
             });
 
-            $(`#kontak_pengirim`).val(null);
+            $(`#kontak_pengirim`).val(typePath === "input-job-order" ? null : jobOrders.kontak_pengirim);
 
             $(`#kontak_pengirim`).select2({
                 placeholder: "PILIH SALAH SATU",
@@ -2514,6 +2622,9 @@
               }
             });
 
+            // $('#kontak_pengirim').select2(typePath === "input-job-order" ? 'disable' : 'enable');
+            $('#kontak_pengirim').prop('disabled', typePath === "input-job-order");
+
             // $("#e1").val("B1").select2();
             // $("#e1").on("select2-opening", function() { 
             //   $("#e1").on("select2-open", function() { 
@@ -2525,10 +2636,12 @@
             list_nama_penerima.forEach(nama_penerima => {
                 $(`#nama_penerima`).append(`<option value="${nama_penerima}">${nama_penerima}</option>`);
             });
+            list_pengirim_penerima.forEach(pengirim_penerima => {
+                $(`#nama_penerima`).append(`<option value="${pengirim_penerima.keyword}">${pengirim_penerima.keyword}</option>`);
+            });            
 
             // $(`#nama_penerima`).val(null);
-
-            // $(`#nama_penerima`).val("3829jadfrgugs sadf adsr24").trigger('change');
+            $(`#nama_penerima`).val(typePath === "input-job-order" ? null : jobOrders.nama_penerima);
 
             $(`#nama_penerima`).select2({
                 placeholder: "PILIH SALAH SATU",
@@ -2537,6 +2650,7 @@
                 tags: true,
                 closeOnSelect: true,
                 minimumInputLength: 3,
+                dropdownAutoWidth : true,
             }).on("change", function(event) {
               console.log("on change this value nama penerima = ", this.value);
 
@@ -2552,6 +2666,8 @@
             }).on("select2:unselecting", function(e) {
               console.log("select2 unselecting");
               console.log("select unselecting value nama penerima = ", this.value);
+
+              datasetIndex = -1;
 
               $(`#alamat_penerima`).val(null).trigger('change');
               $(`#alamat_penerima`).parent().removeClass('has-danger');
@@ -2571,11 +2687,30 @@
               console.log("select2 select");
               console.log("select input value nama penerima = ", this.value);
 
-              if (list_nama_penerima.findIndex(nama_penerima => String(this.value).toLowerCase() === String(nama_penerima).toLowerCase()) === -1) {
-                console.log(this.value, "added to dataset");
-                new_list_nama_penerima.push(this.value);
-                list_nama_penerima.push(this.value);
-                $(this).append(new Option(this.value, this.value, true, true));
+              // if (list_nama_penerima.findIndex(nama_penerima => String(this.value).toLowerCase() === String(nama_penerima).toLowerCase()) === -1) {
+              //   console.log(this.value, "added to dataset");
+              //   new_list_nama_penerima.push(this.value);
+              //   list_nama_penerima.push(this.value);
+              //   $(this).append(new Option(this.value, this.value, true, true));
+              // }
+
+              datasetIndex = list_pengirim_penerima.findIndex(pengirim_penerima => String(this.value).toLowerCase() === String(pengirim_penerima.keyword).toLowerCase());
+              if (datasetIndex !== -1) {
+                $(this).val(String(list_pengirim_penerima[datasetIndex].nama)).trigger('change');
+
+                $('#alamat_penerima').prop('disabled', false);
+                datasetAlamat = list_pengirim_penerima[datasetIndex]["alamat"];
+                $(`#alamat_penerima`).val(String(list_pengirim_penerima[datasetIndex]["alamat"])).trigger('change');
+
+                $('#kontak_penerima').prop('disabled', false);
+                $(`#kontak_penerima`).val(String(list_pengirim_penerima[datasetIndex]["kontak"])).trigger('change');
+              } else {
+                if (list_nama_pengirim.findIndex(nama_penerima => String(this.value).toLowerCase() === String(nama_penerima).toLowerCase()) === -1) {
+                  console.log(this.value, "added to dataset");
+                  new_list_nama_penerima.push(this.value);
+                  list_nama_penerima.push(this.value);
+                  $(this).append(new Option(this.value, this.value, true, true));
+                }
               }
             });
 
@@ -2590,7 +2725,9 @@
                 $(`#alamat_penerima`).append(`<option value="${alamat_penerima}">${alamat_penerima}</option>`);
             });
 
-            $(`#alamat_penerima`).val(null);
+            // $(`#alamat_penerima`).val(null);
+            $(`#alamat_penerima`).val(typePath === "input-job-order" ? null : jobOrders.alamat_penerima);
+            
 
             $(`#alamat_penerima`).select2({
                 placeholder: "PILIH SALAH SATU",
@@ -2599,10 +2736,20 @@
                 tags: true,
                 closeOnSelect: true,
                 // minimumInputLength: 3,
+                dropdownAutoWidth : true,
             }).on("change", function(event) {
               $(this).trigger('blur');
 
-              $('#kontak_penerima').prop('disabled', !$('#nama_penerima').val() || !this.value);
+              // $('#kontak_penerima').prop('disabled', !$('#nama_penerima').val() || !this.value);
+
+              if (datasetIndex !== -1) {
+                // console.log("");
+                $(this).val(list_pengirim_penerima[datasetIndex].alamat).trigger('change.select2');
+                console.log("datasetAlamat after is = ", datasetAlamat);
+                $(this).val(datasetAlamat).trigger('change.select2');
+              } else {
+                $('#kontak_penerima').prop('disabled', !$('#nama_penerima').val() || !this.value);
+              }
 
               // $(`#alamat_penerima`).parent().removeClass('has-danger');
               // $(`#alamat_penerima`).removeClass('form-control-danger');
@@ -2634,12 +2781,15 @@
               }
             });
 
+            // $('#alamat_penerima').select2(typePath === "input-job-order" ? 'disable' : 'enable');
+            $('#alamat_penerima').prop('disabled', typePath === "input-job-order");
+
             $(`#kontak_penerima`).append(`<option></option>`);
             list_kontak_penerima.forEach(kontak_penerima => {
                 $(`#kontak_penerima`).append(`<option value="${kontak_penerima}">${kontak_penerima}</option>`);
             });
 
-            $(`#kontak_penerima`).val(null);
+            $(`#kontak_penerima`).val(typePath === "input-job-order" ? null : jobOrders.kontak_penerima);
 
             $(`#kontak_penerima`).select2({
                 placeholder: "PILIH SALAH SATU",
@@ -2648,7 +2798,23 @@
                 tags: true,
                 closeOnSelect: true,
             }).on("change", function(event) {
+              // $(this).trigger('blur');
+
+              // if (datasetIndex !== -1) this.value = list_pengirim_penerima[datasetIndex].kontak
+              // console.log("on change this value kontak pengirim = ", this.value);
+
+              // console.log("is datasetInput inside kontak pengirim = ", datasetInput);
+
               $(this).trigger('blur');
+
+              // if (datasetInput) datasetInput = false;
+
+              // console.log("datasetIndex inside kontak pengirim = ", datasetIndex);
+
+              if (datasetIndex !== -1 && list_pengirim_penerima[datasetIndex].kontak) {
+                $(this).val(list_pengirim_penerima[datasetIndex].kontak).trigger('change.select2');
+                datasetIndex = -1;
+              }
 
               // $(`#kontak_penerima`).parent().removeClass('has-danger');
               // $(`#kontak_penerima`).removeClass('form-control-danger');
@@ -2675,6 +2841,57 @@
               }
             });
 
+            // $(`#kontak_pengirim`).select2({
+            //     placeholder: "PILIH SALAH SATU",
+            //     allowClear: true,
+            //     width: "style",
+            //     tags: true,
+            //     closeOnSelect: true,
+            // }).on("change", function(event) {
+            //   if (datasetIndex !== -1) this.value = list_pengirim_penerima[datasetIndex].kontak
+            //   console.log("on change this value kontak pengirim = ", this.value);
+
+            //   // console.log("is datasetInput inside kontak pengirim = ", datasetInput);
+
+            //   $(this).trigger('blur');
+
+            //   // if (datasetInput) datasetInput = false;
+
+            //   console.log("datasetIndex inside kontak pengirim = ", datasetIndex);
+
+            //   if (datasetIndex !== -1 && list_pengirim_penerima[datasetIndex].kontak) {
+            //     $(this).val(list_pengirim_penerima[datasetIndex].kontak).trigger('change.select2');
+            //     datasetIndex = -1;
+            //   }
+              
+            //   // $(`#kontak_pengirim`).parent().removeClass('has-danger');
+            //   // $(`#kontak_pengirim`).removeClass('form-control-danger');
+            //   // $("label.error.text-danger").remove();
+            // }).on("blur", function(event) {
+            //   console.log("on blur this value kontak pengirim = ", this.value);
+            // }).on("select2:unselecting", function(e) {
+            //   console.log("select2 unselecting");
+            //   console.log("select unselecting value kontak pengirim = ", this.value);
+              
+            //   $(this).on("select2:opening", function (evt) {
+            //     evt.preventDefault();
+            //     $(this).off("select2:opening");
+            //   });
+            // }).on("select2:select", function(e) {
+            //   console.log("select2 select");
+            //   console.log("select input value kontak pengirim = ", this.value);
+
+            //   if (list_kontak_pengirim.findIndex(kontak_pengirim => String(this.value).toLowerCase() === String(kontak_pengirim).toLowerCase()) === -1) {
+            //     console.log(this.value, "added to dataset");
+            //     new_list_kontak_pengirim.push(this.value);
+            //     list_kontak_pengirim.push(this.value);
+            //     $(this).append(new Option(this.value, this.value, true, true));
+            //   }
+            // });
+
+            // $('#kontak_penerima').select2(typePath === "input-job-order" ? 'disable' : 'enable');
+            $('#kontak_penerima').prop('disabled', typePath === "input-job-order");
+
             $("#jo-form").validate({
               wrapper: "span",
               ignore: 'input[type=hidden], .select2-input, .select2-focusser',
@@ -2682,43 +2899,43 @@
                 nama_pengirim: {
                   required: true,
                 },
-                alamat_pengirim: {
-                  required: true,
-                },
-                kontak_pengirim: {
-                  required: true,
-                },
+                // alamat_pengirim: {
+                //   required: true,
+                // },
+                // kontak_pengirim: {
+                //   required: true,
+                // },
                 nama_penerima: {
                   required: true,
                   // minlength: 3,
                 },
-                alamat_penerima: {
-                  required: true,
-                },
-                kontak_penerima: {
-                  required: true,
-                },
+                // alamat_penerima: {
+                //   required: true,
+                // },
+                // kontak_penerima: {
+                //   required: true,
+                // },
               },
               messages: {
                 nama_pengirim: {
                   required: "Mohon Isi Field Nama Pengirim",
                 },
-                alamat_pengirim: {
-                  required: "Mohon Isi Field Alamat Pengirim",
-                },
-                kontak_pengirim: {
-                  required: "Mohon Isi Field Kontak Pengirim",
-                },
+                // alamat_pengirim: {
+                //   required: "Mohon Isi Field Alamat Pengirim",
+                // },
+                // kontak_pengirim: {
+                //   required: "Mohon Isi Field Kontak Pengirim",
+                // },
                 nama_penerima: {
                   required: "Mohon Isi Field Nama Penerima",
                   // minlength: "Field Nama Penerima harus terdiri dari minimal {0} karakter",
                 },
-                alamat_penerima: {
-                  required: "Mohon Isi Field Alamat Penerima",
-                },
-                kontak_penerima: {
-                  required: "Mohon Isi Field Kontak Penerima",
-                },
+                // alamat_penerima: {
+                //   required: "Mohon Isi Field Alamat Penerima",
+                // },
+                // kontak_penerima: {
+                //   required: "Mohon Isi Field Kontak Penerima",
+                // },
               },
               errorPlacement: function(label, element) {
                 label.insertAfter(element.next('.select2-container')).addClass('text-danger');
@@ -2745,22 +2962,62 @@
 
             // generateFieldTable();
 
-            await generateTable();
+            // await generateTable();
+
+            if (typePath === "input-job-order") {
+              $(".minus").prop("disabled", true)
+              await generateTable(Number($('#qty').val()));
+
+              $(`#signature-made-by`).jSignature({
+                'UndoButton': true,
+                'decor-color': 'transparent',
+                'color': '#000',
+                'width': '100%',
+                'height': '100',
+                'lineWidth': 1,
+              });
+
+              if (user.signature) {
+                let data = user.signature.split(",");
+                // console.log("data from ttd_dibuat_oleh = ", data);
+                let img = new Image();
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.objectFit = "contain";
+                img.setAttribute("draggable", false);
+                img.src = 'data:' + data[0] + ',' + data[1];
+                // console.log("img is = ", img);
+                // $(img).appendTo($('#signature-made-by'));
+                $("#signature-made-by").jSignature("setData", 'data:' + data[0] + ',' + data[1]);
+
+                $("#signature-made-by span").html(`${moment(today).format('DD-MMM-YYYY')}<br/>${moment(today).format('HH:mm')}`);
+              }
+
+              $("#signature-made-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Dibuat Oleh</p>" );
+            } else {
+              $("#qty").val(Number(jobOrders.qty))
+              $(".minus").prop("disabled", false)
+              await generateTable(Number(jobOrders.qty));
+
+              if (jobOrders.ttd_dibuat_oleh) {
+                let data = jobOrders.ttd_dibuat_oleh.split(",");
+                // console.log("data from ttd_dibuat_oleh = ", data);
+                let img = new Image();
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.objectFit = "contain";
+                img.setAttribute("draggable", false);
+                img.src = 'data:' + data[0] + ',' + data[1];
+                // console.log("img is = ", img);
+                $(img).appendTo($('#signature-made-by'));
+
+                $("#signature-made-by span").html(`${moment(jobOrders.tgl_wkt_dibuat).format('DD-MMM-YYYY')}<br/>${moment(jobOrders.tgl_wkt_dibuat).format('HH:mm')}`);
+              }
+            }
 
             // $(".spinner-border").hide();
 
             // $("#jo-template").show();
-
-            $(`#signature-made-by`).jSignature({
-              'UndoButton': true,
-              'decor-color': 'transparent',
-              'color': '#000',
-              'width': '100%',
-              'height': '100',
-              'lineWidth': 1,
-            });
-
-            $("#signature-made-by").append("<p class='error text-danger' id='sig-error' style='display: none;'>Mohon Tanda Tangan Field Dibuat Oleh</p>" );
 
             $("#nominal, #nominal_handling, #keterangan_biaya_koord").inputmask({
               alias: "currency",
@@ -2777,13 +3034,112 @@
               console.log("nominal value is = ", this.value);
             });
 
+            $(`#nominal`).val(typePath === "edit-job-order" && jobOrders.nominal ? jobOrders.nominal : null);
+
             // To change defaults and be used it has to happen before the instance is initialized
             // Remove the data attribute to test this
             //Plugins.AutosizeInput.getDefaultOptions().space = 60;
             
             $("#nominal").autosizeInput();
+
+            $(`#moda`).val(typePath === "edit-job-order" && jobOrders.moda ? jobOrders.moda : null);
             $("#moda").autosizeInput();
+
+            $(`#invoice`).val(typePath === "edit-job-order" && jobOrders.invoice ? jobOrders.invoice : null);
             $("#invoice").autosizeInput();
+
+            $(`#transfer_by`).val(typePath === "edit-job-order" && jobOrders.transfer_by ? jobOrders.transfer_by : null);
+
+            // $(`[name='tagihan']`).val(typePath === "edit-job-order" && jobOrders.tagihan ? jobOrders.tagihan : null);
+
+            if (typePath === "edit-job-order" && jobOrders.tagihan) {
+              $(`input:radio[name="tagihan"][value=${jobOrders.tagihan}]`).prop('checked', true);
+            }
+
+            $(`#tagihan_top`).val(typePath === "edit-job-order" && jobOrders.tagihan_top ? jobOrders.tagihan_top : null);
+            // $('#tagihan_top').prop('disabled', typePath === "input-job-order");
+            if (typePath === "input-job-order") {
+              $('#tagihan_top').prop('disabled', true)
+            } else {
+              // $('#tagihan_top').prop('disabled', false)
+              if (jobOrders.tagihan_top) {
+                $('#tagihan_top').prop('disabled', false)
+              } else {
+                // $('#tagihan_top').prop('disabled', true)
+              }
+            }
+            
+            if (typePath === "edit-job-order" && jobOrders.opsi_tagihan_top) {
+              $(`input:radio[name="opsi_tagihan_top"][value=${jobOrders.opsi_tagihan_top}]`).prop('checked', true);
+              $("div#opsi_tagihan_top").show();
+              $("#detail-pembayaran-1 .form-check:nth-child(3).col-6").css({
+                "padding-left": "1rem",
+              });
+            }
+            // $(`#opsi_tagihan_top`).val(typePath === "edit-job-order" && jobOrders.opsi_tagihan_top ? jobOrders.opsi_tagihan_top : null);
+
+            if (typePath === "edit-job-order" && jobOrders.penawaran_kontrak) {
+              $(`input:radio[name="penawaran_kontrak"][value=${jobOrders.penawaran_kontrak}]`).prop('checked', true);
+            }
+
+            if (typePath === "edit-job-order" && jobOrders.penawaran_kontrak === "ada") {
+              $("input:radio[name='penawaran_kontrak']").parents("div.form-group.form-row").css("height", "unset");
+              $(`input:radio[name="opsi_penawaran_kontrak"][value=${jobOrders.penawaran_kontrak}]`).prop('checked', true);
+              $("#no_opsi_penawaran_kontrak").val(typePath === "edit-job-order" && jobOrders.no_opsi_penawaran_kontrak ? jobOrders.no_opsi_penawaran_kontrak : "");
+              $("div#opsi_penawaran_kontrak").show();
+              $("div#opsi_penawaran_kontrak").css({
+                display: "grid",
+                gap: "0.5rem",
+                margin: 0,
+                marginLeft: "1rem",
+              });
+            }
+
+            if (typePath === "edit-job-order") {
+              if (jobOrders.handling) {
+                $(`input:radio[name="handling"][value=${jobOrders.handling}]`).prop('checked', true);
+              }
+              if (jobOrders.handling === "ada") {
+                $("input:radio[name='handling']").parents("div.form-group.form-row").css("height", "unset");
+                $("#nominal_handling").val(typePath === "edit-job-order" && jobOrders.nominal_handling ? jobOrders.nominal_handling : "");
+                $("#nama_penerima_handling").val(typePath === "edit-job-order" && jobOrders.nama_penerima_handling ? jobOrders.nama_penerima_handling : "");
+                $("#form_handling").show();
+                $("#form_handling").css({
+                  display: "grid",
+                  gap: "0.5rem",
+                  margin: 0,
+                  marginLeft: "1rem",
+                });
+              }
+            }
+
+            if (typePath === "edit-job-order" && jobOrders.asuransi) {
+              $(`input:radio[name="asuransi"][value=${jobOrders.asuransi}]`).prop('checked', true);
+            }
+
+            if (typePath === "edit-job-order") {
+              if (jobOrders.asuransi === "ada") {
+                $('#perincian_asuransi').prop('disabled', true)
+                $('#perincian_asuransi').val(typePath === "edit-job-order" && jobOrders.perincian_asuransi ? jobOrders.perincian_asuransi : "")
+              } else {
+                $('#perincian_asuransi').prop('disabled', false)
+              }
+            }
+
+            if (typePath === "edit-job-order" && jobOrders.biaya_koord) {
+              $(`input:radio[name="biaya_koord"][value=${jobOrders.biaya_koord}]`).prop('checked', true);
+            }
+
+            if (typePath === "edit-job-order") {
+              if (jobOrders.biaya_koord === "ada") {
+                $('#keterangan_biaya_koord').prop('disabled', true)
+                $('#keterangan_biaya_koord').val(typePath === "edit-job-order" && jobOrders.keterangan_biaya_koord ? jobOrders.keterangan_biaya_koord : "")
+              } else {
+                $('#keterangan_biaya_koord').prop('disabled', false)
+              }
+            }
+
+            $("#note").val(typePath === "edit-job-order" && jobOrders.note ? jobOrders.note : "")
 
             $("#note").focusout(function(){
               if (!$(this).text().replace(" ", "").length) {
@@ -2809,7 +3165,27 @@
               if (Number($('#qty').val()) === 1) {
                 $(".minus").prop('disabled', true);
               }
-              generateTable();
+              if (typePath === "edit-job-order") {
+                // console.log("decrease");
+                // console.log("jobOrders merk bfr = ", jobOrders.merk);
+                // console.log("qty val = ", Number($('#qty').val()));
+                // console.log("jobOrders qty val = ", Number(jobOrders.qty));
+                if (Number($('#qty').val()) < Number(jobOrders.qty)) {
+                  jobOrders.merk.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.tipe.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.nopol_noka.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.warna.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.status.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.kondisi.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.lainnya.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  // console.log(Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.qty = Number($('#qty').val())
+                }
+                // console.log("jobOrders merk aft = ", jobOrders.merk);
+                // console.log("jobOrders decrease result = ", JSON.stringify(jobOrders, null, '\t'));
+              }
+              // generateTable();
+              generateTable(Number($('#qty').val()));
             });
 
             $(".plus").on("click", function() {
@@ -2817,7 +3193,8 @@
               if (Number($('#qty').val()) > 1) {
                 $(".minus").prop('disabled', false);
               }
-              generateTable();
+              // generateTable();
+              generateTable(Number($('#qty').val()));
             });
 
             $("#qty, #tagihan_top").keypress( function (event) {
@@ -2832,9 +3209,25 @@
                 // console.log("input qty is not validd");
                 this.value = 1;
               }
+              if (typePath === "edit-job-order") {
+                if (Number($('#qty').val()) < Number(jobOrders.qty)) {
+                  jobOrders.merk.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.tipe.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.nopol_noka.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.warna.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.status.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.kondisi.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.lainnya.splice(Number($('#qty').val()), Number(jobOrders.qty) - Number($('#qty').val()));
+                  // console.log(Number(jobOrders.qty) - Number($('#qty').val()));
+                  jobOrders.qty = Number($('#qty').val())
+                }
+                // console.log("jobOrders merk aft = ", jobOrders.merk);
+                // console.log("jobOrders decrease result = ", JSON.stringify(jobOrders, null, '\t'));
+              }
               this.style.width = 1.2 * this.value.length + "ch";
               $(".minus").prop('disabled', Number(this.value) === 1);
-              generateTable();
+              // generateTable();
+              generateTable(Number($('#qty').val()));
             });
 
             $("input:radio[name='tagihan']").on("click", function() {
@@ -2913,20 +3306,6 @@
 
           $("#jo-template").show();
 
-          // function render(templateId, data) {
-          //   // Get the template content
-          //   var template = document.getElementById(templateId).innerHTML;
-
-          //   // Replace placeholders in the template with actual data
-          //   for (var key in data) {
-          //       var regex = new RegExp('{{\\s*' + key + '\\s*}}', 'g');
-          //       template = template.replace(regex, data[key]);
-          //   }
-
-          //   // Render the template
-          //   document.body.innerHTML = template;
-          // }
-
           const form = document.forms.namedItem("jo-form");
 
           form.addEventListener("submit", async (event) => {
@@ -2949,7 +3328,7 @@
             console.log("list kondisi = ", formData.getAll('kondisi'));
             console.log("list lainnya = ", formData.getAll('lainnya'));
 
-            let no_joj = $("#no_joj").val();
+            // let no_joj = $("#no_joj").val();
             let hr_tgl_ambil = $('#hr_tgl_ambil').val();
             // let tgl_wkt_dibuat = $(new Date()).datepicker("getDate");
             let nama_pengirim = $(`#nama_pengirim`).val();
@@ -2962,9 +3341,6 @@
             console.log("hr_tgl_ambil = ", hr_tgl_ambil);
             // console.log("tgl_wkt_dibuat = ", tgl_wkt_dibuat);
             
-            $("#jo-template #content > #header div:nth-child(1) h6").text(`${user.location}, ${moment(new Date()).format('DD MMMM YYYY')}`.toUpperCase());
-
-            $("#jo-template #content > #header div:nth-child(2) span").html(`No. JO : ${city_code + String(moment(new Date()).format('YY'))}<span id="no_joj" contenteditable="true">${String(init_no_joj).padStart(6, '0')}</span>`);
             let qty = $(`#qty`).val();
             let nominal = $("#nominal").val().replace(/,|\Rp/g, '');
             let moda = $(`#moda`).val();
@@ -2986,36 +3362,28 @@
             let note = $(`#note`).html();
             console.log("note is = ", note);
             // let ttd_dibuat_oleh = $("#signature-made-by").jSignature('getData', "image/svg+xml;base64").join(',');
-            let ttd_dibuat_oleh = $("#signature-made-by").jSignature('getData', "image").join(',');
-            console.log("ttd_dibuat_oleh is = ", ttd_dibuat_oleh);
+            // let ttd_dibuat_oleh = $("#signature-made-by").jSignature('getData', "image").join(',');
+            // console.log("ttd_dibuat_oleh is = ", ttd_dibuat_oleh);
 
             let isValid = true;
 
             console.log("is jo form valid = ", $("#jo-form").valid());
             
             
-            if ($("#signature-made-by").jSignature('getData', 'native').length == 0) {
-              isValid = false;
-              // alert('Mohon Tanda Tangan Pembuat JO');
-              $("#signature-made-by canvas").css({
-                border: "2px solid #ff3366",
-              });
-              $("#sig-error").show();
-            }
+            // if (typePath === "input-job-order" && $("#signature-made-by").jSignature('getData', 'native').length == 0) {
+            //   isValid = false;
+            //   // alert('Mohon Tanda Tangan Pembuat JO');
+            //   $("#signature-made-by canvas").css({
+            //     border: "2px solid #ff3366",
+            //   });
+            //   $("#sig-error").show();
+            // }
 
-            console.log("isValid = ", isValid);
+            // console.log("isValid = ", isValid);
+
+            console.log("typePath = ", typePath);
 
             if ($("#jo-form").valid() && isValid) {
-              console.log("new_list_nama_pengirim in job order = ", JSON.stringify(new_list_nama_pengirim, null, '\t'));
-              console.log("new_list_alamat_pengirim in job order = ", JSON.stringify(new_list_alamat_pengirim, null, '\t'));
-              console.log("new_list_kontak_pengirim in job order = ", JSON.stringify(new_list_kontak_pengirim, null, '\t'));
-              console.log("new_list_nama_penerima in job order = ", JSON.stringify(new_list_nama_penerima, null, '\t'));
-              console.log("new_list_alamat_penerima in job order = ", JSON.stringify(new_list_alamat_penerima, null, '\t'));
-              console.log("new_list_kontak_penerima in job order = ", JSON.stringify(new_list_kontak_penerima, null, '\t'));
-              console.log("new_list_merk_unit in job order = ", JSON.stringify(new_list_merk_unit, null, '\t'));
-              console.log("new_list_tipe_unit in job order = ", JSON.stringify(new_list_tipe_unit, null, '\t'));
-              console.log("new_list_warna_unit in job order = ", JSON.stringify(new_list_warna_unit, null, '\t'));
-
               let merk = [];
               let tipe = [];
               let nopol_noka = [];
@@ -3049,16 +3417,6 @@
                 // }
               }
 
-              new_list_nama_pengirim = new_list_nama_pengirim.map(x => ({ field: x }));
-              new_list_alamat_pengirim = new_list_alamat_pengirim.map(x => ({ field: x }));
-              new_list_kontak_pengirim = new_list_kontak_pengirim.map(x => ({ field: x }));
-              new_list_nama_penerima = new_list_nama_penerima.map(x => ({ field: x }));
-              new_list_alamat_penerima = new_list_alamat_penerima.map(x => ({ field: x }));
-              new_list_kontak_penerima = new_list_kontak_penerima.map(x => ({ field: x }));
-              new_list_merk_unit = new_list_merk_unit.map(x => ({ field: x }));
-              new_list_tipe_unit = new_list_tipe_unit.map(x => ({ field: x }));
-              new_list_warna_unit = new_list_warna_unit.map(x => ({ field: x }));
-
               const Toast = Swal.mixin({
                 toast: true,
                 position: 'bottom-start',
@@ -3066,137 +3424,363 @@
                 timer: 5000,
                 timerProgressBar: true,
               });
-            
-              try {
-                const response = await fetch("/input-job-order", {
-                  method: "POST",
-                  // body: formData,
-                  body: JSON.stringify({ 
-                    no_joj,
-                    city_code,
-                    tgl_wkt_dibuat: new Date(),
-                    nama_pengirim,
-                    alamat_pengirim,
-                    kontak_pengirim,
-                    nama_penerima,
-                    alamat_penerima,
-                    kontak_penerima,
-                    hr_tgl_ambil,
-                    qty,
-                    merk,
-                    tipe,
-                    nopol_noka,
-                    warna,
-                    status,
-                    kondisi,
-                    lainnya,
-                    new_list_nama_pengirim,
-                    new_list_alamat_pengirim,
-                    new_list_kontak_pengirim,
-                    new_list_nama_penerima,
-                    new_list_alamat_penerima,
-                    new_list_kontak_penerima,
-                    new_list_merk_unit,
-                    new_list_tipe_unit,
-                    new_list_warna_unit,
-                    nominal,
-                    moda,
-                    invoice,
-                    transfer_by,
-                    tagihan,
-                    tagihan_top,
-                    opsi_tagihan_top,
-                    penawaran_kontrak,
-                    opsi_penawaran_kontrak,
-                    no_opsi_penawaran_kontrak,
-                    handling,
-                    nominal_handling,
-                    nama_penerima_handling,
-                    asuransi,
-                    perincian_asuransi,
-                    biaya_koord,
-                    keterangan_biaya_koord,
-                    note,
-                    dibuat_oleh: user.username,
-                    ttd_dibuat_oleh,
-                   }),
-                  headers: {'Content-Type': 'application/json', "Accept":"text/html"},
-                  credentials: 'same-origin',
-                });
-                console.log("response of createData = ", response);
 
-                console.log("response body is = ", response.body);
+              try {
+                let response, result, reqBody = {
+                  no_joj,
+                  // city_code,
+                  nama_pengirim,
+                  alamat_pengirim,
+                  kontak_pengirim,
+                  nama_penerima,
+                  alamat_penerima,
+                  kontak_penerima,
+                  hr_tgl_ambil,
+                  qty,
+                  merk,
+                  tipe,
+                  nopol_noka,
+                  warna,
+                  status,
+                  kondisi,
+                  lainnya,
+                  nominal,
+                  moda,
+                  invoice,
+                  transfer_by,
+                  tagihan,
+                  tagihan_top,
+                  opsi_tagihan_top,
+                  penawaran_kontrak,
+                  opsi_penawaran_kontrak,
+                  no_opsi_penawaran_kontrak,
+                  handling,
+                  nominal_handling,
+                  nama_penerima_handling,
+                  asuransi,
+                  perincian_asuransi,
+                  biaya_koord,
+                  keterangan_biaya_koord,
+                  note,
+                  // dibuat_oleh: user.username,
+                  // ttd_dibuat_oleh,
+                  // tgl_wkt_dibuat: new Date(),
+                }
+
+                if (typePath === "input-job-order") {
+                  console.log("new_list_nama_pengirim in job order = ", JSON.stringify(new_list_nama_pengirim, null, '\t'));
+                  console.log("new_list_alamat_pengirim in job order = ", JSON.stringify(new_list_alamat_pengirim, null, '\t'));
+                  console.log("new_list_kontak_pengirim in job order = ", JSON.stringify(new_list_kontak_pengirim, null, '\t'));
+                  console.log("new_list_nama_penerima in job order = ", JSON.stringify(new_list_nama_penerima, null, '\t'));
+                  console.log("new_list_alamat_penerima in job order = ", JSON.stringify(new_list_alamat_penerima, null, '\t'));
+                  console.log("new_list_kontak_penerima in job order = ", JSON.stringify(new_list_kontak_penerima, null, '\t'));
+                  console.log("new_list_merk_unit in job order = ", JSON.stringify(new_list_merk_unit, null, '\t'));
+                  console.log("new_list_tipe_unit in job order = ", JSON.stringify(new_list_tipe_unit, null, '\t'));
+                  console.log("new_list_warna_unit in job order = ", JSON.stringify(new_list_warna_unit, null, '\t'));
+                  
+                  reqBody.no_joj = $("#no_joj").val();
+                  reqBody.city_code = city_code;
+                  reqBody.dibuat_oleh = user.username;
+                  // let ttd_dibuat_oleh = $("#signature-made-by").jSignature('getData', "image").join(',');
+                  // console.log("ttd_dibuat_oleh is = ", ttd_dibuat_oleh);
+                  // reqBody.ttd_dibuat_oleh = ttd_dibuat_oleh;
+                  reqBody.ttd_dibuat_oleh = user.signature;
+                  reqBody.tgl_wkt_dibuat = new Date();
+                  reqBody.new_list_nama_pengirim = new_list_nama_pengirim.map(x => ({ field: x }));
+                  reqBody.new_list_alamat_pengirim = new_list_alamat_pengirim.map(x => ({ field: x }));
+                  reqBody.new_list_kontak_pengirim = new_list_kontak_pengirim.map(x => ({ field: x }));
+                  reqBody.new_list_nama_penerima = new_list_nama_penerima.map(x => ({ field: x }));
+                  reqBody.new_list_alamat_penerima = new_list_alamat_penerima.map(x => ({ field: x }));
+                  reqBody.new_list_kontak_penerima = new_list_kontak_penerima.map(x => ({ field: x }));
+                  reqBody.new_list_merk_unit = new_list_merk_unit.map(x => ({ field: x }));
+                  reqBody.new_list_tipe_unit = new_list_tipe_unit.map(x => ({ field: x }));
+                  reqBody.new_list_warna_unit = new_list_warna_unit.map(x => ({ field: x }));
+
+                //   const email = form.email.value;
+                // const password = form.password.value;
+
+                  try {
+                    response = await fetch("/no-job-order", {
+                        method: "POST",
+                        body: JSON.stringify({no_joj: reqBody.no_joj}),
+                        headers: {'Content-Type': 'application/json'}
+                    });
+                    console.log("response of no-job-order = ", response);
+
+                    result = await response.json();
+
+                    console.log("result of no-job-order = ", result);
+
+
+                    if (result.errors) {
+                        console.log('error: ', response.status, response.statusText);
+                        console.error('Promise resolved but HTTP status failed');
+
+                        // const { message, email, password } = result.errors
+                        // if (message) {
+                        //     $("#alert-message").text(message).show();
+                        // }
+                        // if (email) {
+                        //     $("#email-error").text(email)
+                        // }
+                        // if (password) {
+                        //     $("#password-error").text(password)
+                        // }
+                        const DangerToast = Swal.mixin({
+                            toast: true,
+                            position: 'bottom-start',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+                        });
+                            
+                        return DangerToast.fire({
+                            icon: 'error',
+                            html: `<label>${result.errors.message}</label>`,
+                        });
+                    }
+                  } catch (err) {
+                    console.error(err)
+                    
+                    const ErrorToast = Swal.mixin({
+                        toast: true,
+                        position: 'bottom-start',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        timerProgressBar: true,
+                    });
+                    
+                    return ErrorToast.fire({
+                        icon: 'error',
+                        html: `<label>There is something wrong when submit sign in form</label>`,
+                    });
+                  }
+
+                  try {
+                    response = await fetch("/input-job-order", {
+                      method: "POST",
+                      body: JSON.stringify(reqBody),
+                      headers: {'Content-Type': 'application/json', "Accept":"text/html"},
+                      credentials: 'same-origin',
+                    });
+
+                    console.log("response of input  job order is = ", response);
+
+                    // result = await response.json();
+
+                    // console.log("result of input  job order = ", result);
+
+                    if (response.status == 200 || response.ok) {
+                      console.log('Promise resolved and HTTP status is successful');
+
+                      Toast.fire({
+                        icon: 'success',
+                        html: `<label>Submit Form Success</label>`,
+                      });
+
+                      clearInterval(timeInterval);
+
+                      // When the page is loaded convert it to text
+                      let responseText = await response.text();
+
+                      console.log("responseText is = ", responseText);
+
+                      // Initialize the DOM parser
+                      const parser = new DOMParser()
+
+                      // Parse the text
+                      const doc = await parser.parseFromString(responseText, "text/html")
+
+                      console.log("final result doc is = ", doc);
+
+                      setTimeout(() => {
+                        // app.get("/job-order/:no_joj", checkUser, async(req, res) => {
+                          window.history.pushState({}, "United Transindo Admin Dashboard", `/job-order/${reqBody.no_joj}`);
+                          // $('body').html(doc);
+                          // $('body').html(responseText);
+                          // window.location.reload();
+
+                          let newDoc = document.open("text/html", "replace");
+                          newDoc.write(responseText);
+                          newDoc.close();
+                      }, 1000);
+                    }
+                  } catch (err) {
+                    console.error(err)
+
+                    console.log('error: ', response.status, response.statusText);
+                    console.error('Promise resolved but HTTP status failed');
+
+                    const ErrorToast = Swal.mixin({
+                        toast: true,
+                        position: 'bottom-start',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        timerProgressBar: true,
+                    });
+                      
+                    ErrorToast.fire({
+                      icon: 'error',
+                      html: `<label>There are some errors when submitting the form</label>`,
+                    });
+                    /* Handle the error returned by the HTTP request */
+                    return {error: {status: response.status, statusText: response.statusText}};
+                  }
+
+                  
+                } else {
+                  response = await fetch("/edit-job-order/" + no_joj, {
+                    method: "PUT",
+                    body: JSON.stringify(reqBody),
+                    headers: {'Content-Type': 'application/json', "Accept":"text/html"},
+                    credentials: 'same-origin',
+                  });
+
+                  console.log("response is = ", response);
+
+                const result = await response.json();
+
+                // console.log("result of edit job order = ", result);
+
+
+                if (result.errors) {
+                  console.log('error: ', response.status, response.statusText);
+                        console.error('Promise resolved but HTTP status failed');
+
+                        // const { message, 
+                        //     username,
+                        //     name,
+                        //     email,
+                        //     role,
+                        //     location,
+                        //     password,
+                        //     confirm_password } = result.errors
+                        // if (message) {
+                        //     $("#alert-message").text(message).show();
+                        // }
+                        // if (username) {
+                        //     $("#username-error").text(username)
+                        // }
+                        // if (name) {
+                        //     $("#name-error").text(name)
+                        // }
+                        // if (email) {
+                        //     $("#email-error").text(email)
+                        // }
+                        // if (role) {
+                        //     $("#role-error").text(role)
+                        // }
+                        // if (location) {
+                        //     $("#location-error").text(location)
+                        // }
+                        // if (password) {
+                        //     $("#password-error").text(password)
+                        // }
+                        // if (confirm_password) {
+                        //     $("#confirm-password-error").text(confirm_password)
+                        // }
+                        const DangerToast = Swal.mixin({
+                            toast: true,
+                            position: 'bottom-start',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+                        });
+                            
+                        return DangerToast.fire({
+                            icon: 'error',
+                            html: `<label>${result.errors.message}</label>`,
+                        });
+                }
+
+                  if (response.status == 200 || response.ok) {
+                    console.log('Promise resolved and HTTP status is successful');
+
+                    // Toast.fire({
+                    //   icon: 'success',
+                    //   html: `<label>Submit Form Success</label>`,
+                    // });
+
+                    const SuccessToast = Swal.mixin({
+                            toast: true,
+                            position: 'bottom-start',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+                        });
+                            
+                        SuccessToast.fire({
+                            icon: 'success',
+                            html: `<label>Edit Job Order ${no_joj} Successfully</label>`,
+                        });
+
+                        setTimeout(() => { location.replace("/waitlist-approve-job-order"); }, 1000);
+                  } else {
+                    console.log('error: ', response.status, response.statusText);
+                    console.error('Promise resolved but HTTP status failed');
+                      
+                    Toast.fire({
+                      icon: 'error',
+                      html: `<label>There are some errors when submitting the form</label>`,
+                    });
+                    /* Handle the error returned by the HTTP request */
+                    return {error: {status: response.status, statusText: response.statusText}};
+                  }
+                }
+
+                
+
+                
 
                 if (response.status == 200 || response.ok) {
                   console.log('Promise resolved and HTTP status is successful');
-                  // const result = await response.json();
-                  // console.log("result from response of createData = ", result);
+                  if (typePath === "input-job-order") {
 
-                  Toast.fire({
-                    icon: 'success',
-                    html: `<label>Submit Form Success</label>`,
-                  });
+                  
+                    // const result = await response.json();
+                    // console.log("result from response of createData = ", result);
 
-                  clearInterval(timeInterval);
+                    Toast.fire({
+                      icon: 'success',
+                      html: `<label>Successfully Input Job Order</label>`,
+                    });
 
-                  //   // await $.ajax({
-              //   //   url: "/job-order-data",
-              //   //   type: "GET",
-              //   //   dataType: "json",
-              //   //   success: async (res) => {
-              //   //     console.log("results = ", res);
-              //   //   },
-              //   //   error: function (err) {
-              //   //     console.log("error = ", err);
-              //   //   },
-              //   // });
+                    clearInterval(timeInterval);
 
-                  // return await fetch(`/job-order/${no_joj}`, {
-                  //   method: "GET",
-                  //   headers: {
-                  //     "Content-Type": "application/json",
-                  //   },
-                  // }).then(res => {
-                  //   let htmlText = await response.text();
-                  //   document.getElementsByTagName('body')[0].innerHTML(bodyContent);
-                    
-                  // });
+                    // When the page is loaded convert it to text
+                    let responseText = await response.text();
 
-                   // When the page is loaded convert it to text
-                  let responseText = await response.text();
+                    console.log("responseText is = ", responseText);
 
-                  console.log("responseText is = ", responseText);
+                    // Initialize the DOM parser
+                    const parser = new DOMParser()
 
-                  // Initialize the DOM parser
-                  const parser = new DOMParser()
+                    // Parse the text
+                    const doc = await parser.parseFromString(responseText, "text/html")
 
-                  // Parse the text
-                  const doc = await parser.parseFromString(responseText, "text/html")
+                    console.log("final result doc is = ", doc);
 
-                  console.log("final result doc is = ", doc);
+                    setTimeout(() => {
+                      // app.get("/job-order/:no_joj", checkUser, async(req, res) => {
+                        window.history.pushState({}, "United Transindo Admin Dashboard", `/job-order/${no_joj}`);
+                        // $('body').html(doc);
+                        // $('body').html(responseText);
+                        // window.location.reload();
 
-                  setTimeout(() => {
-                    // app.get("/job-order/:no_joj", checkUser, async(req, res) => {
-                      window.history.pushState({}, "United Transindo Admin Dashboard", `/job-order/${no_joj}`);
-                      // $('body').html(doc);
-                      // $('body').html(responseText);
-                      // window.location.reload();
-
-                      let newDoc = document.open("text/html", "replace");
-                      newDoc.write(responseText);
-                      newDoc.close();
-                  }, 1000);
+                        let newDoc = document.open("text/html", "replace");
+                        newDoc.write(responseText);
+                        newDoc.close();
+                    }, 1000);
+                  } else {
+                    Toast.fire({
+                      icon: 'success',
+                      html: `<label>Successfully Edit Job Order ${no_joj}</label>`,
+                    });
+                  }
 
                 } else {
                   console.log('error: ', response.status, response.statusText);
                   console.error('Promise resolved but HTTP status failed');
-                  // const Toast = Swal.mixin({
-                  //   toast: true,
-                  //   position: 'bottom-start',
-                  //   showConfirmButton: false,
-                  //   timer: 5000,
-                  //   timerProgressBar: true,
-                  // });
                     
                   Toast.fire({
                     icon: 'error',
@@ -3210,25 +3794,183 @@
                 // for (let l = 0; l < 1000000; l += 1)
                 //   getRow();
                 // console.log(performance.now() - now);
-              } catch (err) {
-                console.error(err)
-                
-                // const Toast = Swal.mixin({
-                //   toast: true,
-                //   position: 'bottom-start',
-                //   showConfirmButton: false,
-                //   timer: 5000,
-                //   timerProgressBar: true,
-                // });
-                  
-                Toast.fire({
-                  icon: 'error',
-                  html: `<label>Submit Form Failed</label>`,
-                });
+              } catch (error) {
+                console.error(error)
               }
+
+              
+
+              
+            
+              // try {
+              //   const response = await fetch("/input-job-order", {
+              //     method: "POST",
+              //     // body: formData,
+              //     body: JSON.stringify({ 
+              //       no_joj,
+              //       city_code,
+              //       tgl_wkt_dibuat: new Date(),
+              //       nama_pengirim,
+              //       alamat_pengirim,
+              //       kontak_pengirim,
+              //       nama_penerima,
+              //       alamat_penerima,
+              //       kontak_penerima,
+              //       hr_tgl_ambil,
+              //       qty,
+              //       merk,
+              //       tipe,
+              //       nopol_noka,
+              //       warna,
+              //       status,
+              //       kondisi,
+              //       lainnya,
+              //       new_list_nama_pengirim,
+              //       new_list_alamat_pengirim,
+              //       new_list_kontak_pengirim,
+              //       new_list_nama_penerima,
+              //       new_list_alamat_penerima,
+              //       new_list_kontak_penerima,
+              //       new_list_merk_unit,
+              //       new_list_tipe_unit,
+              //       new_list_warna_unit,
+              //       nominal,
+              //       moda,
+              //       invoice,
+              //       transfer_by,
+              //       tagihan,
+              //       tagihan_top,
+              //       opsi_tagihan_top,
+              //       penawaran_kontrak,
+              //       opsi_penawaran_kontrak,
+              //       no_opsi_penawaran_kontrak,
+              //       handling,
+              //       nominal_handling,
+              //       nama_penerima_handling,
+              //       asuransi,
+              //       perincian_asuransi,
+              //       biaya_koord,
+              //       keterangan_biaya_koord,
+              //       note,
+              //       dibuat_oleh: user.username,
+              //       ttd_dibuat_oleh,
+              //      }),
+              //     headers: {'Content-Type': 'application/json', "Accept":"text/html"},
+              //     credentials: 'same-origin',
+              //   });
+              //   console.log("response of createData = ", response);
+
+              //   console.log("response body is = ", response.body);
+
+              //   if (response.status == 200 || response.ok) {
+              //     console.log('Promise resolved and HTTP status is successful');
+              //     // const result = await response.json();
+              //     // console.log("result from response of createData = ", result);
+
+              //     Toast.fire({
+              //       icon: 'success',
+              //       html: `<label>Submit Form Success</label>`,
+              //     });
+
+              //     clearInterval(timeInterval);
+
+              //     //   // await $.ajax({
+              // //   //   url: "/job-order-data",
+              // //   //   type: "GET",
+              // //   //   dataType: "json",
+              // //   //   success: async (res) => {
+              // //   //     console.log("results = ", res);
+              // //   //   },
+              // //   //   error: function (err) {
+              // //   //     console.log("error = ", err);
+              // //   //   },
+              // //   // });
+
+              //     // return await fetch(`/job-order/${no_joj}`, {
+              //     //   method: "GET",
+              //     //   headers: {
+              //     //     "Content-Type": "application/json",
+              //     //   },
+              //     // }).then(res => {
+              //     //   let htmlText = await response.text();
+              //     //   document.getElementsByTagName('body')[0].innerHTML(bodyContent);
+                    
+              //     // });
+
+              //      // When the page is loaded convert it to text
+              //     let responseText = await response.text();
+
+              //     console.log("responseText is = ", responseText);
+
+              //     // Initialize the DOM parser
+              //     const parser = new DOMParser()
+
+              //     // Parse the text
+              //     const doc = await parser.parseFromString(responseText, "text/html")
+
+              //     console.log("final result doc is = ", doc);
+
+              //     setTimeout(() => {
+              //       // app.get("/job-order/:no_joj", checkUser, async(req, res) => {
+              //         window.history.pushState({}, "United Transindo Admin Dashboard", `/job-order/${no_joj}`);
+              //         // $('body').html(doc);
+              //         // $('body').html(responseText);
+              //         // window.location.reload();
+
+              //         let newDoc = document.open("text/html", "replace");
+              //         newDoc.write(responseText);
+              //         newDoc.close();
+              //     }, 1000);
+
+              //   } else {
+              //     console.log('error: ', response.status, response.statusText);
+              //     console.error('Promise resolved but HTTP status failed');
+              //     // const Toast = Swal.mixin({
+              //     //   toast: true,
+              //     //   position: 'bottom-start',
+              //     //   showConfirmButton: false,
+              //     //   timer: 5000,
+              //     //   timerProgressBar: true,
+              //     // });
+                    
+              //     Toast.fire({
+              //       icon: 'error',
+              //       html: `<label>There are some errors when submitting the form</label>`,
+              //     });
+              //     /* Handle the error returned by the HTTP request */
+              //     return {error: {status: response.status, statusText: response.statusText}};
+              //   }
+                
+              //   // const now = performance.now();
+              //   // for (let l = 0; l < 1000000; l += 1)
+              //   //   getRow();
+              //   // console.log(performance.now() - now);
+              // } catch (err) {
+              //   console.error(err)
+                
+              //   // const Toast = Swal.mixin({
+              //   //   toast: true,
+              //   //   position: 'bottom-start',
+              //   //   showConfirmButton: false,
+              //   //   timer: 5000,
+              //   //   timerProgressBar: true,
+              //   // });
+                  
+              //   Toast.fire({
+              //     icon: 'error',
+              //     html: `<label>Submit Form Failed</label>`,
+              //   });
+              // }
             } else {
               console.log("there is invalid input in Input Form Job Order");
             }
+
+            if (typePath === "input-job-order") {
+
+            } else {
+
+            }
+
           });
 
         });
